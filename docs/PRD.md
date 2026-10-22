@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.2 — approved; Phase 1 in progress |
+| **Status** | v1.3 — approved; Phase 1 in progress (Milestones 1–2 built) |
 | **Last updated** | 2026-10-22 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -237,8 +237,8 @@ for code (all from Google Fonts). Final palette and tokens defined in the design
 | Layer | Choice |
 |---|---|
 | Front end | Static multi-page site, vanilla JavaScript (ES modules) + CSS custom properties, built with **Vite 6**. Shared header/footer are HTML partials inserted at build time. Fonts self-hosted (Inter, Sora, JetBrains Mono via Fontsource). |
-| Git engine | isomorphic-git + lightning-fs (IndexedDB), loaded on terminal pages only |
-| Terminal UI | xterm.js (or lightweight custom renderer if xterm is unfriendly on mobile — decided during build) |
+| Git engine | isomorphic-git + lightning-fs (IndexedDB), loaded on terminal pages only. Status, checkout safety and merge working-tree updates are computed by our own code **by file content**, because isomorphic-git trusts timestamps and misses same-second edits. Merge state (MERGE_HEAD, conflicts) is managed by our code. |
+| Terminal UI | **Custom DOM terminal** (decided in Milestone 2): a native `<input>` works with phone keyboards, IME and screen readers; Git Bash–style prompt; ANSI colours rendered as HTML |
 | Graph | SVG, custom renderer with CSS/JS animation |
 | Offline | Service worker + web app manifest |
 | Hosting | GitHub Pages from `sbccas/git-github-fundamentals` |
@@ -265,8 +265,8 @@ git-github-fundamentals/
 
 | # | Milestone | Output | Review |
 |---|---|---|---|
-| 1 | Foundation | Repo, design system, layout, home page, navigation, theme, command palette | ✅ approval — **built 2026-10-22, awaiting review** |
-| 2 | Terminal engine | Real-Git terminal, simulated remote, editor, file explorer, live graph | ✅ approval |
+| 1 | Foundation | Repo, design system, layout, home page, navigation, theme, command palette | ✅ **approved & committed 2026-10-22** |
+| 2 | Terminal engine | Real-Git terminal, simulated remote, editor, file explorer, live graph | ✅ approval — **built 2026-10-22, awaiting review** |
 | 3 | Units 1–2 | Lessons, quizzes, missions M-01 – M-07, labs | ✅ approval |
 | 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel | ✅ approval |
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about | ✅ approval |
@@ -305,5 +305,6 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-22 | 1.3 | Milestone 2 built: shell, 24 Git commands, simulated GitHub (create repo, browse, teammate push), editor, file explorer, live graph, sandboxes, `?cmd=` pre-fill for lessons |
 | 2026-10-22 | 1.2 | Decisions D-1–D-4, D-7 recorded; Milestone 1 built |
 | 2026-10-22 | 1.1 | Added faculty guide (§6.6 F-01–F-03); unit hours aligned to 15 × 2-hour sessions (U1 4, U2 8, U3 6, U4 6, U5 4, assessment 2); backlog items added |

@@ -1,4 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 html {
   -webkit-text-size-adjust: 100%;
@@ -54,6 +55,8 @@ p { margin: 0 0 1em; }
 :where(:root[data-theme="light"]) :where(a):hover { color: var(--primary-strong); }
 
 code, kbd, pre, .mono { font-family: var(--font-mono); font-size: .92em; }
+/* No ligatures in code: students must see -> and -- exactly as they type them. */
+code, kbd, pre, input, textarea, .mono, .term, .pg-term, .mini-term { font-variant-ligatures: none; font-feature-settings: "calt" 0, "liga" 0; }
 :not(pre) > code {
   background: var(--surface-2);
   border: 1px solid var(--border);

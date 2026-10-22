@@ -3,32 +3,101 @@
 <head>
   <meta charset="utf-8">
   <title>Playground · Git & GitHub Fundamentals</title>
-  <meta name="description" content="A real Git terminal that runs inside your browser — with a live commit graph.">
+  <meta name="description" content="A real Git terminal that runs in your browser, with a live commit graph, file explorer and a practice GitHub.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/playground.css">
 </head>
-<body data-page="playground">
+<body data-page="playground" class="page-playground">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 2</p>
+  <main id="main" class="pg">
+    <div class="pg-toolbar container">
+      <div class="pg-title">
         <h1>Playground</h1>
-        <p class="lead" style="margin-inline:auto">A real Git terminal that runs inside your browser — with a live commit graph.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">Real Git engine</li>
-          <li class="chip">Simulated GitHub remote</li>
-          <li class="chip">Live commit graph</li>
-          <li class="chip">Time-travel slider</li>
-          <li class="chip">File explorer</li>
-          <li class="chip">Mobile key bar</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+        <span class="pg-sub">Real Git in your browser · saved on this device</span>
       </div>
-    </section>
+      <div class="pg-tools">
+        <label class="pg-sandbox">
+          <span class="visually-hidden">Sandbox</span>
+          <select data-sandbox-select aria-label="Sandbox"></select>
+        </label>
+        <button class="mini-btn" type="button" data-sandbox-new title="Create a new, empty sandbox">+ New</button>
+        <button class="mini-btn" type="button" data-sandbox-reset title="Delete everything in this sandbox">Reset</button>
+        <button class="mini-btn" type="button" data-show-help>Help</button>
+      </div>
+    </div>
+
+    <div class="pg-grid container">
+      <section class="pg-term" data-terminal aria-label="Terminal">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="term-title">MINGW64:/home/student</span>
+          <span class="term-busy" aria-hidden="true">running…</span>
+        </div>
+        <div class="tv-scroll" data-term-scroll>
+          <div class="tv-output" data-term-output role="log" aria-live="polite" aria-label="Terminal output"></div>
+          <form class="tv-form" data-term-form autocomplete="off">
+            <div class="tv-prompt" data-term-prompt></div>
+            <div class="tv-line">
+              <span class="p-dollar" aria-hidden="true">$</span>
+              <input class="tv-input" data-term-input type="text" aria-label="Type a command and press Enter"
+                autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" enterkeyhint="send">
+            </div>
+          </form>
+        </div>
+        <div class="keybar" data-keybar aria-label="Terminal keys">
+          <div class="keybar-keys">
+            <button type="button" data-key="tab" aria-label="Tab (complete)">Tab</button>
+            <button type="button" data-key="up" aria-label="Previous command">↑</button>
+            <button type="button" data-key="down" aria-label="Next command">↓</button>
+            <button type="button" data-key="ctrl-c" aria-label="Cancel line">Ctrl+C</button>
+          </div>
+          <div class="keybar-chips">
+            <button type="button" data-insert="git ">git</button>
+            <button type="button" data-insert="status">status</button>
+            <button type="button" data-insert="add .">add .</button>
+            <button type="button" data-insert='commit -m ""' data-cursor="1">commit -m</button>
+            <button type="button" data-insert="log --oneline --graph --all">log</button>
+            <button type="button" data-insert="branch">branch</button>
+            <button type="button" data-insert="switch ">switch</button>
+            <button type="button" data-insert="ls">ls</button>
+            <button type="button" data-insert="cd ">cd</button>
+            <button type="button" data-insert="clear">clear</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="pg-side" aria-label="Repository views">
+        <div class="pg-tabs" role="tablist">
+          <button role="tab" type="button" id="tab-graph" aria-controls="panel-graph" aria-selected="true" data-tab="graph">Graph</button>
+          <button role="tab" type="button" id="tab-files" aria-controls="panel-files" aria-selected="false" data-tab="files">Files</button>
+          <button role="tab" type="button" id="tab-github" aria-controls="panel-github" aria-selected="false" data-tab="github">GitHub</button>
+        </div>
+        <div class="pg-panel" role="tabpanel" id="panel-graph" aria-labelledby="tab-graph" data-panel="graph"></div>
+        <div class="pg-panel" role="tabpanel" id="panel-files" aria-labelledby="tab-files" data-panel="files" hidden></div>
+        <div class="pg-panel" role="tabpanel" id="panel-github" aria-labelledby="tab-github" data-panel="github" hidden></div>
+      </section>
+    </div>
+
+    <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
   </main>
 
+  <dialog class="editor" data-editor aria-label="Editor">
+    <div class="editor-head">
+      <span class="editor-path" data-editor-path></span>
+      <span class="editor-lines muted" data-editor-lines></span>
+    </div>
+    <textarea class="editor-text" data-editor-text spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="File contents"></textarea>
+    <div class="editor-foot">
+      <span class="editor-hint muted" data-editor-hint></span>
+      <div class="editor-actions">
+        <button class="mini-btn" type="button" data-editor-cancel>Cancel</button>
+        <button class="mini-btn mini-btn-primary" type="button" data-editor-save>Save</button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/playground.js"></script>
 </body>
 </html>
