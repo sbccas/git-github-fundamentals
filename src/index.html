@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Git & GitHub Fundamentals · SBCCAS Amroli</title>
+  <meta name="description" content="A free, hands-on Git & GitHub certificate course by SBCCAS (Amroli College), Surat. Real Git runs in your browser — even on your phone.">
+  <!-- @include head -->
+</head>
+<body data-page="home">
+  <!-- @include header -->
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> SBCCAS · Certificate course · 2 credits</p>
+          <h1>Learn Git by <span class="grad-text">typing real commands.</span></h1>
+          <p class="lead">A hands-on course for Amroli College students. Real Git runs right inside your browser — on a lab PC or on your phone. No installs. No sign-up. Just start typing.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="{{base}}unit-1/" data-start-cta>
+              Start Unit 1
+              <svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="{{base}}playground/">
+              <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 17 5-5-5-5M12 19h7"/></svg>
+              Open the terminal
+            </a>
+          </div>
+          <a class="continue-link" href="#" data-continue hidden></a>
+          <ul class="hero-points" aria-label="Highlights">
+            <li><svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4 10-10"/></svg>Works on phones</li>
+            <li><svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4 10-10"/></svg>Nothing to install</li>
+            <li><svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4 10-10"/></svg>Free &amp; open</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-label="Animated demo: a branch is created, committed to and merged back into main" role="img">
+          <div class="term hero-term">
+            <div class="term-bar">
+              <span class="term-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              krish@sbccas: ~/amroli-canteen
+            </div>
+            <div class="term-body" data-demo-term aria-hidden="true"></div>
+          </div>
+          <div class="graph-card" aria-hidden="true">
+            <div class="graph-card-head">
+              <span>Commit graph</span>
+              <span class="live-badge"><span class="pulse-dot"></span>live</span>
+            </div>
+            <svg class="demo-graph" viewBox="0 0 360 150" data-demo-graph>
+              <path class="g-edge g-main" data-el="e13" d="M50 100 L200 100" pathLength="1"/>
+              <path class="g-edge g-main" data-el="e34" d="M200 100 L290 100" pathLength="1"/>
+              <path class="g-edge g-feat" data-el="e12" d="M50 100 C 92 100, 96 44, 140 44" pathLength="1"/>
+              <path class="g-edge g-feat" data-el="e24" d="M140 44 C 220 44, 246 100, 290 100" pathLength="1"/>
+              <circle class="g-node g-main-node" data-el="c1" cx="50" cy="100" r="9"/>
+              <circle class="g-node g-feat-node" data-el="c2" cx="140" cy="44" r="9"/>
+              <circle class="g-node g-main-node" data-el="c3" cx="200" cy="100" r="9"/>
+              <circle class="g-node g-main-node g-merge" data-el="c4" cx="290" cy="100" r="11"/>
+              <g class="g-label g-label-main" data-label="main"><rect rx="9" height="20"/><text y="14"></text></g>
+              <g class="g-label g-label-feat" data-label="feature"><rect rx="9" height="20"/><text y="14"></text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS ============ -->
+    <section class="container" aria-label="Course at a glance">
+      <div class="stats" data-reveal>
+        <div class="stat"><span class="stat-num">5</span><span class="stat-label">Units</span></div>
+        <div class="stat"><span class="stat-num">30</span><span class="stat-label">Hours</span></div>
+        <div class="stat"><span class="stat-num">15</span><span class="stat-label">Story missions</span></div>
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">GitHub labs</span></div>
+        <div class="stat"><span class="stat-num">2</span><span class="stat-label">Credits</span></div>
+      </div>
+    </section>
+
+    <!-- ============ UNITS ============ -->
+    <section class="section" id="units">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">The syllabus</p>
+          <h2>Five units. One clear path.</h2>
+          <p class="lead">From “what is version control?” to your first pull request. Each unit ends with missions and a quiz, and your progress is saved on this device.</p>
+        </div>
+        <div class="unit-grid" data-unit-grid></div>
+      </div>
+    </section>
+
+    <!-- ============ HOW YOU LEARN ============ -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section-head center" data-reveal>
+          <p class="eyebrow">How you’ll learn</p>
+          <h2>Read a little. Type a lot.</h2>
+          <p class="lead">Every topic follows the same loop, so you always know what comes next.</p>
+        </div>
+        <ol class="steps">
+          <li class="step card" data-reveal style="--delay: 0ms; --u: var(--u1)">
+            <span class="step-num">01</span>
+            <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h6a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H3zM21 5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H21z"/></svg></span>
+            <h3>Read</h3>
+            <p>Short lessons with everyday analogies and clear diagrams.</p>
+          </li>
+          <li class="step card" data-reveal style="--delay: 80ms; --u: var(--u2)">
+            <span class="step-num">02</span>
+            <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 17 5-5-5-5M12 19h7"/></svg></span>
+            <h3>Try</h3>
+            <p>Run each command in a real Git terminal and watch the graph change.</p>
+          </li>
+          <li class="step card" data-reveal style="--delay: 160ms; --u: var(--u3)">
+            <span class="step-num">03</span>
+            <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span>
+            <h3>Mission</h3>
+            <p>Solve a story problem from the Amroli Canteen team. Earn XP and badges.</p>
+          </li>
+          <li class="step card" data-reveal style="--delay: 240ms; --u: var(--u4)">
+            <span class="step-num">04</span>
+            <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+            <h3>Quiz</h3>
+            <p>Check yourself with instant feedback and an explanation for every answer.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section" id="features">
+      <div class="container features">
+        <div class="feature feature-lg card" data-reveal style="--u: var(--u1)">
+          <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 17 5-5-5-5M12 19h7"/></svg></span>
+          <h3>Real Git, in your browser</h3>
+          <p>Not a video and not a fake. The terminal runs a real Git engine, so commits get real hashes, branches really branch, and merges really conflict.</p>
+          <div class="mini-term mono" aria-hidden="true">
+            <span class="term-prompt">$</span> git switch -c feature-menu<br>
+            <span class="term-out">Switched to a new branch 'feature-menu'</span>
+          </div>
+        </div>
+        <div class="feature card" data-reveal style="--delay: 80ms; --u: var(--u2)">
+          <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="9" r="2.5"/><path d="M6 8.5v7M18 11.5c0 4-6 3-11 5"/></svg></span>
+          <h3>See every command</h3>
+          <p>A live commit graph redraws as you type. Slide through time to see your files at any commit.</p>
+        </div>
+        <div class="feature card" data-reveal style="--delay: 160ms; --u: var(--u3)">
+          <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg></span>
+          <h3>Made for phones</h3>
+          <p>A touch key bar, big buttons and a layout that fits a small screen. Install it to your home screen.</p>
+        </div>
+        <div class="feature card" data-reveal style="--delay: 80ms; --u: var(--u4)">
+          <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="m8.5 13.5-1.5 8 5-3 5 3-1.5-8"/></svg></span>
+          <h3>XP, levels &amp; badges</h3>
+          <p>Missions and quizzes earn XP. Collect a badge for every unit — and one for crushing your first conflict.</p>
+        </div>
+        <div class="feature card" data-reveal style="--delay: 160ms; --u: var(--u5)">
+          <span class="icon-tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+          <h3>Find anything fast</h3>
+          <p>Press <kbd class="kbd" data-mod-key>Ctrl K</kbd> or <kbd class="kbd">/</kbd> to jump to any lesson, command or page.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORY CAST ============ -->
+    <section class="section" id="team">
+      <div class="container cast-wrap">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Your story</p>
+          <h2>Meet the Amroli Canteen team</h2>
+          <p class="lead">Four BCA final-year students are building a canteen pre-order app. Lost files, broken code, conflicting edits — they hit every real problem, and you help them solve it with Git.</p>
+        </div>
+        <div class="cast-grid" data-cast-grid></div>
+      </div>
+    </section>
+
+    <!-- ============ COURSE DETAILS ============ -->
+    <section class="section" id="course">
+      <div class="container details-grid">
+        <div class="card details-card" data-reveal>
+          <p class="eyebrow">Course details</p>
+          <h2>Git &amp; GitHub Fundamentals</h2>
+          <dl class="details-list">
+            <div><dt>Duration</dt><dd>30 hours · 15 sessions of 2 hours</dd></div>
+            <div><dt>Credits</dt><dd>2</dd></div>
+            <div><dt>For</dt><dd data-programmes></dd></div>
+            <div><dt>Level</dt><dd>Beginner — no Git experience needed</dd></div>
+            <div><dt>You’ll need</dt><dd>A browser. A free GitHub account for Unit 5 labs.</dd></div>
+          </dl>
+        </div>
+        <div class="card details-card college-card" data-reveal style="--delay: 100ms">
+          <p class="eyebrow">Offered by</p>
+          <h3 data-college-name></h3>
+          <p class="muted" data-college-meta></p>
+          <div class="college-links">
+            <a class="chip" href="https://www.amrolicollege.ac.in" target="_blank" rel="noopener">amrolicollege.ac.in</a>
+            <a class="chip" href="https://github.com/sbccas" target="_blank" rel="noopener">github.com/sbccas</a>
+            <a class="chip" href="https://sbccas.github.io/" target="_blank" rel="noopener">Learning portal</a>
+          </div>
+          <p class="faculty-note">
+            <svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12"/></svg>
+            Teaching this course? Read the
+            <a href="https://github.com/sbccas/git-github-fundamentals/blob/main/docs/faculty-guide.md" target="_blank" rel="noopener">faculty guide</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-band" data-reveal>
+          <div>
+            <h2>Ready for your first commit?</h2>
+            <p class="lead">Unit 1 takes about four hours. The first command takes ten seconds.</p>
+          </div>
+          <a class="btn btn-primary" href="{{base}}unit-1/">
+            Start Unit 1
+            <svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- @include footer -->
+  <script type="module" src="/scripts/pages/home.js"></script>
+</body>
+</html>

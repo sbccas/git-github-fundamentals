@@ -1,0 +1,132 @@
+/* Design tokens — dark is the primary look; light mirrors it (PRD §10, U-02). */
+
+:root {
+  --font-display: 'Sora Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --container: 1180px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --header-h: 64px;
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --dur: 220ms;
+
+  --fs-xs: .78rem;
+  --fs-sm: .875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: clamp(1.25rem, 1.1rem + .6vw, 1.5rem);
+  --fs-xl: clamp(1.6rem, 1.3rem + 1.4vw, 2.25rem);
+  --fs-2xl: clamp(2.2rem, 1.6rem + 3vw, 3.9rem);
+}
+
+/* ---------- Dark (default) ---------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #060912;
+  --bg-2: #0a0f1d;
+  --surface: #0e1527;
+  --surface-2: #131c33;
+  --surface-3: #1a2440;
+  --glass: rgba(16, 24, 44, .62);
+  --border: rgba(148, 163, 184, .13);
+  --border-strong: rgba(148, 163, 184, .26);
+  --text: #e8ecf6;
+  --text-2: #b2bbcf;
+  --muted: #7f899f;
+
+  --primary: #8b7bff;
+  --primary-strong: #a598ff;
+  --primary-ink: #0b0820;
+  --accent: #2ee6d6;
+  --green: #3ddc97;
+  --amber: #ffc857;
+  --red: #ff6b81;
+  --pink: #ff7ad9;
+
+  --u1: #8b7bff;
+  --u2: #2ee6d6;
+  --u3: #3ddc97;
+  --u4: #ffc857;
+  --u5: #ff7ad9;
+
+  --grad: linear-gradient(120deg, #8b7bff 0%, #5fb0ff 50%, #2ee6d6 100%);
+  --grad-text: linear-gradient(100deg, #b4a9ff 0%, #7cc4ff 45%, #5cf0e2 100%);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, .65);
+  --glow: 0 0 0 1px rgba(139, 123, 255, .28), 0 14px 44px -14px rgba(139, 123, 255, .55);
+  --grid-line: rgba(148, 163, 184, .05);
+  --halo-1: rgba(139, 123, 255, .22);
+  --halo-2: rgba(46, 230, 214, .12);
+
+  --term-bg: #070b15;
+  --term-text: #d7deee;
+  --term-prompt: #3ddc97;
+  --term-dim: #6c768c;
+}
+
+/* ---------- Light ---------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f7fb;
+  --bg-2: #eef0f7;
+  --surface: #ffffff;
+  --surface-2: #f3f4fa;
+  --surface-3: #e9ebf5;
+  --glass: rgba(255, 255, 255, .74);
+  --border: rgba(15, 23, 42, .09);
+  --border-strong: rgba(15, 23, 42, .18);
+  --text: #0d1222;
+  --text-2: #3d4659;
+  --muted: #646e83;
+
+  --primary: #5a48ee;
+  --primary-strong: #4a38dd;
+  --primary-ink: #ffffff;
+  --accent: #0a988f;
+  --green: #0d8a57;
+  --amber: #a86a0a;
+  --red: #cf2f4a;
+  --pink: #b8338f;
+
+  --u1: #5a48ee;
+  --u2: #0a988f;
+  --u3: #0d8a57;
+  --u4: #b0700c;
+  --u5: #b8338f;
+
+  --grad: linear-gradient(120deg, #5a48ee 0%, #2f7fe6 50%, #0a988f 100%);
+  --grad-text: linear-gradient(100deg, #5a48ee 0%, #2f7fe6 45%, #0a988f 100%);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+  --shadow: 0 12px 30px -14px rgba(15, 23, 42, .22);
+  --glow: 0 0 0 1px rgba(90, 72, 238, .18), 0 14px 40px -16px rgba(90, 72, 238, .35);
+  --grid-line: rgba(15, 23, 42, .045);
+  --halo-1: rgba(90, 72, 238, .12);
+  --halo-2: rgba(10, 152, 143, .08);
+
+  /* The terminal stays dark in both themes — it reads as a real terminal. */
+  --term-bg: #0b1020;
+  --term-text: #dfe5f2;
+  --term-prompt: #3ddc97;
+  --term-dim: #7a849a;
+}
+
+/* Fallback before the inline theme script runs (or if it is blocked). */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --text: #0d1222;
+    --text-2: #3d4659;
+    --border: rgba(15, 23, 42, .09);
+  }
+}

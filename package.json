@@ -1,0 +1,21 @@
+{
+  "name": "git-github-fundamentals",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Git & GitHub Fundamentals — interactive learning platform by SBCCAS (Amroli College), Surat",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^6.4.5"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/sora": "^5.3.0"
+  }
+}

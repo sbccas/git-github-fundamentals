@@ -1,0 +1,19 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060912" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark light">
+  <meta name="author" content="Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat">
+  <link rel="icon" type="image/svg+xml" href="{{base}}favicon.svg">
+  <script>
+    /* Apply the saved or system theme before first paint (no flash). */
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('gg-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.classList.add('js');
+    })();
+  </script>
+  <link rel="stylesheet" href="/styles/main.css">
