@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trial checklist · Git & GitHub Fundamentals</title>
+<style>
+  @page { size: A4; margin: 12mm 12mm 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 9.2pt/1.34 "Segoe UI", Inter, system-ui, sans-serif; color: #1a2033; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 8px; border-bottom: 2.5px solid #5a48ee; margin-bottom: 8px; }
+  .eyebrow { margin: 0; font-size: 8pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #07766f; }
+  h1 { margin: 2px 0 0; font-size: 17pt; line-height: 1.15; }
+  .url { margin: 3px 0 0; font: 600 9.5pt Consolas, "JetBrains Mono", monospace; color: #5a48ee; }
+  .meta { display: grid; grid-template-columns: auto 50mm; gap: 3px 8px; font-size: 8.6pt; color: #4a5468; }
+  .meta span:nth-child(even) { border-bottom: 1px solid #b9bfd0; }
+  .intro { margin: 0 0 6px; font-size: 8.8pt; color: #3d4659; }
+  h2 { display: flex; align-items: center; gap: 8px; margin: 7px 0 2px; font-size: 10.6pt; break-after: avoid; }
+  h2 .tag { padding: 1px 7px; border-radius: 99px; background: var(--c); color: #fff; font-size: 7.6pt; letter-spacing: .04em; }
+  h2 small { font-weight: 500; color: #6a7388; font-size: 8.2pt; }
+  table { width: 100%; border-collapse: collapse; break-inside: avoid; }
+  td { padding: 2px 5px; border-bottom: 1px solid #e3e6ee; vertical-align: top; }
+  td.box { width: 30px; white-space: nowrap; color: #8a92a6; font-size: 10pt; }
+  td.res { width: 31mm; color: #9aa1b2; font-size: 7.6pt; white-space: nowrap; }
+  code, kbd { font: 8.4pt Consolas, "JetBrains Mono", monospace; padding: 0 3px; border-radius: 3px; background: #eef0f6; }
+  kbd { border: 1px solid #c9cedb; background: #fff; }
+  .s1 { --c: #5a48ee; } .s2 { --c: #07766f; } .s3 { --c: #3f7a0c; } .s4 { --c: #935d09; } .s5 { --c: #b0207a; }
+  .notes { margin-top: 6px; border: 1.5px solid #c9cedb; border-radius: 8px; padding: 4px 10px; break-inside: avoid; }
+  .notes p { margin: 0 0 3px; font-weight: 700; font-size: 9pt; }
+  .lines { height: 9mm; background: repeating-linear-gradient(transparent 0 6.3mm, #dfe2ea 6.3mm 6.6mm); }
+  .report { font-weight: 400; font-size: 8.2pt; color: #4a5468; }
+  .report b { color: #1a2033; }
+  footer { margin-top: 6px; font-size: 7.6pt; color: #8a92a6; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <p class="eyebrow">SBCCAS · Git &amp; GitHub Fundamentals</p>
+    <h1>Trial checklist</h1><p class="url" style="color:#3d4659;font-family:inherit">Phones · lab PC · projector · students</p>
+    <p class="url">https://sbccas.github.io/git-github-fundamentals/</p>
+  </div>
+  <div class="meta">
+    <span>Date</span><span></span>
+    <span>Tested by</span><span></span>
+    <span>Room / lab</span><span></span>
+  </div>
+</header>
+<p class="intro">Tick ☐ when a test works. If something fails, circle <b>Problem</b> and write what you saw in the notes (a screenshot is even better). About 30–45 minutes in total.</p>
+
+<h2 class="s1"><span class="tag">A</span> Android phone <small>Chrome · model: ____________________</small></h2>
+<table>
+  <tr><td class="box">☐</td><td>Open the link. The home page loads within a few seconds and nothing is cut off at the sides.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Chrome menu <b>⋮ → Install app</b> (or <b>Add to Home screen</b>). The app icon appears on the home screen.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Open the site from the icon: it opens full screen, without the browser address bar.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Unit 1: read a section; tap an underlined word (e.g. <i>Git Bash</i>) and a definition pops up.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Playground: type <code>git --version</code>; the keyboard does not hide the typing line; the key bar (Tab, ↑, git…) works.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Missions → <b>M-03 Day One</b>: finish it; every goal ticks and the success message appears.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>A note "Saved for offline use" appears once (first visit only — may already have shown).</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><b>Airplane mode on</b>: open the app from the icon → home, Unit 2 and the Playground still open; M-03 is still marked done.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Menu → <b>Git Passport</b>: XP and badges match the Missions page; <b>Download card</b> saves a PNG; <b>Print</b> gives one page.</td><td class="res">OK / Problem</td></tr>
+</table>
+
+<h2 class="s2"><span class="tag">B</span> iPhone <small>Safari · model / iOS: ____________________</small></h2>
+<table>
+  <tr><td class="box">☐</td><td>Open the link in <b>Safari</b>. Home page loads; text size is comfortable; nothing is cut off.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><b>Share ⬆ → Add to Home Screen</b>. The icon appears and opens the site full screen.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Playground: type <code>mkdir test &amp;&amp; cd test &amp;&amp; git init</code>; output appears; the page does not zoom in oddly.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Missions → <b>M-01 Who am I?</b>: finish it.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><b>Airplane mode on</b>: open from the icon → home and Unit 1 open.</td><td class="res">OK / Problem</td></tr>
+</table>
+
+<h2 class="s3"><span class="tag">C</span> Lab PC <small>Chrome or Edge, and Firefox if installed</small></h2>
+<table>
+  <tr><td class="box">☐</td><td>Press <kbd>Ctrl</kbd>+<kbd>K</kbd> and search <code>detective</code> → Mission M-12 is found.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Unit 3 → <b>▶ Try it</b> on a command opens the Playground with the command ready.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Cheat sheet → <b>Print</b>: preview shows 2 clean pages.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Same tests in <b>Firefox</b> (Playground + one mission).</td><td class="res">OK / Problem</td></tr>
+</table>
+
+<h2 class="s4"><span class="tag">D</span> Classroom projector <small>Teach page → Session 1 → ▶ Present</small></h2>
+<table>
+  <tr><td class="box">☐</td><td><kbd>F</kbd> full screen. Slide text is readable from the <b>last row</b>.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><kbd>G</kbd> projector boost makes colours and text brighter (try both on this projector).</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Clicker / <kbd>→</kbd> <kbd>←</kbd> move through slides and their step-by-step points.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><kbd>P</kbd> presenter view on the laptop screen (display set to <b>Extend</b>): notes, next slide and timer; the projector follows.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td><kbd>B</kbd> blanks the screen, <kbd>T</kbd> starts the activity timer, <kbd>O</kbd> shows all slides.</td><td class="res">OK / Problem</td></tr>
+</table>
+
+<h2 class="s5"><span class="tag">E</span> 2–3 students, no help <small>Unit 1 + Missions M-01 to M-03 on their own phones</small></h2>
+<table>
+  <tr><td class="box">☐</td><td>They find the site and start Unit 1 from the announcement alone. Time taken: ______ min.</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>They finish M-01 – M-03. Where did they get stuck or ask for help? (write below)</td><td class="res">OK / Problem</td></tr>
+  <tr><td class="box">☐</td><td>Unit 1 quiz score: ______ / ______ / ______. Ask: "What was confusing?"</td><td class="res">OK / Problem</td></tr>
+</table>
+
+<div class="notes"><p>Notes — what failed, on which device, what students found confusing <span class="report">· <b>Report back:</b> photograph this sheet and send it with any screenshots.</span></p><div class="lines"></div></div>
+</body>
+</html>

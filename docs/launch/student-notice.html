@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Student notice · Git & GitHub Fundamentals</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: "Segoe UI", Inter, system-ui, sans-serif; color: #f2f5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page {
+    width: 210mm; height: 297mm; padding: 16mm 16mm 12mm; display: flex; flex-direction: column;
+    background:
+      radial-gradient(120mm 90mm at 0 0, rgba(139, 123, 255, .35), transparent 70%),
+      radial-gradient(120mm 90mm at 100% 100%, rgba(46, 230, 214, .22), transparent 70%),
+      linear-gradient(rgba(140, 160, 210, .07) 1px, transparent 1px) 0 0 / 8mm 8mm,
+      linear-gradient(90deg, rgba(140, 160, 210, .07) 1px, transparent 1px) 0 0 / 8mm 8mm,
+      #070b16;
+  }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 10pt; color: #b2bbcf; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; }
+  .pill { padding: 3px 10px; border: 1.5px solid #2ee6d6; border-radius: 99px; color: #2ee6d6; }
+  h1 { margin: 11mm 0 0; font-size: 44pt; line-height: 1.02; letter-spacing: -.02em; }
+  h1 .g1 { color: #b69cff; } h1 .g2 { color: #2ef2ff; }
+  .sub { margin: 6mm 0 0; font-size: 16pt; line-height: 1.35; color: #d7deee; max-width: 160mm; }
+  .term { margin: 9mm 0 0; padding: 5mm 7mm; border-radius: 5mm; border: 2px solid rgba(182, 156, 255, .7); background: #04060d; font: 13pt/1.6 Consolas, "JetBrains Mono", monospace; box-shadow: 0 0 10mm rgba(139, 123, 255, .35); }
+  .term .p { color: #3ddc97; } .term .o { color: #8a94ad; } .term .h { color: #ffc857; }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin: 7mm 0 0; }
+  .fact { padding: 4mm; border-radius: 4mm; border: 1.5px solid rgba(148, 163, 184, .3); background: rgba(14, 21, 39, .8); text-align: center; }
+  .fact b { display: block; font-size: 20pt; color: #fff; }
+  .fact span { font-size: 9.5pt; color: #b2bbcf; }
+  ul { margin: 6mm 0 5mm; padding: 0; list-style: none; font-size: 13pt; line-height: 1.55; }
+  li::before { content: "✓  "; color: #3ddc97; font-weight: 800; }
+  .link { margin-top: auto; padding: 6mm 7mm; border-radius: 5mm; border: 2.5px solid #2ef2ff; background: rgba(4, 6, 13, .9); box-shadow: 0 0 12mm rgba(46, 242, 255, .35); }
+  .link small { display: block; font-size: 10.5pt; color: #b2bbcf; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .link b { display: block; margin-top: 2mm; font: 700 20.5pt Consolas, "JetBrains Mono", monospace; color: #2ef2ff; word-break: break-all; }
+  .link p { margin: 3mm 0 0; font-size: 11pt; color: #d7deee; }
+  .when { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 6mm; font-size: 11pt; color: #d7deee; }
+  .when div { border-bottom: 1.5px solid rgba(148, 163, 184, .45); padding-bottom: 6mm; }
+  .foot { margin-top: 6mm; font-size: 9pt; color: #8a94ad; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top"><span>SBCCAS · Amroli College, Surat</span><span class="pill">Certificate course</span></div>
+  <h1>Learn <span class="g1">Git</span> <span class="g2">&amp; GitHub</span><br>by typing real commands.</h1>
+  <p class="sub">The tools every software team uses — practised right in your phone's browser. For BCA · BCA AI · B.Sc. Data Science · M.Sc. IT students.</p>
+  <div class="term">
+    <span class="p">student@SBCCAS</span> <span class="h">MINGW64</span> <span class="h">~/amroli-canteen (main)</span><br>
+    $ git commit -m "My first commit"<br>
+    <span class="o">[main (root-commit) bf59dd5] My first commit<br>
+    &nbsp;1 file changed, 1 insertion(+)</span>
+  </div>
+  <div class="facts">
+    <div class="fact"><b>2</b><span>credits</span></div>
+    <div class="fact"><b>30</b><span>hours</span></div>
+    <div class="fact"><b>15</b><span>missions</span></div>
+    <div class="fact"><b>0</b><span>installs</span></div>
+  </div>
+  <ul>
+    <li>Works on your phone or a lab PC — no sign-up</li>
+    <li>Story missions, quizzes, badges and XP</li>
+    <li>Install it like an app; works offline after the first visit</li>
+  </ul>
+  <div class="link">
+    <small>Start here</small>
+    <b>sbccas.github.io/git-github-fundamentals</b>
+    <p>Open the link → <b style="display:inline;font:inherit;color:#fff">Start Unit 1</b> → then try Missions M-01 to M-03.</p>
+  </div>
+  <div class="when"><div>First session:</div><div>Time:</div><div>Room / lab:</div></div>
+  <p class="foot">Sutex Bank College of Computer Applications &amp; Science (Amroli College) · Affiliated to VNSGU · Jivan Jyot Trust</p>
+</div>
+</body>
+</html>
