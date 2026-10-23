@@ -17,7 +17,7 @@ story missions and quizzes mapped to the five-unit syllabus.
 | [`docs/faculty-guide.md`](docs/faculty-guide.md) | Session-by-session teaching guide (15 × 2 hours) — also at `/teach/guide/` |
 | [`docs/faculty-handbook/`](docs/faculty-handbook/README.md) | Book-style faculty handbook: story bible + one chapter per unit — also at `/teach/handbook/` |
 | [`docs/reference-examples.md`](docs/reference-examples.md) | Teaching patterns and analogies, mapped to units |
-| [`docs/launch/`](docs/launch/) | Launch kit: trial checklist (phones, lab PC, projector, students), A4 student notice, WhatsApp announcement — each `.pdf` is printed from the `.html` beside it |
+| [`docs/launch/`](docs/launch/) | Launch kit: trial checklist (phones, lab PC, projector, students; back page = Git Passport real-device acceptance), A4 student notice, WhatsApp announcement — each `.pdf` is printed from the `.html` beside it |
 
 ## Run it locally
 

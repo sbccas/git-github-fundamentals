@@ -241,7 +241,7 @@
 | 360 px: no sideways scroll, targets ≥ 44 px | N-01 | ✅ (built-in browser at 360 × 740) |
 | Works offline (page precached) | U-05 | ✅ `passport/` in `dist/sw.js` |
 | `npm test` (85 checks) and `npm run build` | — | ✅ |
-| On a real phone: open the passport from the menu; numbers match the Missions page; Download card saves a PNG; Print → Save as PDF gives one page; opens in airplane mode | G-04 – G-06 | ⏳ needs you |
+| **Real-device acceptance** on one Android phone and one iPhone: checks F1 – F8 on the back of the [trial checklist](launch/trial-checklist.pdf) (navigation, numbers match Missions, next step, name, PNG card opens, one-page PDF, offline from the installed app, layout and touch) | G-04 – G-07, N-01, U-05 | ⏳ **awaiting results** — handoff published 2026-10-23; nothing on real devices has been tested yet |
 
 ## 8. Change log of this report
 
@@ -251,3 +251,4 @@
 | 2026-10-23 | Milestone 6 polish: all code gaps closed (U-01, U-05, F-03 – F-05, F-13, T-07, T-14, N-01, N-02, N-04); remaining items need real devices, a projector, or the GitHub push |
 | 2026-10-23 | Launched: pushed to GitHub, Pages live; history re-credited to Hitesh Patel, so commit IDs updated |
 | 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation `69a17e0` |
+| 2026-10-23 | Real-device acceptance handoff for Milestone 7: trial checklist page 2 (F1 – F8, Android + iPhone, automated vs device checks); PRD header date corrected |

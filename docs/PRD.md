@@ -4,10 +4,10 @@
 |---|---|
 | **Product** | Git & GitHub Fundamentals — interactive learning platform |
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
-| **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
+| **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
 | **Status** | v1.9 — approved; Phase 1 live (Milestones 1–7 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
-| **Last updated** | 2026-10-22 |
+| **Last updated** | 2026-10-23 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
 > Any new idea goes into **§14 Backlog** first and is built only after it is approved and moved into a phase.
