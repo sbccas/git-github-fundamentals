@@ -1,0 +1,26 @@
+{
+  "title": "Conflict Crusher: resolve the merge",
+  "rounds": [
+    {
+      "file": "timing.txt",
+      "story": "Krish (main) changed the opening time to 10 AM. Dhruvi (change-timing) changed it to 8 AM. Hetvi decides: <strong>the canteen opens at 8 AM</strong>, because students arrive early.",
+      "lines": ["<<<<<<< HEAD", "Open: 10 AM", "=======", "Open: 8 AM", ">>>>>>> change-timing"],
+      "keep": [3],
+      "explain": "Keep Dhruvi's line (their version) and delete all three marker lines."
+    },
+    {
+      "file": "menu.txt",
+      "story": "Krish added <em>Dosa 40</em> and Meet added <em>Idli 30</em> at the same place in the menu. The team wants <strong>both items</strong>, with Dosa first.",
+      "lines": ["Samosa 15", "Vada Pav 20", "<<<<<<< HEAD", "Dosa 40", "=======", "Idli 30", ">>>>>>> add-idli", "Tea 10"],
+      "keep": [0, 1, 3, 5, 7],
+      "explain": "A conflict doesn't always mean choosing one side. Here you keep both new lines and the unchanged ones, and delete only the markers."
+    },
+    {
+      "file": "README.md",
+      "story": "Two conflicts in one file. For the <strong>title</strong>, keep your version (HEAD). For the <strong>contact email</strong>, keep Hetvi's (she has the official college address).",
+      "lines": ["<<<<<<< HEAD", "# Amroli Canteen 🍽️", "=======", "# Amroli Canteen App", ">>>>>>> hetvi-docs", "", "Order snacks before the lunch break.", "", "<<<<<<< HEAD", "Contact: krish@example.com", "=======", "Contact: canteen@amrolicollege.ac.in", ">>>>>>> hetvi-docs"],
+      "keep": [1, 5, 6, 7, 11],
+      "explain": "Each conflict block is decided separately. Unchanged lines (and blank lines) stay. Afterwards you would run git add README.md and git commit."
+    }
+  ]
+}

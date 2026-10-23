@@ -1,0 +1,107 @@
+{
+  "unit": 4,
+  "title": "Unit 4 quiz: Advanced Git Commands",
+  "passMark": 60,
+  "questions": [
+    {
+      "id": "u4-1", "type": "single",
+      "q": "Which command shows only commits whose message contains the word 'price'?",
+      "options": ["git log --grep=\"price\"", "git log --author=\"price\"", "git show price", "git diff price"],
+      "answer": 0,
+      "explain": "--grep searches commit messages. --author filters by who made the commit."
+    },
+    {
+      "id": "u4-2", "type": "single",
+      "q": "Which command lists only the commits that changed cart.js?",
+      "options": ["git log -- cart.js", "git log --oneline cart", "git show cart.js", "git status cart.js"],
+      "answer": 0,
+      "explain": "git log -- <file> limits the history to commits that touched that file."
+    },
+    {
+      "id": "u4-3", "type": "predict",
+      "q": "Krish edits menu.txt and stages it. What do the two commands print?",
+      "code": "$ git add menu.txt\n$ git diff\n$ git diff --staged",
+      "options": [
+        "git diff prints nothing; git diff --staged shows the change",
+        "Both show the change",
+        "git diff shows the change; git diff --staged prints nothing",
+        "Both print nothing"
+      ],
+      "answer": 0,
+      "explain": "git diff compares the working directory with the staging area. After git add they match, so it's empty. --staged compares the staging area with the last commit."
+    },
+    {
+      "id": "u4-4", "type": "single",
+      "q": "What does HEAD~2 mean?",
+      "options": ["The commit two before the one you are on", "The second branch", "Two commits after HEAD", "The second tag"],
+      "answer": 0,
+      "explain": "~n goes n parents back. HEAD~1 is the previous commit, HEAD~2 the one before that."
+    },
+    {
+      "id": "u4-5", "type": "single",
+      "q": "Krish is in the middle of unfinished work when an urgent bug must be fixed. What should he do first?",
+      "options": ["git stash", "git reset --hard", "git commit -m \"wip\" and push it", "git branch -D main"],
+      "answer": 0,
+      "explain": "git stash parks the unfinished changes and gives him a clean working tree. After fixing the bug he runs git stash pop."
+    },
+    {
+      "id": "u4-6", "type": "single",
+      "q": "What is the difference between git stash pop and git stash apply?",
+      "options": [
+        "pop applies the stash and removes it from the list; apply keeps it in the list",
+        "pop deletes your changes; apply saves them",
+        "There is no difference",
+        "apply works only on main"
+      ],
+      "answer": 0,
+      "explain": "Both bring the changes back. pop also drops the stash; apply leaves it so you can apply it again."
+    },
+    {
+      "id": "u4-7", "type": "multi",
+      "q": "Which statements about tags are true? (Choose all that apply.)",
+      "options": [
+        "A tag gives a permanent name to one commit, such as v1.0",
+        "Annotated tags (-a) store a message, the tagger and a date",
+        "Tags are pushed automatically with git push",
+        "git push origin --tags uploads all tags"
+      ],
+      "answer": [0, 1, 3],
+      "explain": "Tags must be pushed explicitly: git push origin v1.0, or git push origin --tags."
+    },
+    {
+      "id": "u4-8", "type": "single",
+      "q": "You edited menu.txt (not staged) and want to throw the edit away. Which command?",
+      "options": ["git restore menu.txt", "git revert menu.txt", "git reset --soft menu.txt", "git tag menu.txt"],
+      "answer": 0,
+      "explain": "git restore <file> (classic form: git checkout -- <file>) replaces the file with the last committed version. Uncommitted edits are lost."
+    },
+    {
+      "id": "u4-9", "type": "single",
+      "q": "Your last commit is NOT pushed. You want to undo the commit but keep its changes staged. Which command?",
+      "options": ["git reset --soft HEAD~1", "git reset --hard HEAD~1", "git revert HEAD", "git restore ."],
+      "answer": 0,
+      "explain": "--soft moves the branch back and keeps the changes staged; --mixed keeps them unstaged; --hard deletes them."
+    },
+    {
+      "id": "u4-10", "type": "single",
+      "q": "A bad commit is already on GitHub and your teammates have pulled it. How do you undo it safely?",
+      "options": ["git revert <commit>", "git reset --hard HEAD~1 and git push --force", "Delete the repository", "git stash"],
+      "answer": 0,
+      "explain": "revert adds a new commit that does the opposite. History isn't rewritten, so teammates aren't affected."
+    },
+    {
+      "id": "u4-11", "type": "single",
+      "q": "Which reset mode can permanently delete your changes?",
+      "options": ["--hard", "--soft", "--mixed", "None of them"],
+      "answer": 0,
+      "explain": "--hard resets the branch, the staging area AND your files. Uncommitted work is lost."
+    },
+    {
+      "id": "u4-12", "type": "single",
+      "q": "After git checkout HEAD~2, Git says you are in 'detached HEAD' state. How do you get back?",
+      "options": ["git switch main", "git init", "git reset --hard", "Restart the computer"],
+      "answer": 0,
+      "explain": "Detached HEAD means you are looking at a commit, not a branch. Switching back to a branch returns you to normal."
+    }
+  ]
+}

@@ -3,32 +3,67 @@
 <head>
   <meta charset="utf-8">
   <title>Unit 4: Advanced Git Commands · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Read history, park work with stash, mark releases with tags, and undo mistakes safely.">
+  <meta name="description" content="Read history with log, diff and show; park work with stash; mark releases with tags; undo safely with restore, reset and revert.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="unit-4" data-section="units">
+<body data-page="unit-4" data-section="units" data-unit="4" class="page-lesson" style="--u: var(--u4)">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder" style="--u: var(--u4)">
-      <div class="card">
-        <p class="eyebrow" style="color: var(--u4)">Unit 4</p>
-        <h1>Advanced Git Commands</h1>
-        <p class="lead" style="margin-inline:auto">Read history, park work with stash, mark releases with tags, and undo mistakes safely.</p>
-        <ul class="placeholder-list" aria-label="Topics">
-          <li class="chip chip-u">log · diff · show</li>
-          <li class="chip chip-u">stash</li>
-          <li class="chip chip-u">Tags</li>
-          <li class="chip chip-u">reset</li>
-          <li class="chip chip-u">Undoing: revert, reset, checkout</li>
-        </ul>
-        <p class="muted">Lessons, missions and the quiz for this unit arrive in <strong>Milestone 4</strong>.</p>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-5/">Unit 5<svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="In this unit">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Unit 4 · 6 hours</p>
+        <div class="aside-progress"><span data-unit-bar></span></div>
+        <nav aria-label="Sections">
+          <!-- @toc content/units/unit-4.md -->
+          <ol class="toc-list toc-extra">
+            <li><a href="#practice" data-toc="practice">Missions &amp; labs</a></li>
+            <li><a href="#quiz" data-toc="quiz">Unit quiz</a></li>
+          </ol>
+        </nav>
       </div>
-    </section>
+    </aside>
+
+    <article class="lesson" data-lesson>
+      <header class="lesson-hero">
+        <p class="eyebrow">Unit 4 · Advanced Git Commands</p>
+        <h1>Read the past, fix the present</h1>
+        <p class="lead">Become a Git detective: search the history, compare versions, park unfinished work, tag releases and undo mistakes the safe way.</p>
+        <ul class="hero-meta">
+          <li>⏱ 6 hours · Sessions 10–12</li>
+          <li>🎯 Missions M-12 – M-15</li>
+          <li>🧪 Lab 4</li>
+          <li>✅ 12-question quiz</li>
+        </ul>
+      </header>
+
+      <div class="lesson-body">
+        <!-- @md content/units/unit-4.md -->
+      </div>
+
+      <section class="lesson-practice" id="practice">
+        <h2>Missions &amp; labs</h2>
+        <p>Practise in real Git: each mission runs in your browser and checks your work.</p>
+        <div class="practice-grid" data-practice></div>
+      </section>
+
+      <section class="lesson-quiz" id="quiz">
+        <h2>Unit quiz</h2>
+        <div data-quiz="4"></div>
+      </section>
+
+      <footer class="lesson-foot">
+        <button class="btn btn-primary" type="button" data-complete-unit>Mark Unit 4 complete</button>
+        <nav class="lesson-nav" aria-label="Units">
+          <a class="btn btn-ghost" href="{{base}}unit-3/">← Unit 3</a>
+          <a class="btn btn-ghost" href="{{base}}unit-5/">Unit 5: GitHub →</a>
+        </nav>
+      </footer>
+    </article>
   </main>
 
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/unit.js"></script>
 </body>
 </html>

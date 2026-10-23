@@ -411,3 +411,19 @@
   .g-meta { display: none; }
   .editor { width: 100vw; height: 100dvh; max-width: none; max-height: none; border-radius: 0; margin: 0; }
 }
+
+/* ---------- Time travel (T-09) ---------- */
+.tt-bar { display: flex; justify-content: flex-end; margin: -4px 0 10px; }
+.tt-bar [aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
+.tt-box { margin-bottom: 14px; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--amber) 6%, var(--surface)); }
+.tt-slider input { width: 100%; accent-color: var(--amber); }
+.tt-scale { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted); margin-bottom: 8px; }
+.tt-commit { margin: 0 0 8px; }
+.tt-label { margin: 0 0 6px; font-size: var(--fs-xs); font-weight: 600; }
+.tt-files { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tt-files button { padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: .76rem var(--font-mono); cursor: pointer; }
+.tt-files button[aria-pressed="true"] { border-color: var(--amber); }
+.tt-view { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--term-bg); color: var(--term-text); font: .78rem/1.6 var(--font-mono); white-space: pre-wrap; max-height: 220px; overflow: auto; }
+.tt-badge { margin: 10px 0 0; color: var(--amber); font-weight: 600; }
+.g-row.is-travel { background: color-mix(in srgb, var(--amber) 18%, transparent); outline: 1px solid color-mix(in srgb, var(--amber) 60%, transparent); }
+.pg-panel.is-travelling .g-row { cursor: pointer; }

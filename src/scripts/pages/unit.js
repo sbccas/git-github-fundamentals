@@ -1,7 +1,7 @@
 import { observeReveal } from '../main.js';
 import { MISSIONS } from '../../../content/missions/missions.js';
 import { UNITS, pageUrl } from '../data/site.js';
-import { load, markSection, setUnitTotal, recordQuiz, completeUnit, unitPercent, setLastVisited, BADGES } from '../lib/progress.js';
+import { load, markSection, setUnitTotal, recordQuiz, completeUnit, unitPercent, setLastVisited, completeGame, BADGES } from '../lib/progress.js';
 import { mountQuiz } from '../lib/quiz.js';
 
 const quizzes = import.meta.glob('../../../content/quizzes/unit-*.json', { import: 'default' });
@@ -115,8 +115,20 @@ document.querySelector('[data-complete-unit]')?.addEventListener('click', (e) =>
   paintProgress();
 });
 
+/* ---------- conflict mini-game (Unit 3) ---------- */
+async function renderConflictGame() {
+  const root = document.querySelector('[data-conflict-game]');
+  if (!root) return;
+  const [{ mountConflictGame }, game] = await Promise.all([
+    import('../lib/conflict-game.js'),
+    import('../../../content/conflict-game.json').then((m) => m.default),
+  ]);
+  mountConflictGame(root, game, { onWin: () => completeGame('conflict') });
+}
+
 renderPractice();
 renderQuiz();
+renderConflictGame();
 paintProgress();
 onScroll();
 observeReveal();

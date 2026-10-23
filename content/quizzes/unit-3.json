@@ -1,0 +1,117 @@
+{
+  "unit": 3,
+  "title": "Unit 3 quiz: Branching and Merging",
+  "passMark": 60,
+  "questions": [
+    {
+      "id": "u3-1", "type": "single",
+      "q": "What is a branch in Git?",
+      "options": [
+        "A full copy of every file in the project",
+        "A movable label that points to a commit",
+        "A folder inside .git where backups are kept",
+        "A second GitHub repository"
+      ],
+      "answer": 1,
+      "explain": "A branch is just a lightweight label on a commit. That's why creating one is instant, and why it moves forward when you commit."
+    },
+    {
+      "id": "u3-2", "type": "single",
+      "q": "What does HEAD tell you?",
+      "options": ["The newest commit on GitHub", "Which branch (or commit) you are on right now", "The first commit in the project", "The name of the remote"],
+      "answer": 1,
+      "explain": "HEAD points to the branch you have checked out. Git Bash shows it in the prompt, e.g. (feature-menu)."
+    },
+    {
+      "id": "u3-3", "type": "multi",
+      "q": "Which commands create a new branch AND switch to it? (Choose all that apply.)",
+      "options": ["git switch -c feature-cart", "git checkout -b feature-cart", "git branch feature-cart", "git merge feature-cart"],
+      "answer": [0, 1],
+      "explain": "switch -c and checkout -b both create and switch. git branch <name> only creates; you are still on the old branch."
+    },
+    {
+      "id": "u3-4", "type": "predict",
+      "q": "Krish added a line to menu.txt and committed it on feature-menu. What does the last command print?",
+      "code": "$ git switch main\n$ cat menu.txt",
+      "options": ["Samosa 15 (without his new line)", "Samosa 15 and his new line", "An error: menu.txt is locked", "Nothing: the file is deleted"],
+      "answer": 0,
+      "explain": "Switching branches changes your files to match that branch. His line is safe on feature-menu, but main doesn't have it yet."
+    },
+    {
+      "id": "u3-5", "type": "single",
+      "q": "You want feature-cart's work in main. Which is correct?",
+      "options": [
+        "git switch feature-cart, then git merge main",
+        "git switch main, then git merge feature-cart",
+        "git merge main feature-cart from any branch",
+        "git push feature-cart main"
+      ],
+      "answer": 1,
+      "explain": "Merge INTO the branch you are on: first switch to the branch that receives the changes (main), then merge the other one in."
+    },
+    {
+      "id": "u3-6", "type": "single",
+      "q": "When does Git do a fast-forward merge?",
+      "options": [
+        "When both branches have new commits",
+        "When the branch you are on has no new commits since the other branch started",
+        "Only when you add --fast",
+        "When there is a conflict"
+      ],
+      "answer": 1,
+      "explain": "If main didn't move, Git just moves the main label forward to the other branch's commit. No merge commit is created."
+    },
+    {
+      "id": "u3-7", "type": "single",
+      "q": "When does a merge conflict happen?",
+      "options": [
+        "Whenever two people use the same repository",
+        "When two branches changed the same lines of the same file",
+        "When you merge more than once a day",
+        "When a file is added on one branch"
+      ],
+      "answer": 1,
+      "explain": "Git merges different lines automatically. Only when both sides changed the same lines does it stop and ask you to decide."
+    },
+    {
+      "id": "u3-8", "type": "order",
+      "q": "Put the steps to resolve a conflict in timing.txt in order.",
+      "items": ["Open timing.txt and choose the correct text", "Delete the <<<<<<<, ======= and >>>>>>> lines", "git add timing.txt", "git commit"],
+      "explain": "Edit the file, remove every marker, mark it resolved with git add, then commit to finish the merge."
+    },
+    {
+      "id": "u3-9", "type": "predict",
+      "q": "In this conflicted file, which line is YOUR version (the branch you are on)?",
+      "code": "<<<<<<< HEAD\nOpen: 10 AM\n=======\nOpen: 8 AM\n>>>>>>> change-timing",
+      "options": ["Open: 10 AM", "Open: 8 AM", "Both", "Neither"],
+      "answer": 0,
+      "explain": "The part between <<<<<<< HEAD and ======= is your version; between ======= and >>>>>>> is the branch being merged."
+    },
+    {
+      "id": "u3-10", "type": "single",
+      "q": "You're halfway through a messy merge and want to start again. What do you run?",
+      "options": ["git merge --abort", "git branch -D main", "git init", "git commit --undo"],
+      "answer": 0,
+      "explain": "git merge --abort puts the working tree and index back exactly as they were before the merge."
+    },
+    {
+      "id": "u3-11", "type": "single",
+      "q": "git branch -d experiment says the branch 'is not fully merged'. What does that mean?",
+      "options": [
+        "The branch has commits that are not in your current branch; deleting it would abandon them",
+        "The branch name is spelled wrong",
+        "GitHub is offline",
+        "You must commit first"
+      ],
+      "answer": 0,
+      "explain": "-d refuses to delete unmerged work. If you are sure you don't need it, -D forces the deletion."
+    },
+    {
+      "id": "u3-12", "type": "multi",
+      "q": "Which are good team branching habits? (Choose all that apply.)",
+      "options": ["Keep main always working", "One feature per branch", "Pull before starting a new branch", "Do all work directly on main to avoid merges"],
+      "answer": [0, 1, 2],
+      "explain": "Working directly on main means the shared version is often broken. Small feature branches keep conflicts small."
+    }
+  ]
+}

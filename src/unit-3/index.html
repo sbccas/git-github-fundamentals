@@ -3,31 +3,67 @@
 <head>
   <meta charset="utf-8">
   <title>Unit 3: Branching and Merging · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Work in parallel with branches, merge work together, and resolve conflicts.">
+  <meta name="description" content="Create and switch branches, merge with fast-forward and three-way merges, resolve conflicts and delete branches.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="unit-3" data-section="units">
+<body data-page="unit-3" data-section="units" data-unit="3" class="page-lesson" style="--u: var(--u3)">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder" style="--u: var(--u3)">
-      <div class="card">
-        <p class="eyebrow" style="color: var(--u3)">Unit 3</p>
-        <h1>Branching and Merging</h1>
-        <p class="lead" style="margin-inline:auto">Work in parallel with branches, merge work together, and resolve conflicts.</p>
-        <ul class="placeholder-list" aria-label="Topics">
-          <li class="chip chip-u">Introduction to branches</li>
-          <li class="chip chip-u">Creating & switching branches</li>
-          <li class="chip chip-u">Merging & resolving conflicts</li>
-          <li class="chip chip-u">Deleting branches</li>
-        </ul>
-        <p class="muted">Lessons, missions and the quiz for this unit arrive in <strong>Milestone 4</strong>.</p>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-4/">Unit 4<svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="In this unit">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Unit 3 · 6 hours</p>
+        <div class="aside-progress"><span data-unit-bar></span></div>
+        <nav aria-label="Sections">
+          <!-- @toc content/units/unit-3.md -->
+          <ol class="toc-list toc-extra">
+            <li><a href="#practice" data-toc="practice">Missions &amp; labs</a></li>
+            <li><a href="#quiz" data-toc="quiz">Unit quiz</a></li>
+          </ol>
+        </nav>
       </div>
-    </section>
+    </aside>
+
+    <article class="lesson" data-lesson>
+      <header class="lesson-hero">
+        <p class="eyebrow">Unit 3 · Branching and Merging</p>
+        <h1>Work in parallel, then bring it together</h1>
+        <p class="lead">Branches let the team try ideas without breaking main. Learn to merge their work back, and to stay calm when two edits collide.</p>
+        <ul class="hero-meta">
+          <li>⏱ 6 hours · Sessions 7–9</li>
+          <li>🎯 Missions M-08 – M-11</li>
+          <li>🧪 Lab 3 · ⚔️ Conflict game</li>
+          <li>✅ 12-question quiz</li>
+        </ul>
+      </header>
+
+      <div class="lesson-body">
+        <!-- @md content/units/unit-3.md -->
+      </div>
+
+      <section class="lesson-practice" id="practice">
+        <h2>Missions &amp; labs</h2>
+        <p>Practise in real Git: each mission runs in your browser and checks your work.</p>
+        <div class="practice-grid" data-practice></div>
+      </section>
+
+      <section class="lesson-quiz" id="quiz">
+        <h2>Unit quiz</h2>
+        <div data-quiz="3"></div>
+      </section>
+
+      <footer class="lesson-foot">
+        <button class="btn btn-primary" type="button" data-complete-unit>Mark Unit 3 complete</button>
+        <nav class="lesson-nav" aria-label="Units">
+          <a class="btn btn-ghost" href="{{base}}unit-2/">← Unit 2</a>
+          <a class="btn btn-ghost" href="{{base}}unit-4/">Unit 4: Advanced →</a>
+        </nav>
+      </footer>
+    </article>
   </main>
 
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/unit.js"></script>
 </body>
 </html>

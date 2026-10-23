@@ -127,6 +127,88 @@ $ cat about-me.txt
 
 **Submit:** your repository link, e.g. `https://github.com/krish-patel/my-first-repo`.
 
-## Units 3–5 labs {#later}
+## Unit 3 lab: Branches and a real conflict {#unit-3}
 
-The labs for branching (Unit 3), advanced commands (Unit 4) and GitHub collaboration (Unit 5), including **L-02** *create and configure a repository*, **L-03** *open an issue* and **L-04** *fork and pull request*, arrive in the next milestones.
+**Time:** 90 minutes · **Needs:** Git Bash, a partner, the `my-first-repo` repository from the Unit 2 lab
+
+### Part A: feature branches on your own
+
+```terminal notry
+$ cd ~/Desktop/my-first-repo
+$ git switch -c feature-skills
+$ echo "Skills: C, Python, Git" >> about-me.txt
+$ git commit -am "Add skills"
+$ git switch main
+$ git switch -c feature-goals
+$ echo "Goal: become a full-stack developer" > goals.txt
+$ git add goals.txt
+$ git commit -m "Add career goal"
+$ git switch main
+$ git merge feature-skills
+$ git merge feature-goals
+$ git log --oneline --graph --all
+$ git branch -d feature-skills feature-goals
+$ git push
+```
+
+Write down which merge was a **fast-forward** and which created a **merge commit**, and why.
+
+### Part B: cause and resolve a conflict with a partner
+
+1. **Partner A** adds **Partner B** as a collaborator: on GitHub, *Settings → Collaborators → Add people*. B accepts the invitation email.
+2. Both clone A's repository (A can use the existing folder).
+3. Both edit **the same line** of `README.md` (for example, change the title), commit, and push.
+4. The second person's push is **rejected**. They run `git pull`, which reports a **CONFLICT**.
+5. Open `README.md`, agree on the final title together, delete the markers, then:
+
+```terminal notry
+$ git add README.md
+$ git commit -m "Resolve README title conflict"
+$ git push
+```
+
+6. The first person runs `git pull` to get the resolved version.
+
+:::example Checklist
+- [ ] `git log --oneline --graph` shows at least one merge commit
+- [ ] Your partner's repository shows the conflict-resolution commit
+- [ ] No `<<<<<<<` markers are left in any file
+- [ ] Merged feature branches are deleted
+:::
+
+**Submit:** both repository links and a screenshot of `git log --oneline --graph`.
+
+## Unit 4 lab: Detective, stash, tag and undo {#unit-4}
+
+**Time:** 90 minutes · **Needs:** Git Bash and your `my-first-repo`
+
+1. **Detective.** Answer these with Git commands and write down the command you used:
+   - How many commits does the repository have? (`git log --oneline`)
+   - Which commits changed `about-me.txt`? (`git log --oneline -- about-me.txt`)
+   - What exactly changed in your second commit? (`git show HEAD~N`)
+   - Which commits did your partner make? (`git log --author="…"`)
+2. **Stash.** Start editing `goals.txt` (don't commit). Stash it, fix a typo in `README.md` and commit, then `git stash pop`. Commit the goals change.
+3. **Tag a release** and push it:
+
+```terminal notry
+$ git tag -a v1.0 -m "First complete version"
+$ git push origin v1.0
+```
+
+   On GitHub, open the **Tags** list to see it.
+4. **Undo three ways:**
+   - Edit a file, then throw the edit away with `git restore <file>`.
+   - Make a commit you don't push, then remove it with `git reset --soft HEAD~1` and commit it again with a better message.
+   - Push a commit that adds a silly line, then undo it with `git revert HEAD` and push. Look at the history on GitHub: both commits are there.
+
+:::example Checklist
+- [ ] Written answers to the four detective questions, with commands
+- [ ] Tag `v1.0` visible on GitHub
+- [ ] A `Revert "…"` commit visible on GitHub
+:::
+
+**Submit:** your repository link and the detective answers.
+
+## Unit 5 labs {#later}
+
+The GitHub collaboration labs, **L-02** *create and configure a repository*, **L-03** *open an issue* and **L-04** *fork and pull request*, arrive in the next milestone.

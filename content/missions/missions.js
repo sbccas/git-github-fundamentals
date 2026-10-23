@@ -14,6 +14,7 @@
  *   ctx.cwd                 current folder (absolute)
  *   ctx.home                '/home/student'
  */
+import { git } from '../../src/scripts/terminal/git/repo.js';
 
 const KRISH = 'git config --global user.name "Krish Patel" && git config --global user.email "krish@example.com"';
 
@@ -192,14 +193,251 @@ export const MISSIONS = [
   },
 ];
 
+/* ---------- helpers for Units 3–4 setups ---------- */
+
+/** Run `cmd` with a different author (local config set, then removed). */
+async function as(c, who, cmd) {
+  await c.run(`git config user.name "${who.name}" && git config user.email ${who.email}`);
+  await c.run(cmd);
+  await c.run('git config --unset user.name ; git config --unset user.email');
+}
+const DHRUVI = { name: 'Dhruvi Patel', email: 'dhruvi@example.com' };
+const MEET = { name: 'Meet Shah', email: 'meet@example.com' };
+const HETVI = { name: 'Hetvi Desai', email: 'hetvi@example.com' };
+const BASE_REPO = `${KRISH} && mkdir amroli-canteen && cd amroli-canteen && git init -q && echo "Samosa 15" > menu.txt && git add . && git commit -q -m "Add menu" && echo "Open: 9 AM" > timing.txt && git add . && git commit -q -m "Add opening time"`;
+const onBranch = async (c, repoPath, name) => { const r = await c.repo(repoPath); return !!r && (await r.branch()) === name; };
+const cleanTree = async (r) => { const s = await r.status(); return !s.staged.length && !s.unstaged.length && !s.conflicts.length; };
+
+MISSIONS.push(
+  /* ============================ UNIT 3 ============================ */
+  {
+    id: 'M-08',
+    unit: 3,
+    title: 'Parallel universe',
+    minutes: 10,
+    brief: `<p>Krish wants to try new menu items <strong>without</strong> touching the working version on <code>main</code>. Hetvi says: "Use a branch. If it works we merge it; if not, nobody is affected."</p>`,
+    goals: [
+      { text: 'Create a branch named <code>feature-menu</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !!(await r.refOid('refs/heads/feature-menu')); } },
+      { text: 'Switch to <code>feature-menu</code>', check: (c) => c.ran(/^git (switch|checkout)( -c| -b)? feature-menu\s*$/) },
+      { text: 'Commit a new menu item on <code>feature-menu</code> (main must not change)', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const f = await r.refOid('refs/heads/feature-menu'); const m = await r.refOid('refs/heads/main'); if (!f || f === m || m !== c.state.mainOid) return false; const t = await r.treeMap(f); return t.has('menu.txt') && (await r.blobText(t.get('menu.txt').oid)).trim().split('\n').length > 1; } },
+      { text: 'Switch back to <code>main</code> and <code>cat menu.txt</code>: the new item isn\'t there', check: async (c) => (await onBranch(c, 'amroli-canteen', 'main')) && c.ran(/^cat menu\.txt/, /^git (switch|checkout) main/) },
+    ],
+    hints: [
+      '<code>git branch &lt;name&gt;</code> creates a branch; <code>git switch &lt;name&gt;</code> moves to it (<code>git switch -c</code> does both).',
+      'On the branch: <code>echo "Vada Pav 20" &gt;&gt; menu.txt</code> then <code>git commit -am "…"</code>. Check with <code>git log --oneline --graph --all</code>.',
+      '<code>git switch -c feature-menu</code><br><code>echo "Vada Pav 20" &gt;&gt; menu.txt</code><br><code>git commit -am "Add vada pav to menu"</code><br><code>git switch main</code><br><code>cat menu.txt</code>',
+    ],
+    setup: async (c) => {
+      await c.run(BASE_REPO);
+      c.state.mainOid = (await (await c.repo('amroli-canteen')).refOid('refs/heads/main'));
+    },
+    start: 'amroli-canteen',
+    success: '<p>Switching branches changed the files in your folder. The new item is safe on <code>feature-menu</code>, and <code>main</code> still works for everyone.</p>',
+  },
+  {
+    id: 'M-09',
+    unit: 3,
+    title: 'Bring it home',
+    minutes: 10,
+    brief: `<p>Two features are finished: <code>feature-menu</code> (new items) and <code>feature-cart</code> (the cart). Hetvi asks you to bring <strong>both</strong> into <code>main</code>.</p>
+      <p>Watch the Graph tab: one merge will be a fast-forward, the other will create a merge commit.</p>`,
+    goals: [
+      { text: 'Merge <code>feature-menu</code> into <code>main</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); return !!m && (await r.isAncestor(c.state.menuOid, m)); } },
+      { text: 'Merge <code>feature-cart</code> into <code>main</code> (a merge commit)', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); if (!m || !(await r.isAncestor(c.state.cartOid, m))) return false; return (await r.commit(m)).parent.length === 2 || (await r.treeMap(m)).has('cart.js'); } },
+      { text: 'Look at the result with <code>git log --oneline --graph</code>', check: (c) => c.ran(/^git log.*--graph/, /^git merge feature-cart/) },
+      { text: 'Finish on <code>main</code> with a clean working tree', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r || (await r.branch()) !== 'main' || (await r.mergeState())) return false; const m = await r.refOid('refs/heads/main'); return (await r.isAncestor(c.state.cartOid, m)) && (await r.isAncestor(c.state.menuOid, m)) && (await cleanTree(r)); } },
+    ],
+    hints: [
+      'Merge <em>into</em> the branch you are on. Make sure you are on <code>main</code> first.',
+      '<code>git merge feature-menu</code> will say <em>Fast-forward</em>; then <code>git merge feature-cart</code> says <em>Merge made by the \'ort\' strategy</em>.',
+      '<code>git switch main</code><br><code>git merge feature-menu</code><br><code>git merge feature-cart</code><br><code>git log --oneline --graph</code>',
+    ],
+    setup: async (c) => {
+      await c.run(BASE_REPO);
+      await c.run('cd ~/amroli-canteen && git switch -q -c feature-menu && echo "Vada Pav 20" >> menu.txt && git commit -qam "Add vada pav to menu" && git switch -q main');
+      await c.run('cd ~/amroli-canteen && git switch -q -c feature-cart && echo "// cart: add items, show total" > cart.js && git add . && git commit -qm "Add cart" && git switch -q main');
+      const r = await c.repo('amroli-canteen');
+      c.state.menuOid = await r.refOid('refs/heads/feature-menu');
+      c.state.cartOid = await r.refOid('refs/heads/feature-cart');
+    },
+    start: 'amroli-canteen',
+    success: '<p>The first merge was a <strong>fast-forward</strong> (main just moved its label). The second needed a <strong>merge commit</strong> because both branches had new work.</p>',
+  },
+  {
+    id: 'M-10',
+    unit: 3,
+    title: 'Two edits, one line',
+    minutes: 15,
+    brief: `<p>Dhruvi changed the opening time to <strong>8 AM</strong> on her branch <code>change-timing</code>. Meanwhile Krish changed the same line on <code>main</code> to <strong>10 AM</strong>.</p>
+      <p>Hetvi decides: <strong>the canteen opens at 8 AM</strong>. Merge Dhruvi's branch and resolve the conflict.</p>`,
+    goals: [
+      { text: 'Merge <code>change-timing</code> into <code>main</code> and see the conflict', check: (c) => c.ran(/^git merge change-timing/) },
+      { text: 'Fix <code>timing.txt</code>: only <code>Open: 8 AM</code>, no conflict markers', check: async (c) => { const t = (await c.read('amroli-canteen/timing.txt')) ?? ''; return /8 AM/.test(t) && !/10 AM/.test(t) && !/^(<{7}|={7}|>{7})/m.test(t); } },
+      { text: 'Mark it resolved and finish the merge with a commit', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r || (await r.mergeState())) return false; const m = await r.refOid('refs/heads/main'); const cm = await r.commit(m); if (cm.parent.length !== 2 || !cm.parent.includes(c.state.timingOid)) return false; const t = await r.treeMap(m); return /8 AM/.test(await r.blobText(t.get('timing.txt').oid)); } },
+    ],
+    hints: [
+      'Run <code>git merge change-timing</code>, then <code>git status</code> and <code>cat timing.txt</code> to see both versions between the markers.',
+      'Rewrite the file with only the correct line (<code>edit timing.txt</code>, or <code>echo "Open: 8 AM" &gt; timing.txt</code>), then <code>git add timing.txt</code> and <code>git commit</code>.',
+      '<code>git merge change-timing</code><br><code>echo "Open: 8 AM" &gt; timing.txt</code><br><code>git add timing.txt</code><br><code>git commit -m "Merge change-timing: open at 8 AM"</code>',
+    ],
+    setup: async (c) => {
+      await c.run(BASE_REPO);
+      await c.run('cd ~/amroli-canteen && git switch -q -c change-timing');
+      await as(c, DHRUVI, 'cd ~/amroli-canteen && echo "Open: 8 AM" > timing.txt && git commit -qam "Open earlier at 8 AM"');
+      await c.run('cd ~/amroli-canteen && git switch -q main && echo "Open: 10 AM" > timing.txt && git commit -qam "Open later at 10 AM"');
+      c.state.timingOid = await (await c.repo('amroli-canteen')).refOid('refs/heads/change-timing');
+    },
+    start: 'amroli-canteen',
+    success: '<p>You crushed your first conflict! Git never guesses when two people change the same line: it asks a human. <code>git merge --abort</code> is always there if you want to start over.</p>',
+  },
+  {
+    id: 'M-11',
+    unit: 3,
+    title: 'Spring cleaning',
+    minutes: 10,
+    brief: `<p>The repository is cluttered with old branches. <code>feature-menu</code> and <code>feature-cart</code> are already merged. <code>experiment</code> was a failed idea that Hetvi says nobody needs. <code>feature-cart</code> is also still on GitHub.</p>
+      <p>Clean up, locally and on GitHub.</p>`,
+    goals: [
+      { text: 'List all branches, including GitHub\'s (<code>git branch -a</code>)', check: (c) => c.ran(/^git branch (-a|--all)\s*$/) },
+      { text: 'Delete the merged branches <code>feature-menu</code> and <code>feature-cart</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/feature-menu')) && !(await r.refOid('refs/heads/feature-cart')); } },
+      { text: 'Delete the unmerged branch <code>experiment</code> (Git will ask you to be sure)', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/experiment')); } },
+      { text: 'Delete <code>feature-cart</code> on GitHub', check: async (c) => !(await c.github.refs('krish-patel', 'amroli-canteen')).branches['feature-cart'] },
+      { text: '<code>main</code> must survive with all its work', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && (await r.refOid('refs/heads/main')) === c.state.mainOid; } },
+    ],
+    hints: [
+      '<code>git branch -d</code> deletes merged branches. For unmerged ones Git refuses and suggests <code>-D</code>.',
+      'Deleting a branch on GitHub is a push: <code>git push origin --delete &lt;branch&gt;</code>.',
+      '<code>git branch -a</code><br><code>git branch -d feature-menu</code><br><code>git branch -d feature-cart</code><br><code>git branch -D experiment</code><br><code>git push origin --delete feature-cart</code>',
+    ],
+    setup: async (c) => {
+      await c.github.create('krish-patel', 'amroli-canteen', { description: 'Canteen pre-order app' });
+      await c.run(BASE_REPO);
+      await c.run('cd ~/amroli-canteen && git switch -q -c feature-menu && echo "Vada Pav 20" >> menu.txt && git commit -qam "Add vada pav" && git switch -q main && git merge -q feature-menu');
+      await c.run('cd ~/amroli-canteen && git switch -q -c feature-cart && echo "// cart" > cart.js && git add . && git commit -qm "Add cart" && git switch -q main && git merge feature-cart');
+      await c.run('cd ~/amroli-canteen && git switch -q -c experiment && echo "neon theme?" > theme.css && git add . && git commit -qm "Try neon theme" && git switch -q main');
+      await c.run('cd ~/amroli-canteen && git remote add origin https://github.com/krish-patel/amroli-canteen.git && git push -q -u origin main && git push -q origin feature-cart');
+      c.state.mainOid = await (await c.repo('amroli-canteen')).refOid('refs/heads/main');
+      c.setGithubUser('krish-patel');
+    },
+    start: 'amroli-canteen',
+    success: '<p>Deleting a branch removes only the <em>label</em>. Merged commits stay in <code>main</code>\'s history. <code>-D</code> abandoned <code>experiment</code>\'s unmerged commit, so use it only when you are sure.</p>',
+  },
+
+  /* ============================ UNIT 4 ============================ */
+  {
+    id: 'M-12',
+    unit: 4,
+    title: 'Detective',
+    minutes: 15,
+    brief: `<p>Mr. Desai calls: <strong>"The menu says samosa costs ₹0!"</strong> Six commits by four people went in this week. Use the history to find <strong>which commit</strong> broke the price and <strong>who</strong> made it, then fix it.</p>`,
+    goals: [
+      { text: 'Read the history (<code>git log</code>)', check: (c) => c.ran(/^git log/) },
+      { text: 'List only the commits that changed <code>menu.txt</code>', check: (c) => c.ran(/^git log.*(--\s+)?menu\.txt/) },
+      { text: 'Open the guilty commit with <code>git show &lt;id&gt;</code>', latch: true, check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; for (const cmd of c.commands()) { const m = /^git show\s+([^\s:]+)/.exec(cmd); if (!m) continue; try { if ((await r.resolve(m[1])) === c.state.badOid) return true; } catch { /* not a revision */ } } return false; } },
+      { text: 'Fix the price (Samosa 15) and commit the fix', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const head = await r.headOid(); if (head === c.state.headOid) return false; const t = await r.treeMap(head); const menu = await r.blobText(t.get('menu.txt').oid); return /Samosa 15/.test(menu) && !/Samosa 0\b/.test(menu); } },
+    ],
+    hints: [
+      '<code>git log --oneline</code> gives a short list. Add <code>-- menu.txt</code> to see only commits that touched the menu.',
+      'Copy the short ID of a suspicious commit and run <code>git show &lt;id&gt;</code>. Lines with <code>-</code> were removed, lines with <code>+</code> were added.',
+      '<code>git log --oneline -- menu.txt</code><br><code>git show HEAD~2</code> (or the commit ID you found)<br><code>edit menu.txt</code> → change <em>Samosa 0</em> to <em>Samosa 15</em><br><code>git commit -am "Fix samosa price"</code>',
+    ],
+    setup: async (c) => {
+      await c.run(`${KRISH} && mkdir amroli-canteen && cd amroli-canteen && git init -q && echo "Samosa 15" > menu.txt && echo "Vada Pav 20" >> menu.txt && git add . && git commit -qm "Add menu"`);
+      await as(c, DHRUVI, 'cd ~/amroli-canteen && echo "orders = []" > orders.py && git add . && git commit -qm "Add order system"');
+      await as(c, MEET, 'cd ~/amroli-canteen && echo "CREATE TABLE orders (id INT, item TEXT);" > schema.sql && git add . && git commit -qm "Add database schema"');
+      await as(c, MEET, 'cd ~/amroli-canteen && echo "Samosa 0" > menu.txt && echo "Vada Pav 20" >> menu.txt && echo "Tea 10" >> menu.txt && git commit -qam "Update price list"');
+      c.state.badOid = await (await c.repo('amroli-canteen')).headOid();
+      await as(c, HETVI, 'cd ~/amroli-canteen && echo "# Amroli Canteen" > README.md && git add . && git commit -qm "Add README"');
+      await as(c, DHRUVI, 'cd ~/amroli-canteen && echo "next_id = 1" >> orders.py && git commit -qam "Add order numbers"');
+      c.state.headOid = await (await c.repo('amroli-canteen')).headOid();
+    },
+    start: 'amroli-canteen',
+    success: '<p>Case closed: <em>Update price list</em> by Meet set the samosa to 0, probably a typo. The history told you <strong>what</strong>, <strong>who</strong> and <strong>when</strong>. Good commit messages tell you <strong>why</strong>.</p>',
+  },
+  {
+    id: 'M-13',
+    unit: 4,
+    title: 'Drop everything!',
+    minutes: 10,
+    brief: `<p>You are halfway through the cart code (<code>cart.js</code> is <em>not</em> ready to commit) when Hetvi messages: <strong>"The live demo shows Samosa ₹0. Fix it NOW!"</strong></p>
+      <p>Park your cart work, fix and commit the price, then get your cart work back.</p>`,
+    goals: [
+      { text: 'Park your unfinished cart work with <code>git stash</code>', check: (c) => c.ran(/^git stash(\s+(push|save).*)?\s*$/) },
+      { text: 'Fix the samosa price (15) and commit, <em>without</em> the half-done cart code', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const head = await r.headOid(); if (head === c.state.headOid) return false; const t = await r.treeMap(head); const menu = await r.blobText(t.get('menu.txt').oid); const cart = await r.blobText(t.get('cart.js').oid); return /Samosa 15/.test(menu) && !/half-done/.test(cart); } },
+      { text: 'Bring your cart work back (<code>git stash pop</code>)', check: async (c) => /half-done/.test((await c.read('amroli-canteen/cart.js')) ?? '') && c.ran(/^git stash (pop|apply)/) },
+    ],
+    hints: [
+      '<code>git stash</code> saves your changes and gives you a clean working tree. Check with <code>git status</code> and <code>git stash list</code>.',
+      'Fix with <code>edit menu.txt</code> (or <code>echo "Samosa 15" &gt; menu.txt</code>), commit it, then <code>git stash pop</code>.',
+      '<code>git stash</code><br><code>echo "Samosa 15" &gt; menu.txt</code><br><code>git commit -am "Fix samosa price"</code><br><code>git stash pop</code>',
+    ],
+    setup: async (c) => {
+      await c.run(`${KRISH} && mkdir amroli-canteen && cd amroli-canteen && git init -q && echo "Samosa 0" > menu.txt && echo "// cart" > cart.js && git add . && git commit -qm "Add menu and cart"`);
+      await c.run('cd ~/amroli-canteen && echo "function total() { // half-done: do not commit yet" >> cart.js');
+      c.state.headOid = await (await c.repo('amroli-canteen')).headOid();
+    },
+    start: 'amroli-canteen',
+    success: '<p>The fix went out cleanly and your half-done work came back exactly as it was. That is what <code>stash</code> is for.</p>',
+  },
+  {
+    id: 'M-14',
+    unit: 4,
+    title: 'Release day',
+    minutes: 10,
+    brief: `<p>Today is the <strong>Spectrum 2026</strong> tech fest. Hetvi wants a permanent name for the version being demonstrated: <code>v1.0</code>, with a message, and on GitHub so everyone can find it.</p>`,
+    goals: [
+      { text: 'Create an <strong>annotated</strong> tag <code>v1.0</code> with a message', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const o = await r.refOid('refs/tags/v1.0'); if (!o) return false; const { type } = await git.readObject({ ...r.base, oid: o }); return type === 'tag'; } },
+      { text: 'The tag must point to the latest commit on <code>main</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const o = await r.refOid('refs/tags/v1.0'); return !!o && (await r.peel(o)) === (await r.refOid('refs/heads/main')); } },
+      { text: 'Inspect it with <code>git show v1.0</code>', check: (c) => c.ran(/^git show v1\.0/) },
+      { text: 'Push the tag to GitHub', check: async (c) => !!(await c.github.refs('krish-patel', 'amroli-canteen')).tags['v1.0'] },
+    ],
+    hints: [
+      'Annotated tags use <code>-a</code> and <code>-m</code>: <code>git tag -a &lt;name&gt; -m "&lt;message&gt;"</code>.',
+      'Tags are not pushed with a normal <code>git push</code>. Push it by name: <code>git push origin v1.0</code>.',
+      '<code>git tag -a v1.0 -m "Released at Spectrum 2026"</code><br><code>git show v1.0</code><br><code>git push origin v1.0</code>',
+    ],
+    setup: async (c) => {
+      await c.github.create('krish-patel', 'amroli-canteen', { description: 'Canteen pre-order app' });
+      await c.run(`${BASE_REPO} && echo "// cart" > cart.js && git add . && git commit -qm "Add cart" && git remote add origin https://github.com/krish-patel/amroli-canteen.git && git push -q -u origin main`);
+      c.setGithubUser('krish-patel');
+    },
+    start: 'amroli-canteen',
+    success: '<p>Months from now anyone can run <code>git checkout v1.0</code> to see exactly what was demonstrated at Spectrum 2026.</p>',
+  },
+  {
+    id: 'M-15',
+    unit: 4,
+    title: 'Undo, the safe way',
+    minutes: 15,
+    brief: `<p>Three different mistakes, three different undo tools:</p>
+      <ol><li><code>menu.txt</code> has messy <strong>uncommitted</strong> edits. Throw them away.</li>
+      <li>The last commit, <em>Add debug notes</em>, was <strong>never pushed</strong>. Remove it.</li>
+      <li><em>Change prices</em> <strong>was pushed</strong> and the team already has it, but it set every price to ₹99. Undo it safely, then push the fix.</li></ol>`,
+    goals: [
+      { text: 'Discard the uncommitted edits in <code>menu.txt</code>', check: async (c) => { const t = (await c.read('amroli-canteen/menu.txt')) ?? ''; return !/garbage/.test(t) && c.ran(/^git (restore|checkout)\b.*menu\.txt/); } },
+      { text: 'Remove the unpushed commit <em>Add debug notes</em> (use <code>git reset</code>)', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); return !(await r.isAncestor(c.state.debugOid, m)) && c.ran(/^git reset/); } },
+      { text: 'Undo the pushed <em>Change prices</em> with <code>git revert</code> (history kept)', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); if (!(await r.isAncestor(c.state.badOid, m))) return false; const t = await r.treeMap(m); return !/99/.test(await r.blobText(t.get('menu.txt').oid)) && /^Revert/.test((await r.commit(m)).message); } },
+      { text: 'Push the fix to GitHub', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const refs = await c.github.refs('krish-patel', 'amroli-canteen'); return refs.branches.main === (await r.refOid('refs/heads/main')) && refs.branches.main !== c.state.badOid; } },
+    ],
+    hints: [
+      'Uncommitted → <code>restore</code>. Committed but not pushed → <code>reset</code>. Pushed → <code>revert</code>.',
+      '<code>git restore menu.txt</code>, then <code>git reset --hard HEAD~1</code> removes the debug commit (it only adds a debug file). Then <code>git revert HEAD</code>.',
+      '<code>git restore menu.txt</code><br><code>git reset --hard HEAD~1</code><br><code>git revert HEAD --no-edit</code><br><code>git push</code>',
+    ],
+    setup: async (c) => {
+      await c.github.create('krish-patel', 'amroli-canteen', { description: 'Canteen pre-order app' });
+      await c.run(`${KRISH} && mkdir amroli-canteen && cd amroli-canteen && git init -q && echo "Samosa 15" > menu.txt && echo "Tea 10" >> menu.txt && git add . && git commit -qm "Add menu"`);
+      await c.run('cd ~/amroli-canteen && echo "Samosa 99" > menu.txt && echo "Tea 99" >> menu.txt && git commit -qam "Change prices" && git remote add origin https://github.com/krish-patel/amroli-canteen.git && git push -q -u origin main');
+      c.state.badOid = await (await c.repo('amroli-canteen')).headOid();
+      await c.run('cd ~/amroli-canteen && echo "debug: print every order" > debug.txt && git add . && git commit -qm "Add debug notes"');
+      c.state.debugOid = await (await c.repo('amroli-canteen')).headOid();
+      await c.run('cd ~/amroli-canteen && echo "garbage garbage" >> menu.txt');
+      c.setGithubUser('krish-patel');
+    },
+    start: 'amroli-canteen',
+    success: '<p>You picked the right tool each time: <code>restore</code> for uncommitted edits, <code>reset</code> for local commits, <code>revert</code> for pushed ones. That last one kept the team\'s history safe.</p>',
+  },
+);
+
 /** Missions planned for later milestones (shown as "coming soon" on the Missions page). */
-export const UPCOMING = [
-  { id: 'M-08', unit: 3, title: 'Parallel universe' },
-  { id: 'M-09', unit: 3, title: 'Bring it home' },
-  { id: 'M-10', unit: 3, title: 'Two edits, one line' },
-  { id: 'M-11', unit: 3, title: 'Spring cleaning' },
-  { id: 'M-12', unit: 4, title: 'Detective' },
-  { id: 'M-13', unit: 4, title: 'Drop everything!' },
-  { id: 'M-14', unit: 4, title: 'Release day' },
-  { id: 'M-15', unit: 4, title: 'Undo, the safe way' },
-];
+export const UPCOMING = [];

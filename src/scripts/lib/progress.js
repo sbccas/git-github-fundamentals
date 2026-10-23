@@ -30,6 +30,7 @@ function empty() {
     units: {},      // { "1": { sections: ["why", …], total: 9, quiz: { best: 80, last: 80, passed: true }, complete: false } }
     missions: {},   // { "M-01": { done: true, at: "2026-10-22T…" } }
     badges: {},     // { "first-commit": "2026-10-22T…" }
+    games: {},      // { "conflict": "2026-10-23T…" }
     xp: 0,
     lastVisited: null, // { href, title }
   };
@@ -123,6 +124,17 @@ export function completeMission(id, xp = XP.mission) {
   const badges = checkBadges(data);
   save(data);
   return { xp, badges, first: true };
+}
+
+/** Mini-games (e.g. the conflict game) give XP once. */
+export function completeGame(id, xp = 50) {
+  const data = load();
+  data.games ??= {};
+  if (data.games[id]) return { xp: 0 };
+  data.games[id] = new Date().toISOString();
+  data.xp += xp;
+  save(data);
+  return { xp };
 }
 
 export function earnBadge(id) {

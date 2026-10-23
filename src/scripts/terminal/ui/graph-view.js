@@ -4,6 +4,7 @@
  */
 import { findRepo, short, subject } from '../git/repo.js';
 import { walkCommits, decorations } from '../git/cmd-history.js';
+import { earnBadge } from '../../lib/progress.js';
 
 const ROW = 40;
 const LANE = 18;
@@ -43,6 +44,78 @@ export class GraphView {
     this.root = root;
     this.known = new Set();
     this.lastRepoDir = null;
+    // Time travel (PRD T-09): read-only view of the files at any commit.
+    this.travel = { on: false, index: 0, file: null };
+    this.commits = [];
+    this.repo = null;
+    root.addEventListener('click', (e) => this.onClick(e));
+    root.addEventListener('input', (e) => {
+      if (!e.target.matches('[data-travel-range]')) return;
+      this.travel.index = Number(e.target.value);
+      this.travel.file = null;
+      if (earnBadge('time-traveller')) this.badgeJustEarned = true;
+      this.renderTravel();
+    });
+  }
+
+  onClick(e) {
+    if (e.target.closest('[data-travel-toggle]')) {
+      this.travel.on = !this.travel.on;
+      this.travel.index = Math.max(0, this.commits.length - 1);
+      this.travel.file = null;
+      this.root.classList.toggle('is-travelling', this.travel.on);
+      this.renderTravel();
+      return;
+    }
+    const f = e.target.closest('[data-travel-file]');
+    if (f) { this.travel.file = this.travel.file === f.dataset.travelFile ? null : f.dataset.travelFile; this.renderTravel(); }
+    const row = e.target.closest('.g-row[data-oid]');
+    if (row && this.travel.on) {
+      const i = this.chrono().findIndex((c) => c.oid === row.dataset.oid);
+      if (i >= 0) { this.travel.index = i; this.travel.file = null; this.renderTravel(); }
+    }
+  }
+
+  /** Commits oldest → newest for the slider. */
+  chrono() { return [...this.commits].reverse(); }
+
+  async renderTravel() {
+    const box = this.root.querySelector('[data-travel]');
+    const toggle = this.root.querySelector('[data-travel-toggle]');
+    toggle?.setAttribute('aria-pressed', String(this.travel.on));
+    this.root.querySelectorAll('.g-row.is-travel').forEach((r) => r.classList.remove('is-travel'));
+    if (!box) return;
+    if (!this.travel.on || !this.commits.length) { box.hidden = true; box.innerHTML = ''; return; }
+    const list = this.chrono();
+    const i = Math.min(this.travel.index, list.length - 1);
+    const { oid, commit } = list[i];
+    this.root.querySelector(`.g-row[data-oid="${oid}"]`)?.classList.add('is-travel');
+    const files = await this.repo.treeMap(oid);
+    let viewer = '';
+    if (this.travel.file && files.has(this.travel.file)) {
+      viewer = `<pre class="tt-view" aria-label="${esc(this.travel.file)} at ${short(oid)}">${esc(await this.repo.blobText(files.get(this.travel.file).oid))}</pre>`;
+    }
+    const when = new Date(commit.author.timestamp * 1000).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+    box.hidden = false;
+    // Build the slider once; while dragging, only the details below it change.
+    let range = box.querySelector('[data-travel-range]');
+    if (!range || Number(range.max) !== list.length - 1) {
+      box.innerHTML = `<label class="tt-slider"><span class="visually-hidden">Choose a commit</span>
+          <input type="range" min="0" max="${list.length - 1}" step="1" data-travel-range></label>
+        <div class="tt-scale"><span>oldest</span><span data-travel-pos></span><span>newest</span></div>
+        <div data-travel-detail></div>`;
+      range = box.querySelector('[data-travel-range]');
+    }
+    if (Number(range.value) !== i) range.value = String(i);
+    range.setAttribute('aria-valuetext', `${short(oid)} ${subject(commit.message)}`);
+    box.querySelector('[data-travel-pos]').textContent = `${i + 1} / ${list.length}`;
+    box.querySelector('[data-travel-detail]').innerHTML = `
+      <p class="tt-commit"><code>${short(oid)}</code> <strong>${esc(subject(commit.message))}</strong><br><span class="muted">${esc(commit.author.name)} · ${esc(when)}</span></p>
+      <p class="tt-label">Files at this commit <span class="muted">(read-only; your work is untouched)</span></p>
+      <ul class="tt-files">${[...files.keys()].sort().map((f) => `<li><button type="button" data-travel-file="${esc(f)}" aria-pressed="${f === this.travel.file}">📄 ${esc(f)}</button></li>`).join('') || '<li class="muted">(no files)</li>'}</ul>
+      ${viewer}
+      ${this.badgeJustEarned ? '<p class="tt-badge">⏳ Badge earned: <strong>Time Traveller</strong></p>' : ''}
+      <p class="panel-note">Tip: <code>git show ${short(oid)}:&lt;file&gt;</code> prints a file from any commit, and <code>git checkout ${short(oid)}</code> really travels there (detached HEAD).</p>`;
   }
 
   async refresh(sh) {
@@ -65,6 +138,8 @@ export class GraphView {
     for (const t of await repo.tags()) starts.push(await repo.peel(await repo.refOid(`refs/tags/${t}`)));
     if (merge) starts.push(merge.oid);
     const commits = (await walkCommits(repo, [...new Set(starts.filter(Boolean))])).slice(0, LIMIT);
+    this.commits = commits;
+    this.repo = repo;
     const decor = await decorations(repo);
 
     const chips = [];
@@ -80,6 +155,7 @@ export class GraphView {
         <span class="graph-branch">${branch ? `on <strong>${esc(branch)}</strong>` : `<strong>detached HEAD</strong>`}${merge ? ' · <strong class="merging">merging</strong>' : ''}</span></div>
       <div class="graph-status">${chips.join('')}</div>
     </div>`;
+    const travelBar = `<div class="tt-bar"><button type="button" class="mini-btn" data-travel-toggle aria-pressed="${this.travel.on}">⏳ Time travel</button></div><div class="tt-box" data-travel hidden></div>`;
 
     if (!commits.length) {
       this.root.innerHTML = `${headerHtml}<div class="panel-empty"><p><strong>No commits yet.</strong></p><p>Add a file and commit it — your first commit will appear here.</p></div>`;
@@ -123,14 +199,14 @@ export class GraphView {
       const extra = merge && r.oid === merge.oid ? '<span class="ref ref-merge">MERGE_HEAD</span>' : '';
       const c = r.commit;
       const when = new Date(c.author.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return `<li class="g-row${this.known.size && !this.known.has(r.oid) ? ' is-new' : ''}" style="height:${ROW}px" title="${esc(`${r.oid}\n${c.author.name} · ${new Date(c.author.timestamp * 1000).toLocaleString()}\n\n${c.message.trim()}`)}">
+      return `<li class="g-row${this.known.size && !this.known.has(r.oid) ? ' is-new' : ''}" data-oid="${r.oid}" style="height:${ROW}px" title="${esc(`${r.oid}\n${c.author.name} · ${new Date(c.author.timestamp * 1000).toLocaleString()}\n\n${c.message.trim()}`)}">
         <span class="g-hash">${short(r.oid)}</span>
         <span class="g-msg">${chipsHtml}${extra}<span class="g-subject">${esc(subject(c.message))}</span></span>
         <span class="g-meta">${esc(c.author.name.split(' ')[0])} · ${when}</span>
       </li>`;
     });
 
-    this.root.innerHTML = `${headerHtml}
+    this.root.innerHTML = `${headerHtml}${travelBar}
       <div class="graph-body">
         <svg class="g-svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" aria-hidden="true">
           <g class="g-edges">${edges.join('')}</g>
@@ -140,5 +216,6 @@ export class GraphView {
       </div>
       ${commits.length >= LIMIT ? `<p class="panel-note">Showing the latest ${LIMIT} commits.</p>` : ''}`;
     this.known = new Set(commits.map((c) => c.oid));
+    if (this.travel.on) await this.renderTravel();
   }
 }

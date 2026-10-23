@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.5 — approved; Phase 1 in progress (Milestones 1–2 committed, 3 built) |
+| **Status** | v1.6 — approved; Phase 1 in progress (Milestones 1–3 committed, 4 built) |
 | **Last updated** | 2026-10-22 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -297,8 +297,8 @@ git-github-fundamentals/
 |---|---|---|---|
 | 1 | Foundation | Repo, design system, layout, home page, navigation, theme, command palette | ✅ **approved & committed 2026-10-22** |
 | 2 | Terminal engine | Real-Git terminal, simulated remote, editor, file explorer, live graph | ✅ **committed 2026-10-22** |
-| 3 | Units 1–2 + Teach foundation | Lessons, quizzes, missions M-01 – M-07, labs · **slide engine + neon theme + Teach hub** · decks for sessions 1–6 · handbook front matter (story bible) + chapters 1–2 | ✅ approval — **built 2026-10-22, awaiting review** |
-| 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel · decks for sessions 7–12 · handbook chapters 3–4 | ✅ approval |
+| 3 | Units 1–2 + Teach foundation | Lessons, quizzes, missions M-01 – M-07, labs · **slide engine + neon theme + Teach hub** · decks for sessions 1–6 · handbook front matter (story bible) + chapters 1–2 | ✅ **committed 2026-10-23** |
+| 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel · decks for sessions 7–12 · handbook chapters 3–4 | ✅ approval — **built 2026-10-23, awaiting review** |
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ approval |
 | 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ go-live |
 
@@ -335,6 +335,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-23 | 1.6 | Milestone 4 built: Unit 3–4 lessons (5 new diagrams), quizzes, missions M-08 – M-15 (all 15 missions validated end-to-end), latching mission goals, conflict mini-game (Q-05), time-travel slider (T-09) with Time Traveller badge, Unit 3–4 labs, decks 7–12, handbook chapters 3–4; `-q` for push/switch/merge |
 | 2026-10-22 | 1.5 | Milestone 3 built: Markdown content pipeline (build/markdown.js), Unit 1–2 lessons with diagrams, quizzes (12 each), missions M-01 – M-07 with automatic checks, Labs page (Unit 1, L-01, Unit 2), XP/levels/badges, Teach hub, neon deck engine with presenter view, decks 1–6, faculty guide and handbook (story bible, ch. 1–2) on the site |
 | 2026-10-22 | 1.4 | Added lecture slides / Teach section (F-04 – F-14) and Faculty Handbook (F-15 – F-18); slides and handbook chapters built alongside each unit in Milestones 3–5; GitHub push moved into Milestone 6 |
 | 2026-10-22 | 1.3 | Milestone 2 built: shell, 24 Git commands, simulated GitHub (create repo, browse, teammate push), editor, file explorer, live graph, sandboxes, `?cmd=` pre-fill for lessons |

@@ -194,7 +194,8 @@ export async function pull({ sh, args, out }) {
 
 /* ======================= push ======================= */
 
-export async function push({ sh, args, out }) {
+export async function push({ sh, args, out: realOut }) {
+  let out = realOut;
   const { flags, positional } = parseArgs(args, {
     bool: { u: 'set-upstream', f: 'force', d: 'delete', q: 'quiet' },
     longBool: ['set-upstream', 'force', 'delete', 'tags', 'all', 'force-with-lease'],
@@ -282,6 +283,7 @@ export async function push({ sh, args, out }) {
   const count = toCopy ? await copyObjects(sh, repo.gitdir, remoteGitdir) : 0;
   for (const r of results) if (r.apply) await r.apply();
 
+  if (flags.quiet) out = { write() {} }; // -q: only errors are printed
   if (count) out.write(`${transferLines(count)}Writing objects: 100% (${count}/${count}), done.\nTotal ${count} (delta 0), reused 0 (delta 0), pack-reused 0\n`);
   const shown = results.filter((r) => r.line || r.rejected);
   if (!shown.length && !errors.length) { out.write('Everything up-to-date\n'); return 0; }

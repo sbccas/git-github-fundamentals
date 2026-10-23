@@ -1,0 +1,23 @@
+<div class="dg-cols dg-two">
+  <div class="dg-panel">
+    <p class="dg-label">Fast-forward</p>
+    <svg class="dg-svg" viewBox="0 0 300 110" role="img" aria-label="main moves forward along feature's commits; no new commit">
+      <path class="ln ln-1" d="M30 70 H130"/><path class="ln ln-2" d="M130 70 H270"/>
+      <circle class="cm cm-1" cx="30" cy="70" r="11"/><circle class="cm cm-1" cx="130" cy="70" r="11"/>
+      <circle class="cm cm-2" cx="200" cy="70" r="11"/><circle class="cm cm-2" cx="270" cy="70" r="11"/>
+      <g class="tag tag-1"><rect x="222" y="18" width="86" height="26" rx="8"/><text x="265" y="36">main →</text></g>
+    </svg>
+    <p class="dg-caption">main had no new commits, so Git just <strong>moves the label</strong> forward. No merge commit.</p>
+  </div>
+  <div class="dg-panel">
+    <p class="dg-label">Three-way merge</p>
+    <svg class="dg-svg" viewBox="0 0 300 110" role="img" aria-label="main and feature both have new commits; a merge commit with two parents joins them">
+      <path class="ln ln-1" d="M30 75 H260"/><path class="ln ln-2" d="M100 75 C 130 75, 130 30, 165 30 H 200 C 230 30, 235 75, 260 75"/>
+      <circle class="cm cm-1" cx="30" cy="75" r="11"/><circle class="cm cm-1" cx="100" cy="75" r="11"/>
+      <circle class="cm cm-1" cx="180" cy="75" r="11"/><circle class="cm cm-2" cx="180" cy="30" r="11"/>
+      <circle class="cm cm-merge" cx="260" cy="75" r="13"/>
+      <text class="sha" x="260" y="104">merge</text>
+    </svg>
+    <p class="dg-caption">Both branches moved on, so Git joins them with a new <strong>merge commit</strong> that has two parents.</p>
+  </div>
+</div>

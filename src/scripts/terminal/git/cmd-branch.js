@@ -125,8 +125,9 @@ HEAD is now at ${short(oid)} ${subject(c.message)}
 /* ======================= switch ======================= */
 
 export async function switchCmd({ sh, args, out }) {
-  const { flags, values, positional } = parseArgs(args, { value: { c: 'create', C: 'force-create' }, longBool: ['detach', 'discard-changes'], bool: { d: 'detach', f: 'discard-changes' } });
+  const { flags, values, positional } = parseArgs(args, { value: { c: 'create', C: 'force-create' }, longBool: ['detach', 'discard-changes', 'quiet'], bool: { d: 'detach', f: 'discard-changes', q: 'quiet' } });
   const repo = await requireRepo(sh);
+  if (flags.quiet) out = { write() {} };
   if (values.create) return createAndSwitch(repo, values.create, positional[0], out);
   const target = positional[0];
   if (!target) throw new GitError('fatal: missing branch or commit argument');
@@ -441,9 +442,11 @@ async function abortMerge(repo) {
 export async function merge({ sh, args, out }) {
   const { flags, values, positional } = parseArgs(args, {
     value: { m: 'message' },
-    longBool: ['abort', 'continue', 'no-ff', 'ff-only', 'ff', 'no-edit', 'allow-unrelated-histories', 'squash'],
+    longBool: ['abort', 'continue', 'no-ff', 'ff-only', 'ff', 'no-edit', 'allow-unrelated-histories', 'squash', 'quiet'],
+    bool: { q: 'quiet' },
   });
   const repo = await requireRepo(sh);
+  if (flags.quiet) out = { write() {} };
   if (flags.abort) { await abortMerge(repo); return 0; }
   if (flags.continue) {
     const { commit } = await import('./cmd-basic.js');

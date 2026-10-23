@@ -33,6 +33,8 @@ export function createContext(wb, mission) {
     async refresh() { globalEntries = await readGlobalConfig(sh()); },
     globalConfig(key) { return globalEntries.filter((e) => e.key === key.toLowerCase()).pop()?.value; },
     run: (cmd) => wb.runSilent(cmd),
+    /** Every individual command typed so far (lines split on && and ;). */
+    commands: () => typedCommands(sh()),
     ran(re, after = null) {
       const cmds = typedCommands(sh());
       let from = 0;
@@ -71,14 +73,27 @@ export function createContext(wb, mission) {
   return ctx;
 }
 
-/** Evaluate all goals. Returns [{ done, optional }] in goal order. */
+/**
+ * Evaluate all goals. Returns [{ done, optional }] in goal order.
+ * Goals marked `latch: true` stay done once achieved (e.g. "you inspected the guilty commit"
+ * should not untick because HEAD~2 means something else after the next commit).
+ */
 export async function evaluate(mission, ctx) {
   await ctx.refresh();
+  const latched = new Set(ctx.state.latched ?? []);
   const results = [];
-  for (const g of mission.goals) {
-    let done = false;
-    try { done = !!(await g.check(ctx)); } catch (e) { console.warn(`Goal check failed (${mission.id})`, e); }
+  let changed = false;
+  for (const [i, g] of mission.goals.entries()) {
+    let done = latched.has(i);
+    if (!done) {
+      try { done = !!(await g.check(ctx)); } catch (e) { console.warn(`Goal check failed (${mission.id})`, e); }
+      if (done && g.latch) { latched.add(i); changed = true; }
+    }
     results.push({ done, optional: !!g.optional });
+  }
+  if (changed) {
+    ctx.state.latched = [...latched];
+    saveMissionState(mission.id, ctx.state);
   }
   return results;
 }

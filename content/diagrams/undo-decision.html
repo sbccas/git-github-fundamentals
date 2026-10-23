@@ -1,0 +1,14 @@
+<div class="dg-decide">
+  <div class="dg-q">Is the change <strong>committed</strong>?</div>
+  <div class="dg-branches">
+    <div class="dg-a"><span class="dg-ans">No</span>
+      <div class="dg-out">Edited, not staged → <code>git restore &lt;file&gt;</code><br><span class="muted">(classic form: <code>git checkout -- &lt;file&gt;</code>)</span></div>
+      <div class="dg-out">Staged by mistake → <code>git restore --staged &lt;file&gt;</code></div>
+    </div>
+    <div class="dg-a"><span class="dg-ans">Yes</span>
+      <div class="dg-q dg-q-sm">Is it <strong>pushed</strong> to GitHub?</div>
+      <div class="dg-out">Not pushed → <code>git reset</code> <span class="muted">(--soft / --mixed / --hard)</span></div>
+      <div class="dg-out dg-safe">Pushed → <code>git revert &lt;commit&gt;</code> <span class="muted">(adds an "undo" commit; safe for the team)</span></div>
+    </div>
+  </div>
+</div>
