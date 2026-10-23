@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.8 — approved; Phase 1: Milestones 1–5 committed, Milestone 6 (polish & launch) built — GitHub push and Pages next. Progress cross-check: [PROGRESS.md](PROGRESS.md) |
+| **Status** | v1.8 — approved; Phase 1 live (Milestones 1–6 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) |
 | **Last updated** | 2026-10-22 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -300,7 +300,7 @@ git-github-fundamentals/
 | 3 | Units 1–2 + Teach foundation | Lessons, quizzes, missions M-01 – M-07, labs · **slide engine + neon theme + Teach hub** · decks for sessions 1–6 · handbook front matter (story bible) + chapters 1–2 | ✅ **committed 2026-10-23** |
 | 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel · decks for sessions 7–12 · handbook chapters 3–4 | ✅ **committed 2026-10-23** |
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ **committed 2026-10-23** |
-| 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ go-live — **polish built 2026-10-23; push & Pages pending** |
+| 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ **live 2026-10-23** — https://sbccas.github.io/git-github-fundamentals/ |
 
 ## 13. Out of scope (all phases unless moved by approval)
 

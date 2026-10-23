@@ -3,12 +3,16 @@
 | | |
 |---|---|
 | **Report date** | 2026-10-23 |
-| **Repository** | `D:\Future Projects\git-github-fundamentals` (local; push to `github.com/sbccas` is the last step of Milestone 6) |
+| **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
+| **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
 | **PRD version** | v1.8 ([PRD.md](PRD.md)) |
-| **Phase** | Phase 1 (core platform): Milestones 1–5 committed; Milestone 6 polish built, **GitHub push and Pages next** |
+| **Phase** | Phase 1 (core platform) **live**: Milestones 1–6 done; real-device and projector checks remain |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
 > **Update it at the end of every milestone** (and whenever a requirement changes) in the same commit as the work.
+>
+> Commit IDs below are the current ones: on 2026-10-23 the history was rewritten once so that every commit is
+> credited to Hitesh Patel (`contact2hitech`), which gave all commits new IDs. Project files did not change.
 
 **Status legend:** ✅ done · 🟡 partial (gap described) · ⏳ planned in a later milestone/phase · ❌ not done
 
@@ -18,14 +22,14 @@
 
 | # | Milestone | Status | Commit | Date |
 |---|---|---|---|---|
-| — | Planning: PRD, faculty guide, reference examples | ✅ | `a455490` (included) | 2026-10-22 |
-| 1 | Foundation: Vite, design system, home page, navigation, theme, Ctrl+K search | ✅ | `a455490` | 2026-10-22 |
-| 2 | Terminal engine: real Git in the browser, simulated GitHub, editor, file explorer, live graph | ✅ | `6e7141b` | 2026-10-22 |
-| 3 | Units 1–2, missions M-01 – M-07, labs, quizzes, XP/badges, Teach hub, neon deck engine, decks 1–6, handbook story bible + ch. 1–2 | ✅ | `dfdcd9c` | 2026-10-23 |
-| 4 | Units 3–4, missions M-08 – M-15, conflict game, time travel, decks 7–12, handbook ch. 3–4 | ✅ | `73edfa4` | 2026-10-23 |
-| 5 | Unit 5, labs L-02 – L-04, cheat sheet, glossary, bonus, self-check, About, decks 13–15, handbook ch. 5 + appendices | ✅ | `7b92357` | 2026-10-23 |
-| 6a | Polish: PWA/offline, palette missions, Teach objectives, error hints, touch targets, contrast, print/PDF, `npm test` | ✅ built | not yet committed | 2026-10-23 |
-| 6b | Launch: push to `github.com/sbccas` (step by step), enable GitHub Pages, verify live site | ⏳ next | — | — |
+| — | Planning: PRD, faculty guide, reference examples | ✅ | `78384f0` (included) | 2026-10-22 |
+| 1 | Foundation: Vite, design system, home page, navigation, theme, Ctrl+K search | ✅ | `78384f0` | 2026-10-22 |
+| 2 | Terminal engine: real Git in the browser, simulated GitHub, editor, file explorer, live graph | ✅ | `3cd5247` | 2026-10-22 |
+| 3 | Units 1–2, missions M-01 – M-07, labs, quizzes, XP/badges, Teach hub, neon deck engine, decks 1–6, handbook story bible + ch. 1–2 | ✅ | `20301b4` | 2026-10-23 |
+| 4 | Units 3–4, missions M-08 – M-15, conflict game, time travel, decks 7–12, handbook ch. 3–4 | ✅ | `361f4ac` | 2026-10-23 |
+| 5 | Unit 5, labs L-02 – L-04, cheat sheet, glossary, bonus, self-check, About, decks 13–15, handbook ch. 5 + appendices | ✅ | `cf72119` | 2026-10-23 |
+| 6a | Polish: PWA/offline, palette missions, Teach objectives, error hints, touch targets, contrast, print/PDF, `npm test` | ✅ | `35417b7` | 2026-10-23 |
+| 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -209,9 +213,9 @@
 | Firefox check | N-03 | ✅ layout (headless Firefox) |
 | Verify print / PDF: guide, handbook, slides, cheat sheet | F-03, F-13, P-05 | ✅ (deck print fixed) |
 | Mission test harness in the repo (`npm test`), run by the deploy workflow | maintainability | ✅ |
-| Commit Milestone 6 | — | ⏳ when you say "commit it" |
-| Push to `github.com/sbccas`, step by step | launch | ⏳ next (needs your sign-in) |
-| Enable GitHub Pages (Settings → Pages → Source: GitHub Actions) and verify the live site | launch | ⏳ |
+| Commit Milestone 6 | — | ✅ `35417b7` |
+| Push to `github.com/sbccas`, step by step | launch | ✅ pushed by `contact2hitech` (remote URL carries the username, so the saved logins for other accounts are untouched) |
+| Enable GitHub Pages (Settings → Pages → Source: GitHub Actions) and verify the live site | launch | ✅ deploy workflow green, site live |
 | Real Android / iPhone test, "Install app", Safari | T-02, U-05, N-03 | ⏳ needs you (after go-live) |
 | Projector test with real hardware | F-06 | ⏳ needs you |
 
@@ -221,3 +225,4 @@
 |---|---|
 | 2026-10-23 | First report, after Milestone 5 |
 | 2026-10-23 | Milestone 6 polish: all code gaps closed (U-01, U-05, F-03 – F-05, F-13, T-07, T-14, N-01, N-02, N-04); remaining items need real devices, a projector, or the GitHub push |
+| 2026-10-23 | Launched: pushed to GitHub, Pages live; history re-credited to Hitesh Patel, so commit IDs updated |
