@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { createMarkdown, renderDeck } from './build/markdown.js';
 
 const PROJECT = dirname(fileURLToPath(import.meta.url));
@@ -73,11 +74,74 @@ function partials() {
   };
 }
 
+/** Files under public/, as URL paths relative to the base. */
+function publicFiles(dir, prefix = '') {
+  return readdirSync(dir).flatMap((name) => {
+    const full = join(dir, name);
+    return statSync(full).isDirectory() ? publicFiles(full, `${prefix}${name}/`) : [`${prefix}${name}`];
+  });
+}
+
+/**
+ * Writes sw.js (from build/sw-template.js) listing every built file, so the whole course works
+ * offline after the first visit (PRD U-05). Pages are cached by folder URL: unit-1/index.html → unit-1/.
+ */
+function serviceWorker() {
+  return {
+    name: 'sbccas-service-worker',
+    apply: 'build',
+    writeBundle(options, bundle) {
+      const hash = createHash('sha256');
+      const files = [];
+      for (const [name, item] of Object.entries(bundle).sort(([a], [b]) => a.localeCompare(b))) {
+        if (name.endsWith('.map')) continue;
+        files.push(name.endsWith('index.html') ? name.replace(/index\.html$/, '') : name);
+        hash.update(name).update(item.type === 'chunk' ? item.code : item.source);
+      }
+      const extra = publicFiles(resolve(PROJECT, 'public'));
+      for (const f of extra) hash.update(f).update(readFileSync(resolve(PROJECT, 'public', f)));
+      const source = readFileSync(resolve(PROJECT, 'build/sw-template.js'), 'utf8')
+        .replace('__VERSION__', hash.digest('hex').slice(0, 12))
+        .replace('__BASE__', BASE)
+        .replace('__PRECACHE__', JSON.stringify([...files, ...extra]));
+      writeFileSync(join(options.dir, 'sw.js'), source);
+    },
+  };
+}
+
+/**
+ * `import OBJECTIVES from 'virtual:session-objectives'` → { [session]: html } taken from the
+ * "**Objectives:**" line of each session plan in docs/faculty-guide.md (Teach hub, PRD F-04),
+ * so the guide stays the single source.
+ */
+function sessionObjectives() {
+  const ID = 'virtual:session-objectives';
+  const GUIDE = join(PROJECT, 'docs/faculty-guide.md');
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return {
+    name: 'sbccas-session-objectives',
+    resolveId: (id) => (id === ID ? `\0${ID}` : null),
+    load(id) {
+      if (id !== `\0${ID}`) return null;
+      this.addWatchFile(GUIDE);
+      const out = {};
+      let session = null;
+      for (const line of readFileSync(GUIDE, 'utf8').split(/\r?\n/)) {
+        const h = /^### Session (\d+)/.exec(line);
+        if (h) session = Number(h[1]);
+        const o = /^\*\*Objectives:\*\*\s*(.+)$/.exec(line);
+        if (o && session) out[session] = esc(o[1]).replace(/`([^`]+)`/g, '<code>$1</code>');
+      }
+      return `export default ${JSON.stringify(out)};`;
+    },
+  };
+}
+
 export default defineConfig({
   root: ROOT,
   base: BASE,
   publicDir: resolve(ROOT, '../public'),
-  plugins: [partials()],
+  plugins: [partials(), sessionObjectives(), serviceWorker()],
   build: {
     outDir: resolve(ROOT, '../dist'),
     emptyOutDir: true,

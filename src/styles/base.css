@@ -135,3 +135,13 @@ button { font: inherit; color: inherit; }
   }
   .js [data-reveal] { opacity: 1; transform: none; }
 }
+
+/* ---------- Print / save as PDF (guide, handbook, cheat sheet, lessons) ----------
+ * main.js switches to the light theme while printing; this keeps paper white and
+ * lets code and tables wrap instead of showing scrollbars. */
+@media print {
+  html, body { background: #fff !important; }
+  pre, .term-block-body, .out-block, .dg-file-view, .dg-tree { overflow: visible !important; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .table-wrap { overflow: visible !important; }
+  a { color: inherit; }
+}

@@ -5,8 +5,9 @@
 import { parseLine, globToRegExp, hasGlob } from './tokenize.js';
 import { resolve, dirname, basename, join, tildify, relative } from './path.js';
 import { HOME, helpers } from './vfs.js';
-import { blue, bold, strip, dim } from './ansi.js';
-import { runGit, promptGitInfo } from './git/index.js';
+import { blue, bold, strip, dim, cyan } from './ansi.js';
+import { runGit, promptGitInfo, levenshtein } from './git/index.js';
+import { hintFor } from './hints.js';
 
 export const SHELL_COMMANDS = ['cat', 'cd', 'clear', 'cp', 'echo', 'edit', 'help', 'history', 'ls', 'mkdir', 'mv', 'nano', 'code', 'notepad', 'pwd', 'reset-lab', 'rm', 'touch', 'git'];
 
@@ -61,8 +62,10 @@ export class Shell {
     if (!argv.length) return 0;
     argv = await this.expandGlobs(argv);
     let buffer = '';
-    const sink = redirect ? { write: (s) => { buffer += s; } } : out;
-    const err = out; // stderr always goes to the screen
+    let shown = ''; // what reached the screen, for the plain-English hint (T-07)
+    const screen = { write: (s) => { shown += s; out.write(s); } };
+    const sink = redirect ? { write: (s) => { buffer += s; } } : screen;
+    const err = screen; // stderr always goes to the screen
     const name = argv[0];
     let code;
     try {
@@ -71,6 +74,10 @@ export class Shell {
       console.error(e);
       err.write(`${name}: unexpected error: ${e.message}\n`);
       code = 1;
+    }
+    if (code) {
+      const hint = hintFor(strip(shown));
+      if (hint) out.write(cyan(`→ In plain English: ${hint}\n`));
     }
     if (redirect) {
       const target = this.abs(redirect.path);
@@ -129,6 +136,14 @@ export class Shell {
       default:
         err.write(`bash: ${name}: command not found\n`);
         if (/^git[a-z]/.test(name)) err.write(dim(`(did you mean: git ${name.slice(3)} ?)\n`));
+        else {
+          const typed = name.toLowerCase();
+          const letters = (s) => [...s].sort().join('');
+          const close = SHELL_COMMANDS.find((c) => letters(c) === letters(typed) || levenshtein(typed, c) <= (c.length > 4 ? 2 : 1));
+          if (close) err.write(dim(`(did you mean: ${close} ?)\n`));
+        }
+        // T-14: never leave the student guessing — say what this playground understands.
+        err.write(dim('This playground understands: git, pwd, ls, cd, mkdir, touch, cat, echo, rm, mv, cp, edit, clear, history, help, reset-lab.\nType \'help\' for details.\n'));
         return 127;
     }
   }

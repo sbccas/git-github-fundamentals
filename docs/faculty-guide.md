@@ -12,8 +12,8 @@ Every session uses the course website (`https://sbccas.github.io/git-github-fund
 
 > Requirement IDs (M-xx, L-xx, P-xx) match `docs/PRD.md`.
 >
-> **Companions (being built alongside each unit):** projector slide decks for every session at `/teach/session-NN/`,
-> and the **Faculty Handbook** (`docs/faculty-handbook/`) with in-depth explanations and story examples for preparing each unit.
+> **Companions:** a projector slide deck for every session at `/teach/session-NN/` (press **P** for presenter view),
+> and the **Faculty Handbook** (`/teach/handbook/`) with in-depth explanations and story examples for preparing each unit.
 
 ---
 
@@ -690,6 +690,8 @@ git pull upstream main
 ---
 
 ### Session 15 — Final practical, self-check & showcase
+
+**Objectives:** Demonstrate the full workflow in a practical test, check understanding across all five units with the self-check, and present a team repository on GitHub.
 
 | Time | Activity |
 |---|---|

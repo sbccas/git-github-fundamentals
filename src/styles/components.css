@@ -195,3 +195,46 @@
   gap: 8px;
 }
 .placeholder-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+/* ---------- "Saved for offline" note (PWA, U-05) ---------- */
+.pwa-note {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 90;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--green) 45%, transparent);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow);
+  animation: pal-in .25s var(--ease);
+  transition: opacity .5s;
+}
+.pwa-note.is-leaving { opacity: 0; }
+
+/* ---------- Touch targets ≥ 44 px on phones and touch screens (PRD N-01) ----------
+ * Roomy controls grow to 44 px. Dense ones (copy/try buttons in code blocks and the cheat sheet)
+ * keep their size but get an invisible 44 px hit area. `:root` outranks the page style sheets,
+ * which load after this file. */
+@media (pointer: coarse), (max-width: 760px) {
+  :root .icon-btn, :root .search-btn { min-width: 44px; min-height: 44px; }
+  :root .brand { min-height: 44px; }
+  :root .chip, :root .mini-btn, :root .ts-btn, :root .cs-chip, :root .mini-print,
+  :root .keybar button, :root .pg-tabs button, :root .pg-sandbox select, :root .ms-move { min-height: 44px; }
+  :root .gl-letters a { min-width: 44px; min-height: 44px; }
+  :root .footer-col { gap: 0; }
+  :root .footer-col a { padding-block: 11px; }
+  :root .toc-list a { padding-block: 13px; }
+  :root .toc-list a::before { top: 13px; }
+  :root .try-btn, :root .cs-btn, :root .cs-unit { position: relative; }
+  :root .copy-btn::after, :root .try-btn::after, :root .cs-btn::after, :root .cs-unit::after {
+    content: "";
+    position: absolute;
+    inset: -8px -2px;
+  }
+}

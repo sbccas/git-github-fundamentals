@@ -1,6 +1,6 @@
 /**
  * Story missions (PRD §6.3). Each mission:
- *   id, unit, title, minutes, brief (HTML), goals [{ text, check(ctx) → bool, optional }], hints [3], setup(ctx), success (HTML)
+ *   id, unit, title, minutes, brief (HTML), goals [{ text, check(ctx) → bool, optional, latch, guard }], hints [3], setup(ctx), success (HTML)
  *
  * ctx helpers (see src/scripts/missions/engine.js):
  *   ctx.run(cmd)            run a shell command silently (setup only)
@@ -8,13 +8,13 @@
  *   ctx.globalConfig(key)   value in ~/.gitconfig
  *   ctx.repo(path)          Repo at ~/path (or null)
  *   ctx.files(repo)         Map of files in HEAD
+ *   ctx.objectType(repo, oid)  "commit" | "tree" | "blob" | "tag"
  *   ctx.read(path)          text of ~/path (or null)
  *   ctx.exists(path) / ctx.isDir(path)
  *   ctx.github              { create(owner, name, opts), teammatePush(owner, name, edit), refs(owner, name) }
  *   ctx.cwd                 current folder (absolute)
  *   ctx.home                '/home/student'
  */
-import { git } from '../../src/scripts/terminal/git/repo.js';
 
 const KRISH = 'git config --global user.name "Krish Patel" && git config --global user.email "krish@example.com"';
 
@@ -302,7 +302,7 @@ MISSIONS.push(
       { text: 'Delete the merged branches <code>feature-menu</code> and <code>feature-cart</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/feature-menu')) && !(await r.refOid('refs/heads/feature-cart')); } },
       { text: 'Delete the unmerged branch <code>experiment</code> (Git will ask you to be sure)', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/experiment')); } },
       { text: 'Delete <code>feature-cart</code> on GitHub', check: async (c) => !(await c.github.refs('krish-patel', 'amroli-canteen')).branches['feature-cart'] },
-      { text: '<code>main</code> must survive with all its work', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && (await r.refOid('refs/heads/main')) === c.state.mainOid; } },
+      { text: '<code>main</code> must survive with all its work', guard: true, check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && (await r.refOid('refs/heads/main')) === c.state.mainOid; } },
     ],
     hints: [
       '<code>git branch -d</code> deletes merged branches. For unmerged ones Git refuses and suggests <code>-D</code>.',
@@ -386,7 +386,7 @@ MISSIONS.push(
     minutes: 10,
     brief: `<p>Today is the <strong>Spectrum 2026</strong> tech fest. Hetvi wants a permanent name for the version being demonstrated: <code>v1.0</code>, with a message, and on GitHub so everyone can find it.</p>`,
     goals: [
-      { text: 'Create an <strong>annotated</strong> tag <code>v1.0</code> with a message', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const o = await r.refOid('refs/tags/v1.0'); if (!o) return false; const { type } = await git.readObject({ ...r.base, oid: o }); return type === 'tag'; } },
+      { text: 'Create an <strong>annotated</strong> tag <code>v1.0</code> with a message', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const o = await r.refOid('refs/tags/v1.0'); if (!o) return false; return (await c.objectType(r, o)) === 'tag'; } },
       { text: 'The tag must point to the latest commit on <code>main</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const o = await r.refOid('refs/tags/v1.0'); return !!o && (await r.peel(o)) === (await r.refOid('refs/heads/main')); } },
       { text: 'Inspect it with <code>git show v1.0</code>', check: (c) => c.ran(/^git show v1\.0/) },
       { text: 'Push the tag to GitHub', check: async (c) => !!(await c.github.refs('krish-patel', 'amroli-canteen')).tags['v1.0'] },

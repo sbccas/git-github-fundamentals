@@ -37,6 +37,11 @@ a.teach-card:hover { color: var(--text); border-color: var(--primary); transform
 .ts-num { font: 700 1.3rem var(--font-mono); color: var(--u); width: 2.2ch; }
 .ts-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ts-body .muted { font-size: var(--fs-sm); }
+.ts-objectives { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--text-2); line-height: 1.55; }
+.ts-objectives span { margin-right: 4px; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--u); }
+.ts-objectives code { font-size: .85em; }
+.teach-session { align-items: start; }
+.ts-actions { align-self: center; }
 .ts-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .ts-btn {
   display: inline-flex;

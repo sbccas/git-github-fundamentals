@@ -2,7 +2,7 @@
  * Mission engine: builds the helper context missions use for setup and goal checks,
  * and evaluates goals after every command.
  */
-import { findRepo, Repo, readGlobalConfig } from '../terminal/git/repo.js';
+import { findRepo, Repo, readGlobalConfig, git } from '../terminal/git/repo.js';
 import { walkCommits } from '../terminal/git/cmd-history.js';
 import { createRepo, teammatePush, remoteRefs } from '../terminal/git/github.js';
 import { saveSettings } from '../terminal/sandbox.js';
@@ -53,6 +53,7 @@ export function createContext(wb, mission) {
       return (await sh().h.isDir(join(dir, '.git'))) ? new Repo(sh(), dir) : null;
     },
     async files(repo) { return repo.treeMap(await repo.headOid()); },
+    async objectType(repo, oid) { return (await git.readObject({ ...repo.base, oid })).type; },
     async blob(repo, entry) { return entry ? repo.blobText(entry.oid) : null; },
     async inAnyCommit(repo, path) {
       const starts = [];

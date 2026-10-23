@@ -4,6 +4,7 @@
  */
 import { writeRaw } from './lib/storage.js';
 import { initPalette } from './lib/palette.js';
+import { initPwa } from './lib/pwa.js';
 
 const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
@@ -20,6 +21,10 @@ function initTheme() {
     writeRaw('theme', root.dataset.theme);
     label();
   });
+  // Print and "save as PDF" always use the light theme (paper is white).
+  let screenTheme = null;
+  window.addEventListener('beforeprint', () => { screenTheme = root.dataset.theme; root.dataset.theme = 'light'; });
+  window.addEventListener('afterprint', () => { if (screenTheme) root.dataset.theme = screenTheme; });
 }
 
 function initMenus() {
@@ -120,3 +125,4 @@ initHeaderShadow();
 initModKeys();
 initPalette();
 observeReveal();
+initPwa();

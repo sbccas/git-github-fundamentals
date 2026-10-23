@@ -1,4 +1,7 @@
 import { startDeck } from '../teach/deck.js';
+import { initPwa } from '../lib/pwa.js';
+
+initPwa();
 
 const W = 1920;
 const H = 1080;

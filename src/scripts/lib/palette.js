@@ -1,11 +1,12 @@
 /**
- * Command palette (PRD U-01): Ctrl/⌘+K or "/" opens a search over pages, units, topics and commands.
+ * Command palette (PRD U-01): Ctrl/⌘+K or "/" opens a search over pages, units, topics, commands,
+ * glossary terms and missions. Missions load the first time the palette opens (they are not needed before).
  */
 import { PAGES, UNITS, COMMANDS, pageUrl } from '../data/site.js';
 import TERMS from '../../../content/glossary.json';
 import { slug } from './glossary.js';
 
-const KIND_LABEL = { unit: 'Unit', topic: 'Topic', command: 'Command', page: 'Page', term: 'Term' };
+const KIND_LABEL = { unit: 'Unit', topic: 'Topic', command: 'Command', page: 'Page', term: 'Term', mission: 'Mission' };
 
 function buildIndex() {
   const items = [];
@@ -25,7 +26,26 @@ function buildIndex() {
   for (const p of PAGES) {
     items.push({ kind: 'page', title: p.title, sub: p.desc, href: pageUrl(p.slug), keys: '' });
   }
-  return items.map((it) => ({ ...it, hay: `${it.title} ${it.sub} ${it.keys}`.toLowerCase(), titleLc: it.title.toLowerCase() }));
+  return items.map(indexed);
+}
+
+const indexed = (it) => ({ ...it, hay: `${it.title} ${it.sub} ${it.keys}`.toLowerCase(), titleLc: it.title.toLowerCase() });
+const plain = (html) => html.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ').trim();
+
+async function missionItems() {
+  const { MISSIONS } = await import('../../../content/missions/missions.js');
+  return MISSIONS.map((m) => {
+    const u = UNITS[m.unit - 1];
+    const brief = plain(m.brief);
+    return indexed({
+      kind: 'mission',
+      title: `${m.id} · ${m.title}`,
+      sub: `Unit ${u.n} · ${m.minutes} min — ${brief.length > 90 ? `${brief.slice(0, 88)}…` : brief}`,
+      href: pageUrl(`missions/?m=${m.id}`),
+      color: u.color,
+      keys: `mission ${m.goals.map((g) => plain(g.text)).join(' ')}`,
+    });
+  });
 }
 
 function score(item, terms) {
@@ -52,6 +72,7 @@ export function initPalette() {
   const input = dialog.querySelector('[data-palette-input]');
   const list = dialog.querySelector('[data-palette-results]');
   const index = buildIndex();
+  let missionsLoaded = false;
   let results = [];
   let active = 0;
 
@@ -98,6 +119,10 @@ export function initPalette() {
     if (dialog.open) return;
     input.value = '';
     render();
+    if (!missionsLoaded) {
+      missionsLoaded = true;
+      missionItems().then((items) => { index.push(...items); if (dialog.open) render(); }).catch(() => { missionsLoaded = false; });
+    }
     dialog.showModal();
     input.focus();
   }

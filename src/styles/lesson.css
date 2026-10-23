@@ -110,7 +110,7 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 .tb-cmd { color: #e8ecf6; }
 .tb-prompt { color: #3ddc97; }
 .tb-out { color: #aab3c7; }
-.tb-comment { color: #6c768c; font-style: italic; }
+.tb-comment { color: #7d879d; font-style: italic; }
 .tb-add { color: #3ddc97; }
 .tb-del { color: #ff6b81; }
 .tb-hunk { color: #5fd7ff; }
@@ -213,7 +213,7 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 .q-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .q-opt.is-right { border-color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); }
 .q-opt.is-wrong { border-color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent); }
-.q-opt.is-right .q-letter { background: var(--green); border-color: var(--green); color: #04150c; }
+.q-opt.is-right .q-letter { background: var(--green); border-color: var(--green); color: var(--on-green); }
 .q-opt.is-wrong .q-letter { background: var(--red); border-color: var(--red); color: #fff; }
 .q-order { display: grid; gap: 10px; justify-items: start; }
 .q-picked { width: 100%; min-height: 44px; margin: 0; padding: 8px 8px 8px 34px; border: 1px dashed var(--border-strong); border-radius: 12px; }
@@ -368,9 +368,9 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 .cg-line.is-ours { color: #3ddc97; }
 .cg-line.is-theirs { color: #5fd7ff; }
 .cg-line.is-marker { color: #ff7ad9; font-weight: 700; }
-.cg-n { width: 2ch; color: #6c768c; text-align: right; flex: none; }
+.cg-n { width: 2ch; color: #7d879d; text-align: right; flex: none; }
 .cg-text { flex: 1; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
-.cg-state { flex: none; font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .06em; color: #6c768c; }
+.cg-state { flex: none; font: 600 .66rem var(--font-body); text-transform: uppercase; letter-spacing: .06em; color: #7d879d; }
 .cg-line.is-cut .cg-text { text-decoration: line-through; opacity: .4; }
 .cg-line.is-cut .cg-state { color: #ff6b81; }
 .cg-preview { margin-top: 10px; font-size: var(--fs-sm); }
@@ -386,7 +386,7 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 .ghm-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .ghm-btn { padding: 2px 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-size: .78rem; white-space: nowrap; }
 .ghm-btn i { font-style: normal; margin-left: 4px; padding: 0 6px; border-radius: 99px; background: var(--surface-3); }
-.ghm-code { background: var(--green); border-color: var(--green); color: #04150c; font-weight: 700; }
+.ghm-code { background: var(--green); border-color: var(--green); color: var(--on-green); font-weight: 700; }
 .ghm-tabs { display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .ghm-tabs span { padding-bottom: 4px; border-bottom: 2px solid transparent; }
 .ghm-tabs span.is-on { border-color: #f78166; font-weight: 600; }

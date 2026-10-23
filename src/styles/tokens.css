@@ -48,6 +48,7 @@
   --primary-ink: #0b0820;
   --accent: #2ee6d6;
   --green: #3ddc97;
+  --on-green: #04150c;
   --amber: #ffc857;
   --red: #ff6b81;
   --pink: #ff7ad9;
@@ -70,7 +71,7 @@
   --term-bg: #070b15;
   --term-text: #d7deee;
   --term-prompt: #3ddc97;
-  --term-dim: #6c768c;
+  --term-dim: #7d879d;
 }
 
 /* ---------- Light ---------- */
@@ -91,16 +92,17 @@
   --primary: #5a48ee;
   --primary-strong: #4a38dd;
   --primary-ink: #ffffff;
-  --accent: #0a988f;
-  --green: #0d8a57;
-  --amber: #a86a0a;
+  --accent: #07766f;
+  --green: #0b7a4d;
+  --on-green: #ffffff;
+  --amber: #935d09;
   --red: #cf2f4a;
   --pink: #b8338f;
 
   --u1: #5a48ee;
-  --u2: #0a988f;
-  --u3: #0d8a57;
-  --u4: #b0700c;
+  --u2: #07766f;
+  --u3: #0b7a4d;
+  --u4: #935d09;
   --u5: #b8338f;
 
   --grad: linear-gradient(120deg, #5a48ee 0%, #2f7fe6 50%, #0a988f 100%);

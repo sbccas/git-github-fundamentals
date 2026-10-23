@@ -284,17 +284,43 @@ li.fragment.is-latest { color: var(--ink); }
 }
 
 /* ---------- Print: one slide per 16:9 page (F-13) ---------- */
+/* Print / save as PDF (F-13): one slide per 16:9 page, light paper palette, neon borders kept
+ * in darker inks that read on white. */
 @media print {
   @page { size: 1920px 1080px; margin: 0; }
-  .page-deck { overflow: visible; background: #fff; }
-  .deck-viewport { position: static; display: block; }
-  .deck { transform: none !important; height: auto; }
-  .slide { position: relative; display: block !important; height: 1080px; break-after: page; animation: none !important; background: #fff; color: #0d1222; }
-  .slide::after { box-shadow: none; }
-  .slide h1, .slide h2, .slide h3, .slide strong { color: #0d1222; text-shadow: none; }
-  .slide p, .slide li, .slide td { color: #2a3247; }
-  .fragment { opacity: 1 !important; transform: none !important; }
-  .deck-ui, .deck-progress { display: none !important; }
+  .page-deck {
+    overflow: visible;
+    background: #fff;
+    --ink: #0d1222;
+    --ink-2: #2a3247;
+    --ink-3: #4a5468;
+    --text: #0d1222;
+    --text-2: #2a3247;
+    --muted: #4a5468;
+    --surface: #f3f4fa;
+    --surface-2: #eceef6;
+    --surface-3: #e2e5f0;
+    --border: rgba(15, 23, 42, .14);
+    --border-strong: rgba(15, 23, 42, .26);
+    --bg: #fff;
+    --bg-2: #f6f7fb;
+    --stage-bg: #fff;
+    --glow: 0;
+    --neon-1: #5a48ee;
+    --neon-2: #07766f;
+    --neon-3: #3f7a0c;
+    --neon-4: #935d09;
+    --neon-5: #b0207a;
+  }
+  .deck-viewport { position: static; display: block; overflow: visible; background: #fff; }
+  .deck { position: static; width: 1920px; height: auto; transform: none !important; }
+  .slide { position: relative; inset: auto; box-sizing: border-box; display: block !important; width: 1920px; height: 1080px; overflow: hidden; break-after: page; animation: none !important; background: #fff; }
+  .slide:last-child { break-after: auto; }
+  .slide h1, .slide h2, .slide h3, .slide .callout-title { text-shadow: none; }
+  .slide .callout { background: color-mix(in srgb, var(--c) 6%, #fff); box-shadow: none; }
+  .slide .diagram { background: var(--surface); border-color: var(--border); }
+  .fragment { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .deck-ui, .deck-progress, .slide-notes { display: none !important; }
 }
 
 /* Presenter window */

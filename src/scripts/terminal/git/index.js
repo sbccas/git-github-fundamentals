@@ -21,7 +21,7 @@ export const GIT_COMMANDS = [...Object.keys(HANDLERS), 'help'].sort();
 
 export const GIT_VERSION = 'git version 2.47.1 (SBCCAS playground, powered by isomorphic-git)';
 
-function levenshtein(a, b) {
+export function levenshtein(a, b) {
   const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
   for (let j = 1; j <= b.length; j++) d[0][j] = j;
   for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
