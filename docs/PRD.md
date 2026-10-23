@@ -34,7 +34,7 @@ story-based missions, and quizzes — all mapped exactly to the 5-unit certifica
 
 | User | Needs |
 |---|---|
-| **Students** — BCA, BCA-AI, B.Sc. Data Science, B.Sc. IT (beginners) | Clear explanations, practice without installing anything, instant feedback, progress tracking |
+| **Students** — BCA, BCA-AI, B.Sc. Data Science, M.Sc. IT (beginners) | Clear explanations, practice without installing anything, instant feedback, progress tracking |
 | **Faculty / course in-charge** | Teach in class from the site, assign labs, (Phase 2) see student progress, run live quizzes, approve certificates |
 
 ## 4. Phases (agreed)
@@ -207,7 +207,7 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 |---|---|
 | S-01 | **Sign in with GitHub** (Supabase Auth). Local progress is merged into the account on first sign-in. |
 | S-02 | Progress sync across devices. |
-| S-03 | Student profile: name, GitHub username, programme (BCA / BCA-AI / B.Sc. DS / B.Sc. IT), batch/division. |
+| S-03 | Student profile: name, GitHub username, programme (BCA / BCA-AI / B.Sc. DS / M.Sc. IT), batch/division. |
 | S-04 | **Leaderboard** by batch (XP); students can opt out of public display. |
 | S-05 | **Live classroom quiz:** faculty starts a session, students join with a code, questions appear in real time, live results chart. |
 | S-06 | **Teacher dashboard:** per-batch completion of units, missions, quiz scores; CSV export. Faculty role only. |
@@ -253,7 +253,7 @@ Source: `github.com/sbccas` and `sbccas.github.io`.
 - **Affiliation:** Veer Narmad South Gujarat University (VNSGU)
 - **Managed by:** Jivan Jyot Trust
 - **Contact:** info@amrolicollege.ac.in · www.amrolicollege.ac.in · Instagram @amrolibca · GitHub @sbccas
-- **Programmes:** BCA · BCA – AI · B.Sc. Data Science · B.Sc. IT
+- **Programmes:** BCA · BCA – AI · B.Sc. Data Science · M.Sc. IT
 - **Links back to:** sbccas.github.io portal and github-showcase
 - **Faculty section:** built but **hidden** (feature flag) until faculty details are provided.
 - **Not used:** any college name, faculty name or course code from the syllabus PDF (it belongs to a different college).

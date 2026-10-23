@@ -278,7 +278,7 @@ $ git switch -c add-<your-username>
 
 ```terminal notry
 $ echo "# <Your Name>" > students/<your-username>.md
-$ echo "- Programme: BCA / BSc DS / BSc IT" >> students/<your-username>.md
+$ echo "- Programme: BCA / BCA AI / BSc DS / MSc IT" >> students/<your-username>.md
 $ echo "- Favourite Git command: git status" >> students/<your-username>.md
 $ git add .
 $ git commit -m "Add <your-username> profile card"

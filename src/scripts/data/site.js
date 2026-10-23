@@ -33,7 +33,7 @@ export const COLLEGE = {
   github: 'https://github.com/sbccas',
   portal: 'https://sbccas.github.io/',
   instagram: 'https://www.instagram.com/amrolibca/',
-  programmes: ['BCA', 'BCA – AI', 'B.Sc. Data Science', 'B.Sc. IT'],
+  programmes: ['BCA', 'BCA – AI', 'B.Sc. Data Science', 'M.Sc. IT'],
 };
 
 export const COURSE = {
