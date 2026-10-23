@@ -31,7 +31,9 @@ document.querySelector('[data-college]').innerHTML = [
 if (FEATURES.facultySection && FACULTY.length) {
   document.querySelector('[data-faculty]').hidden = false;
   document.querySelector('[data-faculty-list]').innerHTML = FACULTY.map((f) => `<div class="faculty-card">
-    <span class="avatar" aria-hidden="true">${esc(f.name.replace(/^(Prof\.|Dr\.|Mr\.|Ms\.|Mrs\.)\s*/, '')[0] ?? '?')}</span>
+    ${f.photo
+      ? `<img class="faculty-photo" src="${import.meta.env.BASE_URL}${esc(f.photo)}" alt="Photo of ${esc(f.name)}" width="72" height="72" loading="lazy">`
+      : `<span class="avatar" aria-hidden="true">${esc(f.name.replace(/^(Prof\.|Dr\.|Mr\.|Ms\.|Mrs\.)\s*/, '')[0] ?? '?')}</span>`}
     <strong>${esc(f.name)}</strong><span class="muted">${esc(f.role ?? '')}${f.dept ? ` · ${esc(f.dept)}` : ''}</span>
     ${f.email ? `<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>` : ''}
     ${f.github ? `<a href="${esc(f.github)}" target="_blank" rel="noopener">GitHub · @${esc(f.github.split('/').pop())}</a>` : ''}</div>`).join('');

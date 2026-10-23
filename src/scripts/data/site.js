@@ -12,10 +12,11 @@ export const FEATURES = {
 
 /**
  * Faculty shown on the About page once FEATURES.facultySection is true (PRD D-6).
- * Fields: name, role, dept, and optionally email and github (profile URL).
+ * Fields: name, role, dept, and optionally email, github (profile URL) and photo (a file in public/faculty/,
+ * about 192×192 px; without one the card shows the first letter of the name).
  */
 export const FACULTY = [
-  { name: 'Hitesh Patel', role: 'Department Coordinator', dept: 'B.Sc. Data Science', github: 'https://github.com/contact2hitech' },
+  { name: 'Hitesh Patel', role: 'Department Coordinator', dept: 'B.Sc. Data Science', github: 'https://github.com/contact2hitech', photo: 'faculty/hitesh-patel.webp' },
 ];
 
 /** Who built this course website (About page and footer). */
