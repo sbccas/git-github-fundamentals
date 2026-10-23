@@ -10,7 +10,7 @@
 | **Last updated** | 2026-10-23 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
-> Any new idea goes into **§14 Backlog** first and is built only after it is approved and moved into a phase.
+> Any new idea goes into **§15 Backlog** first and is built only after it is approved and moved into a phase.
 
 ---
 
