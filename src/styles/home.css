@@ -9,6 +9,7 @@
 .hero h1 { margin-bottom: 20px; }
 .hero .lead { margin-bottom: 28px; }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+.continue-row { display: flex; flex-wrap: wrap; column-gap: 20px; }
 .continue-link {
   display: inline-flex;
   margin-top: 14px;

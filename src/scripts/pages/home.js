@@ -1,6 +1,7 @@
 import { observeReveal } from '../main.js';
 import { UNITS, CAST, COLLEGE, COURSE, pageUrl } from '../data/site.js';
 import { load, unitPercent } from '../lib/progress.js';
+import { isNewStudent } from '../lib/passport.js';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -69,7 +70,11 @@ function renderCollege() {
 }
 
 function renderContinue() {
-  const { lastVisited } = load();
+  const data = load();
+  const { lastVisited } = data;
+  // The passport link appears once the student has recorded anything (G-04).
+  const passport = document.querySelector('[data-passport-link]');
+  if (passport) passport.hidden = isNewStudent(data);
   const link = document.querySelector('[data-continue]');
   if (!link || !lastVisited?.href) return;
   link.href = lastVisited.href;

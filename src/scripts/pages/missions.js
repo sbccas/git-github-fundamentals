@@ -24,7 +24,7 @@ function statsHtml() {
 /* ======================= HUB ======================= */
 function renderHub() {
   $('[data-hub]').hidden = false;
-  $('[data-stats]').innerHTML = `${statsHtml()}<a class="ms-move" href="${pageUrl('about/#progress')}">Switching phone or computer? Export your progress →</a>`;
+  $('[data-stats]').innerHTML = `${statsHtml()}<a class="ms-move" href="${pageUrl('passport/')}">🛂 Open your Git Passport →</a><a class="ms-move" href="${pageUrl('about/#progress')}">Switching phone or computer? Export your progress →</a>`;
   const p = load();
   const all = [...MISSIONS, ...UPCOMING.map((m) => ({ ...m, upcoming: true }))];
   $('[data-mission-list]').innerHTML = UNITS.filter((u) => u.n <= 4).map((u) => {

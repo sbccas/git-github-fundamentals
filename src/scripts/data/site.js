@@ -3,7 +3,8 @@
  * Lesson text itself lives in /content (added from Milestone 3).
  */
 
-export const BASE = import.meta.env.BASE_URL;
+// Vite sets import.meta.env; the fallback lets `npm test` import this file under plain Node.
+export const BASE = import.meta.env?.BASE_URL ?? '/git-github-fundamentals/';
 
 /** Feature flags. facultySection shows the Faculty card on the About page (PRD D-6). */
 export const FEATURES = {
@@ -118,6 +119,7 @@ export const PAGES = [
   { slug: '', title: 'Home', desc: 'Course overview', milestone: 1 },
   { slug: 'playground/', title: 'Playground', desc: 'Real Git terminal in your browser', milestone: 2 },
   { slug: 'missions/', title: 'Missions', desc: 'Story-based Git challenges', milestone: 3 },
+  { slug: 'passport/', title: 'Git Passport', desc: 'Your XP, level, badges and next step', milestone: 7 },
   { slug: 'labs/', title: 'Labs', desc: 'Practical assignments on real GitHub', milestone: 3 },
   { slug: 'cheatsheet/', title: 'Cheat sheet', desc: 'Every command on one page', milestone: 5 },
   { slug: 'self-check/', title: 'Self-check', desc: 'Final 40-question practice test', milestone: 5 },

@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.8 — approved; Phase 1 live (Milestones 1–6 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) |
+| **Status** | v1.9 — approved; Phase 1 live (Milestones 1–7 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-22 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -150,6 +150,11 @@ L-01 profile README · L-02 create & configure a repo · L-03 open an issue · L
 | G-01 | Progress saved in the browser (sections read, quizzes, missions). Works without login; clearly labelled "saved on this device". |
 | G-02 | XP for missions/quizzes, levels, and a fixed badge set (one per unit, one per mission group, "Conflict Crusher", "Time Traveller", "Course Complete"). |
 | G-03 | Export / import progress as a file (for switching devices before Phase 2). |
+| G-04 | **Git Passport** page `/passport/` (Milestone 7, approved 2026-10-23): course title and passport identity; XP, level and XP to the next level; overall progress across the five units; five unit achievement cards (existing unit badges); all nine badges, earned (with date) and locked (with how to earn); mission statistics; best unit-quiz scores and self-check best; a next-step recommendation; links to the units. Empty state for a new student. Opening the passport never changes progress. |
+| G-05 | **Next activity**, from recorded progress only, first match wins: unfinished mission in a started unit → unpassed quiz in a started unit → revise a unit whose best quiz score is below 75 % → resume the last visited page → start the next unstarted unit → final self-check → done. New student: "Start Unit 1". |
+| G-06 | **Exportable passport**: one-page A4 print layout (Print / Save as PDF) and a browser-drawn 1200 × 630 PNG card (canvas, no new libraries). Both labelled "learning-progress record — saved on this device — not an official college certificate". |
+| G-07 | **Optional passport name**, typed by the student, stored only on the device, shown as self-entered; default "Student". No other identity data. |
+| G-08 | **Safer import**: every field and type validated; unknown badge, mission and game IDs dropped; mission/unit/course badges not justified by the imported data removed; XP recalculated from recorded work; only in-site "Continue" links accepted; invalid files rejected without changing current progress. Progress format stays version 1. |
 
 ### 6.6 Faculty resources
 
@@ -301,6 +306,7 @@ git-github-fundamentals/
 | 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel · decks for sessions 7–12 · handbook chapters 3–4 | ✅ **committed 2026-10-23** |
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ **committed 2026-10-23** |
 | 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ **live 2026-10-23** — https://sbccas.github.io/git-github-fundamentals/ |
+| 7 | Git Passport | `/passport/` page, next-activity recommendations, print/PDF and PNG card, optional self-entered name, safer progress import — plan: [`docs/plans/MILESTONE-7-GIT-PASSPORT-PLAN.md`](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md) | ✅ **approved 2026-10-23 · live 2026-10-23** |
 
 ## 13. Out of scope (all phases unless moved by approval)
 
@@ -335,6 +341,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-23 | 1.9 | Milestone 7 — Git Passport (G-04 – G-08): passport page, next-activity rules, A4 print and PNG card, optional self-entered name, validated progress import with XP recalculation. Existing XP values, badge conditions and the version 1 progress format unchanged. Plans now live in `docs/plans/` |
 | 2026-10-23 | 1.8 | Milestone 6 polish built: PWA (manifest, icons, service worker precaching the whole site → offline after first visit, U-05/F-05), missions in Ctrl+K (U-01), session objectives on the Teach hub read from the faculty guide (F-04), plain-English hint lines under common errors (T-07) and a command list for unknown commands (T-14), 44 px touch targets on phones (N-01), WCAG AA contrast fixes in the light theme (N-04), print/PDF fixed and verified for slides, guide, handbook and cheat sheet (F-03, F-13, P-05), `npm test` (missions, engine, content) run by the deploy workflow. Progress report added: `docs/PROGRESS.md` |
 | 2026-10-23 | 1.7 | Milestone 5 built: Unit 5 lesson (3 diagrams) + quiz, Labs L-02 – L-04, cheat sheet (62 commands, search, unit filter, print), glossary (47 terms, tap-to-define in lessons, Ctrl+K), bonus page, 40-question self-check with per-unit report, About page (hidden faculty section, export/import progress = G-03), decks 13–15, handbook chapter 5 + appendices |
 | 2026-10-23 | 1.6 | Milestone 4 built: Unit 3–4 lessons (5 new diagrams), quizzes, missions M-08 – M-15 (all 15 missions validated end-to-end), latching mission goals, conflict mini-game (Q-05), time-travel slider (T-09) with Time Traveller badge, Unit 3–4 labs, decks 7–12, handbook chapters 3–4; `-q` for push/switch/merge |

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Git Passport · Git & GitHub Fundamentals</title>
+  <meta name="description" content="Your Git Passport: XP, level, unit achievements, badges, quiz scores and your next step in the Git & GitHub Fundamentals course. Saved on this device.">
+  <!-- @include head -->
+  <link rel="stylesheet" href="/styles/passport.css">
+</head>
+<body data-page="passport" data-section="more">
+  <!-- @include header -->
+  <main id="main" class="container pp">
+    <section class="pp-cover" aria-labelledby="pp-title">
+      <div class="pp-cover-text">
+        <p class="eyebrow">Git &amp; GitHub Fundamentals · SBCCAS</p>
+        <h1 id="pp-title">Git Passport</h1>
+        <p class="pp-holder"><span class="muted">Passport holder</span> <strong data-pp-name>Student</strong>
+          <button class="pp-edit" type="button" data-pp-edit aria-expanded="false" aria-controls="pp-name-form">Edit name</button></p>
+        <form class="pp-name-form" id="pp-name-form" data-pp-form hidden>
+          <label for="pp-name-input">Your name on this passport <span class="muted">(optional · saved only on this device)</span></label>
+          <div class="pp-name-row">
+            <input id="pp-name-input" type="text" maxlength="60" autocomplete="name" data-pp-input>
+            <button class="btn btn-primary" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="pp-level" data-pp-level></div>
+    </section>
+
+    <div class="pp-empty card" data-pp-empty hidden>
+      <h2>Your passport is empty — for now</h2>
+      <p>Every mission you finish, quiz you pass and badge you earn is stamped here. Start with Unit 1; it takes about 15 minutes.</p>
+    </div>
+
+    <section class="pp-next card" data-pp-next aria-label="Next step"></section>
+
+    <section class="pp-stats" data-pp-stats aria-label="Totals"></section>
+
+    <section aria-labelledby="pp-units-h">
+      <h2 id="pp-units-h" class="pp-h">Unit achievements</h2>
+      <div class="pp-units" data-pp-units></div>
+    </section>
+
+    <section aria-labelledby="pp-badges-h">
+      <h2 id="pp-badges-h" class="pp-h">Badges <span class="muted" data-pp-badge-count></span></h2>
+      <ul class="pp-badges" data-pp-badges></ul>
+    </section>
+
+    <section class="pp-save card" aria-labelledby="pp-save-h">
+      <h2 id="pp-save-h">Keep a copy</h2>
+      <p>Print your passport or save it as a PDF, or download a card to share. It's a <strong>learning-progress record saved on this device</strong>, not an official college certificate.</p>
+      <div class="pp-actions">
+        <button class="btn btn-primary" type="button" data-pp-print>🖨 Print / Save as PDF</button>
+        <button class="btn btn-ghost" type="button" data-pp-card>⬇ Download card (PNG)</button>
+        <a class="btn btn-ghost" href="{{base}}about/#progress">Move to another device →</a>
+      </div>
+    </section>
+
+    <p class="pp-disclaimer">Learning-progress record · saved on this device only · names are self-entered and not verified · not an official college certificate. Certificates are issued by Sutex Bank College of Computer Applications &amp; Science after the final practical assessment.</p>
+  </main>
+  <!-- @include footer -->
+  <script type="module" src="/scripts/pages/passport.js"></script>
+</body>
+</html>

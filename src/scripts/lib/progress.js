@@ -3,7 +3,7 @@
  * Shape is versioned so later milestones (and Phase 2 sync) can migrate it.
  */
 import { read, write } from './storage.js';
-import { UNITS } from '../data/site.js';
+import { UNITS, BASE } from '../data/site.js';
 
 const KEY = 'progress';
 const VERSION = 1;
@@ -33,6 +33,8 @@ function empty() {
     games: {},      // { "conflict": "2026-10-23T…" }
     xp: 0,
     lastVisited: null, // { href, title }
+    // Optional, added later without a version bump: selfCheck { best, last, byUnit, at } and
+    // profile { name } (the student's self-entered name for the Git Passport; this device only).
   };
 }
 
@@ -151,12 +153,143 @@ export function setLastVisited(href, title) {
   save(data);
 }
 
+/** Git Passport (G-07): the student's own name, stored on this device only. Empty clears it. */
+export function setPassportName(name) {
+  const data = load();
+  const clean = cleanName(name);
+  if (clean) data.profile = { name: clean };
+  else delete data.profile;
+  save(data);
+  return clean;
+}
+
 export function exportJson() {
   return JSON.stringify(load(), null, 2);
 }
 
+/**
+ * XP is fully determined by recorded work, because every award is given once:
+ * missions × 75 + first quiz passes × 100 + units marked complete × 50 + mini-games × 50.
+ */
+export function deriveXp(data) {
+  const missions = Object.values(data.missions ?? {}).filter((m) => m?.done).length;
+  const units = Object.values(data.units ?? {});
+  const quizzes = units.filter((u) => u?.quiz?.passed).length;
+  const complete = units.filter((u) => u?.complete).length;
+  const games = Object.keys(data.games ?? {}).length;
+  return missions * XP.mission + quizzes * XP.quizPass + complete * XP.unitComplete + games * GAME_XP;
+}
+
+const GAME_XP = 50;
+const GAMES = ['conflict'];
+const MISSION_IDS = new Set(UNITS.flatMap((u) => u.missions).filter((m) => m.startsWith('M-')));
+const BADGE_IDS = new Set(BADGES.map((b) => b.id));
+
+function cleanName(name) {
+  return String(name ?? '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+}
+
+class ImportError extends Error {}
+const fail = (why) => { throw new ImportError(`This file is not a valid progress export from this course (${why}).`); };
+const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const isDate = (v) => typeof v === 'string' && v.length <= 40 && !Number.isNaN(Date.parse(v));
+const pct = (v, what) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 100 ? Math.round(v) : fail(`${what} must be 0–100`));
+
+/** Only links inside this site may become the "Continue where you left off" link. */
+function safeHref(href) {
+  if (typeof href !== 'string' || href.length > 200) return false;
+  return href.startsWith(BASE) && !href.startsWith('//') && !/[\s"'<>\\]/.test(href);
+}
+
+/**
+ * Check an imported progress object (G-08). Returns a clean copy or throws ImportError.
+ * Wrong types or out-of-range values reject the whole file; unknown entries are dropped;
+ * badges that the recorded work does not justify are removed; XP is recalculated.
+ */
+export function validateProgress(input) {
+  if (!isObj(input)) fail('not a progress object');
+  if (input.version !== VERSION) fail('unsupported version');
+  const out = empty();
+
+  if (input.units !== undefined) {
+    if (!isObj(input.units)) fail('units');
+    for (const u of UNITS) {
+      const src = input.units[String(u.n)];
+      if (src === undefined) continue;
+      if (!isObj(src)) fail(`unit ${u.n}`);
+      const sections = src.sections ?? [];
+      if (!Array.isArray(sections) || sections.some((s) => typeof s !== 'string' || s.length > 80)) fail(`unit ${u.n} sections`);
+      const total = src.total ?? 0;
+      if (!Number.isInteger(total) || total < 0 || total > 100) fail(`unit ${u.n} section total`);
+      let quiz = null;
+      if (src.quiz != null) {
+        if (!isObj(src.quiz) || typeof src.quiz.passed !== 'boolean') fail(`unit ${u.n} quiz`);
+        quiz = { best: pct(src.quiz.best, 'quiz score'), last: pct(src.quiz.last ?? src.quiz.best, 'quiz score'), passed: src.quiz.passed };
+      }
+      if (src.complete !== undefined && typeof src.complete !== 'boolean') fail(`unit ${u.n} complete`);
+      out.units[String(u.n)] = { sections: [...new Set(sections)].slice(0, 100), total, quiz, complete: !!src.complete };
+    }
+  }
+
+  if (input.missions !== undefined) {
+    if (!isObj(input.missions)) fail('missions');
+    for (const [id, m] of Object.entries(input.missions)) {
+      if (!MISSION_IDS.has(id)) continue;
+      if (!isObj(m) || typeof m.done !== 'boolean') fail(`mission ${id}`);
+      if (m.done) out.missions[id] = { done: true, at: isDate(m.at) ? m.at : new Date(0).toISOString() };
+    }
+  }
+
+  if (input.games !== undefined) {
+    if (!isObj(input.games)) fail('games');
+    for (const id of GAMES) if (input.games[id] !== undefined) out.games[id] = isDate(input.games[id]) ? input.games[id] : new Date(0).toISOString();
+  }
+
+  if (input.badges !== undefined) {
+    if (!isObj(input.badges)) fail('badges');
+    for (const [id, at] of Object.entries(input.badges)) {
+      if (!BADGE_IDS.has(id)) continue;
+      if (!isDate(at)) fail(`badge ${id} date`);
+      out.badges[id] = at;
+    }
+    // Keep only badges the recorded work justifies (time-traveller leaves no other record, so it stays).
+    const justified = new Set(['time-traveller']);
+    for (const [m, b] of Object.entries(MISSION_BADGES)) if (out.missions[m]?.done) justified.add(b);
+    for (const u of UNITS) {
+      const missions = u.missions.filter((m) => m.startsWith('M-'));
+      if (out.units[String(u.n)]?.quiz?.passed && missions.every((m) => out.missions[m]?.done)) justified.add(`unit-${u.n}`);
+    }
+    if (UNITS.every((u) => justified.has(`unit-${u.n}`))) justified.add('course-complete');
+    for (const id of Object.keys(out.badges)) if (!justified.has(id)) delete out.badges[id];
+  }
+
+  if (isObj(input.lastVisited) && safeHref(input.lastVisited.href) && typeof input.lastVisited.title === 'string') {
+    out.lastVisited = { href: input.lastVisited.href, title: input.lastVisited.title.slice(0, 120) };
+  }
+
+  if (input.selfCheck != null) {
+    const s = input.selfCheck;
+    if (!isObj(s)) fail('self-check');
+    const byUnit = {};
+    if (s.byUnit !== undefined) {
+      if (!isObj(s.byUnit)) fail('self-check units');
+      for (const u of UNITS) if (s.byUnit[u.n] !== undefined) byUnit[u.n] = pct(s.byUnit[u.n], 'self-check score');
+    }
+    out.selfCheck = { best: pct(s.best, 'self-check score'), last: pct(s.last ?? s.best, 'self-check score'), byUnit, at: isDate(s.at) ? s.at : null };
+  }
+
+  if (isObj(input.profile)) {
+    const name = cleanName(input.profile.name);
+    if (name) out.profile = { name };
+  }
+
+  out.xp = deriveXp(out);
+  return out;
+}
+
+/** Replace this device's progress with an exported file. Throws, without saving anything, if the file is invalid. */
 export function importJson(text) {
-  const data = JSON.parse(text);
-  if (typeof data !== 'object' || data.version !== VERSION) throw new Error('This file is not a progress export from this course.');
-  save({ ...empty(), ...data });
+  let data;
+  try { data = JSON.parse(text); } catch { fail('not JSON'); }
+  save(validateProgress(data));
 }

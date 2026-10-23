@@ -5,8 +5,8 @@
 | **Report date** | 2026-10-23 |
 | **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
 | **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
-| **PRD version** | v1.8 ([PRD.md](PRD.md)) |
-| **Phase** | Phase 1 (core platform) **live**: Milestones 1–6 done; real-device and projector checks remain |
+| **PRD version** | v1.9 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
+| **Phase** | Phase 1 (core platform) **live**: Milestones 1–7 done; real-device and projector checks remain |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
 > **Update it at the end of every milestone** (and whenever a requirement changes) in the same commit as the work.
@@ -30,6 +30,7 @@
 | 5 | Unit 5, labs L-02 – L-04, cheat sheet, glossary, bonus, self-check, About, decks 13–15, handbook ch. 5 + appendices | ✅ | `cf72119` | 2026-10-23 |
 | 6a | Polish: PWA/offline, palette missions, Teach objectives, error hints, touch targets, contrast, print/PDF, `npm test` | ✅ | `35417b7` | 2026-10-23 |
 | 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
+| 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation: see §8 | 2026-10-23 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -37,16 +38,16 @@
 
 | Area | Count / contents |
 |---|---|
-| Site pages | Home · Units 1–5 · Playground · Missions (hub + runner) · Labs · Cheat sheet · Glossary · Bonus · Self-check · About · Teach hub · 15 decks · Faculty guide page · Handbook page (**32 pages**) |
+| Site pages | Home · Units 1–5 · Playground · Missions (hub + runner) · Labs · Cheat sheet · Glossary · Bonus · Self-check · About · **Git Passport** · Teach hub · 15 decks · Faculty guide page · Handbook page (**33 pages**) |
 | Lessons | 5 units, 56 sections, 14 diagrams, flip cards, conflict game |
 | Practice | 15 browser missions · 4 GitHub labs (L-01 – L-04) + 4 unit labs · Playground with sandboxes |
 | Assessment | 5 unit quizzes × 12 questions (60) · 40-question self-check (25 own + 15 drawn from unit quizzes) |
 | Reference | Cheat sheet (62 commands, 9 groups) · Glossary (47 terms) · Bonus (11 topics) |
 | Faculty | Faculty guide (15 session plans, each with objectives) · Handbook (story bible, 5 chapters, appendices) · 15 neon decks (172 slides) |
 | Git engine | 24 `git` commands + 16 shell commands; simulated GitHub with teammate pushes; 26 plain-English error hints |
-| Gamification | XP, levels, 9 badges, progress rings, export/import |
+| Gamification | XP, levels, 9 badges, progress rings, export/import (validated) · Git Passport page with next step, A4 print and PNG card |
 | Offline / install | Web app manifest, 4 icons, service worker precaching all 89 files (~2 MB) |
-| Tests | `npm test`: 15 missions end-to-end, 20 engine checks, 10 content checks — also run by the deploy workflow |
+| Tests | `npm test` (85 checks): 15 missions end-to-end, 20 engine checks, 10 content checks, 40 Git Passport / import checks — also run by the deploy workflow |
 
 ## 3. Requirement cross-check
 
@@ -112,7 +113,12 @@
 |---|---|---|
 | G-01 | ✅ | `scripts/lib/progress.js`; "saved on this device" in footer and About |
 | G-02 | ✅ | XP, levels, 9 badges (5 unit badges, First Commit, Conflict Crusher, Time Traveller, Course Complete) |
-| G-03 | ✅ | About → Your progress (export / import JSON) |
+| G-03 | ✅ | About → Your progress (export / import JSON); import validated since M7 (G-08) |
+| G-04 | ✅ | `/passport/` — `src/passport/index.html`, `scripts/pages/passport.js`, `scripts/lib/passport.js`, `styles/passport.css`. Reads progress only; empty state for new students; links from More menu, mobile menu, home (once progress exists), Missions hub and Ctrl+K |
+| G-05 | ✅ | `nextActivity()` in `scripts/lib/passport.js`; each rule covered by `npm test` |
+| G-06 | ✅ | Print → one A4 page (checked: seeded, empty, dark and light theme); "Download card" → 1200 × 630 PNG drawn on a canvas, no libraries. Both carry the "not an official college certificate" label |
+| G-07 | ✅ | "Edit name" on the passport; `profile.name` in progress (version 1, additive); cleaned of markup; shown as self-entered on the card |
+| G-08 | ✅ | `validateProgress()` and `deriveXp()` in `scripts/lib/progress.js`; About → Import uses it. Rejects malformed files without saving; drops unknown IDs and unjustified badges; recalculates XP; only in-site "Continue" links |
 
 ### 3.6 Faculty resources (§6.6)
 
@@ -187,6 +193,8 @@
 | Teach section is public | Decision D-7 |
 | Mission goals can "latch"; "guard" goals start ticked | Relative revisions like `HEAD~2` change meaning; "keep main safe" goals are true until broken |
 | Self-check mixes 25 own + 15 unit-quiz questions | Fresh mix each attempt without writing 40 single-use questions |
+| Imported XP is recalculated from recorded work (M7) | Every award is given once, so XP = missions × 75 + quiz passes × 100 + units marked complete × 50 + games × 50; honest files keep the same value, forged XP cannot be imported |
+| Plans are committed to `docs/plans/` before a milestone is built (M7 onward) | GitHub is the shared hand-off between ChatGPT and Claude Code |
 | Teach hub objectives come from the faculty guide | One source of truth instead of a second copy in code |
 | Light-theme accent colours slightly darker | WCAG AA contrast (N-04) |
 
@@ -198,6 +206,8 @@
 - Real `git push` to github.com from the browser is out of scope; the Playground uses a simulated GitHub.
 - The service worker only runs on the built site (`npm run build` / GitHub Pages), not in `npm run dev`.
 - After an update, a student who already has the site open sees new pages on the next navigation; very old tabs may need one refresh.
+- Git Passport: the Time Traveller badge leaves no other record, so an imported file can still claim it; Unit 5 labs happen on real GitHub and are not tracked (the Unit 5 badge needs the quiz, as before); the passport name is self-entered and not verified.
+- The PNG card uses the system emoji font for badge icons, so they look slightly different on Android, iPhone and Windows.
 
 ## 7. Milestone 6 checklist (polish & launch)
 
@@ -219,6 +229,20 @@
 | Real Android / iPhone test, "Install app", Safari | T-02, U-05, N-03 | ⏳ needs you (after go-live) |
 | Projector test with real hardware | F-06 | ⏳ needs you |
 
+## 7a. Milestone 7 checklist (Git Passport)
+
+| Task | PRD | Status |
+|---|---|---|
+| Plan committed before building | process | ✅ [`docs/plans/MILESTONE-7-GIT-PASSPORT-PLAN.md`](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md) — `6ce6ded` |
+| Passport page, unit cards, nine badges, stats, next step, empty state | G-04, G-05 | ✅ |
+| Print / Save as PDF (one A4 page) and PNG card | G-06 | ✅ checked with headless Chrome (PDF: 1 page each for sample, empty, dark and light; PNG: 1200 × 630) |
+| Optional self-entered name | G-07 | ✅ |
+| Validated import + XP recalculation | G-08 | ✅ 18 import checks in `npm test` |
+| 360 px: no sideways scroll, targets ≥ 44 px | N-01 | ✅ (built-in browser at 360 × 740) |
+| Works offline (page precached) | U-05 | ✅ `passport/` in `dist/sw.js` |
+| `npm test` (85 checks) and `npm run build` | — | ✅ |
+| On a real phone: open the passport from the menu; numbers match the Missions page; Download card saves a PNG; Print → Save as PDF gives one page; opens in airplane mode | G-04 – G-06 | ⏳ needs you |
+
 ## 8. Change log of this report
 
 | Date | Change |
@@ -226,3 +250,4 @@
 | 2026-10-23 | First report, after Milestone 5 |
 | 2026-10-23 | Milestone 6 polish: all code gaps closed (U-01, U-05, F-03 – F-05, F-13, T-07, T-14, N-01, N-02, N-04); remaining items need real devices, a projector, or the GitHub push |
 | 2026-10-23 | Launched: pushed to GitHub, Pages live; history re-credited to Hitesh Patel, so commit IDs updated |
+| 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation commit "feat: Milestone 7 — Git Passport" |
