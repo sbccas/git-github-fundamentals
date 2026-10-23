@@ -30,7 +30,7 @@
 | 5 | Unit 5, labs L-02 – L-04, cheat sheet, glossary, bonus, self-check, About, decks 13–15, handbook ch. 5 + appendices | ✅ | `cf72119` | 2026-10-23 |
 | 6a | Polish: PWA/offline, palette missions, Teach objectives, error hints, touch targets, contrast, print/PDF, `npm test` | ✅ | `35417b7` | 2026-10-23 |
 | 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
-| 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation: see §8 | 2026-10-23 |
+| 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation `69a17e0` | 2026-10-23 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -250,4 +250,4 @@
 | 2026-10-23 | First report, after Milestone 5 |
 | 2026-10-23 | Milestone 6 polish: all code gaps closed (U-01, U-05, F-03 – F-05, F-13, T-07, T-14, N-01, N-02, N-04); remaining items need real devices, a projector, or the GitHub push |
 | 2026-10-23 | Launched: pushed to GitHub, Pages live; history re-credited to Hitesh Patel, so commit IDs updated |
-| 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation commit "feat: Milestone 7 — Git Passport" |
+| 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation `69a17e0` |

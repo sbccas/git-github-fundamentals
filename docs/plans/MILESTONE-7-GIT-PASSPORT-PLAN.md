@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ Approved by the course owner (Hitesh Patel) on **23 October 2026** |
+| **Status** | ✅ Approved by the course owner (Hitesh Patel) on **23 October 2026** · ✅ **Delivered 23 October 2026** in commit `69a17e0` (results: [PROGRESS.md §7a](../PROGRESS.md)) |
 | **PRD** | Adds G-04 – G-08 to §6.5 Progress & gamification ([PRD.md](../PRD.md)) |
 | **Progress report** | [PROGRESS.md](../PROGRESS.md) (updated when the milestone is delivered) |
 | **Scope** | Enhancement of the existing Phase 1 site. Not a rebuild. No backend, login, analytics, Supabase or GitHub OAuth. |
