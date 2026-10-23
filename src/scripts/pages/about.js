@@ -1,5 +1,5 @@
 import '../main.js';
-import { COLLEGE, COURSE, UNITS, FEATURES, FACULTY } from '../data/site.js';
+import { COLLEGE, COURSE, UNITS, FEATURES, FACULTY, CREATOR } from '../data/site.js';
 import { load, level, exportJson, importJson, BADGES } from '../lib/progress.js';
 import { MISSIONS } from '../../../content/missions/missions.js';
 
@@ -13,6 +13,7 @@ document.querySelector('[data-course]').innerHTML = [
   row('Units', UNITS.map((u) => `${u.n}. ${u.title}`).join('<br>')),
   row('Practice', `${MISSIONS.length} browser missions · ${COURSE.labs} GitHub labs · 5 unit quizzes · final self-check`),
   row('For', `${COLLEGE.programmes.join(' · ')} students`),
+  row('Created by', `<a href="${CREATOR.github}" target="_blank" rel="noopener">${esc(CREATOR.name)}</a>`),
 ].join('');
 
 document.querySelector('[data-college]').innerHTML = [
@@ -26,13 +27,14 @@ document.querySelector('[data-college]').innerHTML = [
   row('Instagram', `<a href="${COLLEGE.instagram}" target="_blank" rel="noopener">@amrolibca</a>`),
 ].join('');
 
-// Faculty section stays hidden until details are provided (PRD D-6).
+// Faculty section (PRD D-6): shown when FEATURES.facultySection is on and FACULTY has entries.
 if (FEATURES.facultySection && FACULTY.length) {
   document.querySelector('[data-faculty]').hidden = false;
   document.querySelector('[data-faculty-list]').innerHTML = FACULTY.map((f) => `<div class="faculty-card">
     <span class="avatar" aria-hidden="true">${esc(f.name.replace(/^(Prof\.|Dr\.|Mr\.|Ms\.|Mrs\.)\s*/, '')[0] ?? '?')}</span>
     <strong>${esc(f.name)}</strong><span class="muted">${esc(f.role ?? '')}${f.dept ? ` · ${esc(f.dept)}` : ''}</span>
-    ${f.email ? `<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>` : ''}</div>`).join('');
+    ${f.email ? `<a href="mailto:${esc(f.email)}">${esc(f.email)}</a>` : ''}
+    ${f.github ? `<a href="${esc(f.github)}" target="_blank" rel="noopener">GitHub · @${esc(f.github.split('/').pop())}</a>` : ''}</div>`).join('');
 }
 
 function summary() {

@@ -63,7 +63,7 @@
 | P-07 | Final self-check (40 Q, score by unit) | ✅ | `src/self-check/`, `content/quizzes/self-check.json` |
 | P-08 | Bonus | ✅ | `content/bonus.md` |
 | P-09 | Glossary (+ tap definitions in lessons) | ✅ | `content/glossary.json`, `scripts/lib/glossary.js` |
-| P-10 | About (college, course, hidden faculty) | ✅ | `src/about/`; faculty via `FEATURES.facultySection` + `FACULTY` in `scripts/data/site.js` |
+| P-10 | About (college, course, faculty) | ✅ | `src/about/`; faculty section on (`FEATURES.facultySection`, `FACULTY` in `scripts/data/site.js`); "Created by" credit on About and in the footer |
 | P-11 | Teach | ✅ | `src/teach/**` |
 
 ### 3.2 Practice terminal (§6.2)
@@ -174,7 +174,7 @@
 |---|---|---|
 | D-1 – D-4, D-7 | Build tool, repo name, language, licence, guide visibility/format | ✅ decided |
 | D-5 | Supabase project + Claude API key for Phases 2–3 | ⏳ open |
-| D-6 | Faculty details for the About page | ⏳ open: send names, roles and emails; then set `FEATURES.facultySection = true` |
+| D-6 | Faculty details for the About page | ✅ Faculty section on with Hitesh Patel (Department Coordinator, B.Sc. Data Science); more faculty can be added to `FACULTY` in `src/scripts/data/site.js` |
 
 ## 5. Changes from the original plan (all approved or recorded in the PRD)
 

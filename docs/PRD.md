@@ -321,7 +321,7 @@ git-github-fundamentals/
 | D-4 | Licence | CC BY-SA 4.0 content + MIT code · other | ✅ **Decided:** CC BY-SA 4.0 content + MIT code |
 | D-7 | Faculty guide visibility & format | Public/private · 15×2 h or 30×1 h | ✅ **Decided:** public, 15 × 2-hour sessions |
 | D-5 | Phase 2/3 accounts | College provides Supabase project + Claude API key & monthly budget | Confirm before Phase 2 starts |
-| D-6 | Faculty details | To be provided | Section stays hidden until then |
+| D-6 | Faculty details | ✅ First entry 2026-10-23: Hitesh Patel, Department Coordinator, B.Sc. Data Science (GitHub contact2hitech) | Faculty section on; add more in `FACULTY` in `src/scripts/data/site.js` |
 
 ## 15. Backlog (ideas not yet approved)
 

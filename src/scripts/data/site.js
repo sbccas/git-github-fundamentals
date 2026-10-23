@@ -5,17 +5,21 @@
 
 export const BASE = import.meta.env.BASE_URL;
 
-/** Feature flags. facultySection stays false until faculty details are provided (PRD D-6). */
+/** Feature flags. facultySection shows the Faculty card on the About page (PRD D-6). */
 export const FEATURES = {
-  facultySection: false,
+  facultySection: true,
 };
 
 /**
  * Faculty shown on the About page once FEATURES.facultySection is true (PRD D-6).
- * Fill in when details are provided, e.g.
- * { name: 'Prof. …', role: 'Course coordinator', dept: 'Department of Computer Science', email: '…' }
+ * Fields: name, role, dept, and optionally email and github (profile URL).
  */
-export const FACULTY = [];
+export const FACULTY = [
+  { name: 'Hitesh Patel', role: 'Department Coordinator', dept: 'B.Sc. Data Science', github: 'https://github.com/contact2hitech' },
+];
+
+/** Who built this course website (About page and footer). */
+export const CREATOR = { name: 'Hitesh Patel', github: 'https://github.com/contact2hitech' };
 
 export const COLLEGE = {
   name: 'Sutex Bank College of Computer Applications & Science',
