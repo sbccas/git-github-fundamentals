@@ -3,32 +3,67 @@
 <head>
   <meta charset="utf-8">
   <title>Unit 2: Getting Started with Git · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Local and remote repositories, the three stages, and the everyday commands.">
+  <meta name="description" content="Local vs remote repositories, the three stages, and git init, status, add, commit, push, clone, fetch and pull — from your first commit to your first push.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="unit-2" data-section="units">
+<body data-page="unit-2" data-section="units" data-unit="2" class="page-lesson" style="--u: var(--u2)">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder" style="--u: var(--u2)">
-      <div class="card">
-        <p class="eyebrow" style="color: var(--u2)">Unit 2</p>
-        <h1>Getting Started with Git</h1>
-        <p class="lead" style="margin-inline:auto">Local and remote repositories, the three stages, and the everyday commands.</p>
-        <ul class="placeholder-list" aria-label="Topics">
-          <li class="chip chip-u">Local vs remote repositories</li>
-          <li class="chip chip-u">init · status · add · commit</li>
-          <li class="chip chip-u">push · clone</li>
-          <li class="chip chip-u">pull · fetch</li>
-          <li class="chip chip-u">Your first repository</li>
-        </ul>
-        <p class="muted">Lessons, missions and the quiz for this unit arrive in <strong>Milestone 3</strong>.</p>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-3/">Unit 3<svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="In this unit">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Unit 2 · 8 hours</p>
+        <div class="aside-progress"><span data-unit-bar></span></div>
+        <nav aria-label="Sections">
+          <!-- @toc content/units/unit-2.md -->
+          <ol class="toc-list toc-extra">
+            <li><a href="#practice" data-toc="practice">Missions &amp; labs</a></li>
+            <li><a href="#quiz" data-toc="quiz">Unit quiz</a></li>
+          </ol>
+        </nav>
       </div>
-    </section>
+    </aside>
+
+    <article class="lesson" data-lesson>
+      <header class="lesson-hero">
+        <p class="eyebrow">Unit 2 · Getting Started with Git</p>
+        <h1>From your first commit to your first push</h1>
+        <p class="lead">Create a repository, understand the three stages, save snapshots, and share your work through GitHub with push, clone, fetch and pull.</p>
+        <ul class="hero-meta">
+          <li>⏱ 8 hours · Sessions 3–6</li>
+          <li>🎯 Missions M-03 – M-07</li>
+          <li>🧪 Lab 2</li>
+          <li>✅ 12-question quiz</li>
+        </ul>
+      </header>
+
+      <div class="lesson-body">
+        <!-- @md content/units/unit-2.md -->
+      </div>
+
+      <section class="lesson-practice" id="practice">
+        <h2>Missions &amp; labs</h2>
+        <p>Practise in real Git: each mission runs in your browser and checks your work.</p>
+        <div class="practice-grid" data-practice></div>
+      </section>
+
+      <section class="lesson-quiz" id="quiz">
+        <h2>Unit quiz</h2>
+        <div data-quiz="2"></div>
+      </section>
+
+      <footer class="lesson-foot">
+        <button class="btn btn-primary" type="button" data-complete-unit>Mark Unit 2 complete</button>
+        <nav class="lesson-nav" aria-label="Units">
+          <a class="btn btn-ghost" href="{{base}}unit-1/">← Unit 1</a>
+          <a class="btn btn-ghost" href="{{base}}unit-3/">Unit 3: Branching →</a>
+        </nav>
+      </footer>
+    </article>
   </main>
 
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/unit.js"></script>
 </body>
 </html>

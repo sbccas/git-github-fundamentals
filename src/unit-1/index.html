@@ -3,33 +3,67 @@
 <head>
   <meta charset="utf-8">
   <title>Unit 1: Introduction to Version Control · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Why version control exists, the three kinds of VCS, and setting up Git and GitHub on Windows.">
+  <meta name="description" content="Why version control exists, local vs centralized vs distributed VCS, Git vs GitHub, installing Git on Windows, git config, git help and creating a GitHub account.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="unit-1" data-section="units">
+<body data-page="unit-1" data-section="units" data-unit="1" class="page-lesson" style="--u: var(--u1)">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder" style="--u: var(--u1)">
-      <div class="card">
-        <p class="eyebrow" style="color: var(--u1)">Unit 1</p>
-        <h1>Introduction to Version Control</h1>
-        <p class="lead" style="margin-inline:auto">Why version control exists, the three kinds of VCS, and setting up Git and GitHub on Windows.</p>
-        <ul class="placeholder-list" aria-label="Topics">
-          <li class="chip chip-u">Local, centralized & distributed VCS</li>
-          <li class="chip chip-u">Benefits of Git & GitHub</li>
-          <li class="chip chip-u">Installing Git on Windows</li>
-          <li class="chip chip-u">git config</li>
-          <li class="chip chip-u">git help</li>
-          <li class="chip chip-u">Creating a GitHub account</li>
-        </ul>
-        <p class="muted">Lessons, missions and the quiz for this unit arrive in <strong>Milestone 3</strong>.</p>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-2/">Unit 2<svg class="i i-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="In this unit">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Unit 1 · 4 hours</p>
+        <div class="aside-progress"><span data-unit-bar></span></div>
+        <nav aria-label="Sections">
+          <!-- @toc content/units/unit-1.md -->
+          <ol class="toc-list toc-extra">
+            <li><a href="#practice" data-toc="practice">Missions &amp; labs</a></li>
+            <li><a href="#quiz" data-toc="quiz">Unit quiz</a></li>
+          </ol>
+        </nav>
       </div>
-    </section>
+    </aside>
+
+    <article class="lesson" data-lesson>
+      <header class="lesson-hero">
+        <p class="eyebrow">Unit 1 · Introduction to Version Control</p>
+        <h1>Why every developer uses version control</h1>
+        <p class="lead">Learn the problem version control solves, the three kinds of VCS, how Git and GitHub differ, and set up Git on Windows with your own GitHub account.</p>
+        <ul class="hero-meta">
+          <li>⏱ 4 hours · Sessions 1–2</li>
+          <li>🎯 Missions M-01, M-02</li>
+          <li>🧪 Lab L-01</li>
+          <li>✅ 12-question quiz</li>
+        </ul>
+      </header>
+
+      <div class="lesson-body">
+        <!-- @md content/units/unit-1.md -->
+      </div>
+
+      <section class="lesson-practice" id="practice">
+        <h2>Missions &amp; labs</h2>
+        <p>Practise in real Git: each mission runs in your browser and checks your work.</p>
+        <div class="practice-grid" data-practice></div>
+      </section>
+
+      <section class="lesson-quiz" id="quiz">
+        <h2>Unit quiz</h2>
+        <div data-quiz="1"></div>
+      </section>
+
+      <footer class="lesson-foot">
+        <button class="btn btn-primary" type="button" data-complete-unit>Mark Unit 1 complete</button>
+        <nav class="lesson-nav" aria-label="Units">
+          <a class="btn btn-ghost" href="{{base}}">← Home</a>
+          <a class="btn btn-ghost" href="{{base}}unit-2/">Unit 2: Getting Started →</a>
+        </nav>
+      </footer>
+    </article>
   </main>
 
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/unit.js"></script>
 </body>
 </html>

@@ -3,28 +3,32 @@
 <head>
   <meta charset="utf-8">
   <title>Labs · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Practical assignments for every unit, including four guided labs on real GitHub.">
+  <meta name="description" content="Practical assignments for every unit on real computers and the real github.com, with checklists and what to submit.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="labs">
+<body data-page="labs" class="page-lesson" style="--u: var(--u4)">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 3</p>
-        <h1>Labs</h1>
-        <p class="lead" style="margin-inline:auto">Practical assignments for every unit, including four guided labs on real GitHub.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">Lab per unit</li>
-          <li class="chip">Profile README</li>
-          <li class="chip">Create a repo</li>
-          <li class="chip">Open an issue</li>
-          <li class="chip">Fork & pull request</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="Labs">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Practical labs</p>
+        <nav aria-label="Sections">
+          <!-- @toc content/labs.md -->
+        </nav>
       </div>
-    </section>
+    </aside>
+    <article class="lesson">
+      <header class="lesson-hero">
+        <p class="eyebrow">Labs</p>
+        <h1>Practise on the real thing</h1>
+        <p class="lead">Missions teach in the browser; labs make it real: Git Bash on a Windows PC and your own repositories on github.com.</p>
+      </header>
+      <div class="lesson-body">
+        <!-- @md content/labs.md -->
+      </div>
+    </article>
   </main>
 
   <!-- @include footer -->

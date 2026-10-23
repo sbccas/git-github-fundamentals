@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo (planned)** | `github.com/sbccas/git-github-fundamentals` → `https://sbccas.github.io/git-github-fundamentals/` |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.3 — approved; Phase 1 in progress (Milestones 1–2 built) |
+| **Status** | v1.5 — approved; Phase 1 in progress (Milestones 1–2 committed, 3 built) |
 | **Last updated** | 2026-10-22 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -86,6 +86,7 @@ Session-by-session teaching plans (15 × 2 hours) are in [`faculty-guide.md`](fa
 | P-08 | **Bonus** (`/bonus`) | Beyond-the-syllabus topics (§5) |
 | P-09 | **Glossary** (`/glossary`) | All terms; same terms show a hover/tap definition inside lessons |
 | P-10 | **About** (`/about`) | College details (§10), course details, hidden faculty section (§10) |
+| P-11 | **Teach** (`/teach/`, `/teach/session-NN/`, `/teach/handbook/`) | Lecture slide decks, presenter view and the Faculty Handbook — see §6.6 F-04 – F-18 |
 
 ### 6.2 Practice terminal (real Git in the browser)
 
@@ -157,6 +158,35 @@ L-01 profile README · L-02 create & configure a repo · L-03 open an issue · L
 | F-01 | **Faculty guide** (`docs/faculty-guide.md`): lab setup checklist, teaching method, 15 session plans (objectives, timeline, demo script, activity, misconceptions, check questions, homework), assessment scheme and rubric, troubleshooting, class-practice-repo setup, syllabus mapping. Status: draft v1.0 written 2026-10-22. |
 | F-02 | Faculty guide must stay in sync with lessons, missions and labs — any change to an M-xx / L-xx item updates the guide in the same commit. |
 | F-03 | Faculty guide must be exportable to PDF for printing (Markdown → PDF). |
+
+#### Lecture slides — "Teach" section (approved 2026-10-22)
+
+Web-based slide decks that faculty project in class. One deck per session (15 decks), following the session plans in the faculty guide.
+
+| ID | Requirement |
+|---|---|
+| F-04 | **Teach hub** at `/teach/`: list of the 15 sessions grouped by unit, each with duration, objectives and links to its deck, its faculty-guide plan and its handbook chapter. Linked from the "More" menu and the footer. Public (same as the faculty guide). |
+| F-05 | **Deck page** at `/teach/session-NN/` (NN = 01–15). 16:9 stage that scales to fill any screen; slide number and progress bar; works offline once loaded. |
+| F-06 | **Projector look:** dark background with **neon glowing borders** and highlight boxes in the unit colours; large type (body ≥ 28 px at 1080p, code ≥ 24 px); high contrast so text stays readable on projectors and LCD panels. A "projector boost" toggle increases glow and contrast for washed-out projectors. |
+| F-07 | **Highlights:** step-by-step reveals ("fragments") so faculty can show one point at a time; a neon outline pulse on the currently revealed item; a spotlight that dims everything except one block. |
+| F-08 | **Slide types:** title, concept + analogy, diagram (three stages, branches, local/remote), command demo (command, real output, explanation), story scene (Amroli Canteen), compare table, quiz question with reveal, activity / timer, recap. |
+| F-09 | **Controls:** → / Space / Page Down = next; ← / Page Up = previous (works with presentation clickers); F = full screen; O = overview grid; P = presenter view; T = start/stop activity timer; B = blank screen; Home/End. Touch swipe on tablets. |
+| F-10 | **Presenter view** (P): opens a second window with current + next slide, speaker notes, elapsed time and the session timeline from the faculty guide; kept in sync with the projected window (BroadcastChannel). |
+| F-11 | **Live demo link:** command-demo slides have a "Run in Playground" button that opens `/playground/?cmd=…` in a new tab. |
+| F-12 | **Content as data:** each deck is a content file (`content/slides/session-NN.*`) so faculty can edit text without touching code. |
+| F-13 | **Print/PDF:** print stylesheet puts one slide per landscape page (light background, borders kept) for handouts. |
+| F-14 | Respects "reduce motion": glow pulses and transitions turn off; highlights stay as static outlines. |
+
+#### Faculty Handbook (approved 2026-10-22)
+
+A book-style companion for staff: what to *know* before teaching (the faculty guide covers how to *run* each session).
+
+| ID | Requirement |
+|---|---|
+| F-15 | **Location:** `docs/faculty-handbook/` — one Markdown chapter per unit plus a front matter file and appendices; also rendered on the site at `/teach/handbook/` and printable to PDF. Public. |
+| F-16 | **Each chapter contains:** learning outcomes; in-depth explanations (deeper than the student lessons); the **Amroli Canteen story episode** for that unit; 2–3 **additional story examples** in other settings students know (college fest website, library management system, a class assignment); analogies and board diagrams to draw; worked command walkthroughs with real output; common student questions with model answers; misconceptions and how to correct them; a 10-question self-check for faculty with answers; a "10-minute recap" for revision lectures. |
+| F-17 | **Story bible** (front matter): the Amroli Canteen cast, their project, files and the full story arc across all five units, so every faculty member tells the same story. |
+| F-18 | Handbook, slides, lessons and faculty guide stay consistent — a change to a session's content updates all four in the same commit (extends F-02). |
 
 ### 6.7 Global UX
 
@@ -249,10 +279,10 @@ for code (all from Google Fonts). Final palette and tokens defined in the design
 
 ```
 git-github-fundamentals/
-├── docs/                 PRD.md, reference-examples.md, faculty-guide.md, content-guide.md
-├── content/              units/*.md, quizzes/*.json, missions/*.json, glossary.json, cheatsheet.json
+├── docs/                 PRD.md, reference-examples.md, faculty-guide.md, content-guide.md, faculty-handbook/
+├── content/              units/*.md, quizzes/*.json, missions/*.json, slides/session-NN.*, glossary.json, cheatsheet.json
 ├── src/
-│   ├── pages/            home, unit, playground, missions, cheatsheet, labs, self-check, bonus, glossary, about
+│   ├── pages/            home, unit, playground, missions, cheatsheet, labs, self-check, bonus, glossary, about, teach
 │   ├── terminal/         shell, git command adapters, simulated remote, editor
 │   ├── graph/            commit-graph renderer, time-travel
 │   ├── components/       nav, palette, quiz, code-block, progress
@@ -266,11 +296,11 @@ git-github-fundamentals/
 | # | Milestone | Output | Review |
 |---|---|---|---|
 | 1 | Foundation | Repo, design system, layout, home page, navigation, theme, command palette | ✅ **approved & committed 2026-10-22** |
-| 2 | Terminal engine | Real-Git terminal, simulated remote, editor, file explorer, live graph | ✅ approval — **built 2026-10-22, awaiting review** |
-| 3 | Units 1–2 | Lessons, quizzes, missions M-01 – M-07, labs | ✅ approval |
-| 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel | ✅ approval |
-| 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about | ✅ approval |
-| 6 | Polish & launch | PWA, accessibility & mobile testing, publish to GitHub Pages | ✅ go-live |
+| 2 | Terminal engine | Real-Git terminal, simulated remote, editor, file explorer, live graph | ✅ **committed 2026-10-22** |
+| 3 | Units 1–2 + Teach foundation | Lessons, quizzes, missions M-01 – M-07, labs · **slide engine + neon theme + Teach hub** · decks for sessions 1–6 · handbook front matter (story bible) + chapters 1–2 | ✅ approval — **built 2026-10-22, awaiting review** |
+| 4 | Units 3–4 | Lessons, quizzes, missions M-08 – M-15, conflict game, time-travel · decks for sessions 7–12 · handbook chapters 3–4 | ✅ approval |
+| 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ approval |
+| 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ go-live |
 
 ## 13. Out of scope (all phases unless moved by approval)
 
@@ -297,7 +327,7 @@ git-github-fundamentals/
 
 | Date | Idea | Notes |
 |---|---|---|
-| 2026-10-22 | **Teach mode on the website** — faculty view of the guide inside the site (presenter view of each session, timer, demo commands one tap away) | Would need the guide to be hidden from students (Phase 2 faculty role) |
+| 2026-10-22 | ~~Teach mode on the website~~ | **Approved** as the public Teach section (F-04 – F-14). A faculty-only version would need Phase 2 roles. |
 | 2026-10-22 | **Private exam bank** — real practical-exam variants kept out of the public repo | Faculty guide holds only sample tasks |
 
 ## 16. Change log
@@ -305,6 +335,8 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-22 | 1.5 | Milestone 3 built: Markdown content pipeline (build/markdown.js), Unit 1–2 lessons with diagrams, quizzes (12 each), missions M-01 – M-07 with automatic checks, Labs page (Unit 1, L-01, Unit 2), XP/levels/badges, Teach hub, neon deck engine with presenter view, decks 1–6, faculty guide and handbook (story bible, ch. 1–2) on the site |
+| 2026-10-22 | 1.4 | Added lecture slides / Teach section (F-04 – F-14) and Faculty Handbook (F-15 – F-18); slides and handbook chapters built alongside each unit in Milestones 3–5; GitHub push moved into Milestone 6 |
 | 2026-10-22 | 1.3 | Milestone 2 built: shell, 24 Git commands, simulated GitHub (create repo, browse, teammate push), editor, file explorer, live graph, sandboxes, `?cmd=` pre-fill for lessons |
 | 2026-10-22 | 1.2 | Decisions D-1–D-4, D-7 recorded; Milestone 1 built |
 | 2026-10-22 | 1.1 | Added faculty guide (§6.6 F-01–F-03); unit hours aligned to 15 × 2-hour sessions (U1 4, U2 8, U3 6, U4 6, U5 4, assessment 2); backlog items added |

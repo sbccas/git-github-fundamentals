@@ -1,0 +1,302 @@
+/* ================= Lecture decks (PRD F-05 – F-14): neon, projector-first ================= */
+
+/* Slides are always dark (projector), whatever theme the site uses. */
+.page-deck {
+  color-scheme: dark;
+  --bg: #060912;
+  --bg-2: #0a0f1d;
+  --surface: #0e1527;
+  --surface-2: #131c33;
+  --surface-3: #1a2440;
+  --border: rgba(148, 163, 184, .16);
+  --border-strong: rgba(148, 163, 184, .3);
+  --text: #f2f5ff;
+  --text-2: #c3cbe0;
+  --muted: #8a94ad;
+  --primary: #8b7bff;
+  --accent: #2ee6d6;
+  --green: #3ddc97;
+  --amber: #ffc857;
+  --red: #ff6b81;
+  --pink: #ff7ad9;
+  --neon-1: #b69cff;
+  --neon-2: #2ef2ff;
+  --neon-3: #b6ff3b;
+  --neon-4: #ffd23f;
+  --neon-5: #ff5ec8;
+  --neon: var(--neon-1);
+  --glow: 1;
+  --stage-bg: #04060d;
+  --ink: #f2f5ff;
+  --ink-2: #c3cbe0;
+  --ink-3: #8a94ad;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  color: var(--ink);
+}
+.page-deck::before { display: none; }
+.page-deck[data-unit="1"] { --neon: var(--neon-1); }
+.page-deck[data-unit="2"] { --neon: var(--neon-2); }
+.page-deck[data-unit="3"] { --neon: var(--neon-3); }
+.page-deck[data-unit="4"] { --neon: var(--neon-4); }
+.page-deck[data-unit="5"] { --neon: var(--neon-5); }
+.page-deck.boost { --glow: 1.8; --ink-2: #e2e7f5; --ink-3: #b0b9cf; }
+
+/* ---------- Stage: 1920×1080 scaled to fit ---------- */
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: #000; }
+.deck { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; transform: translate(-50%, -50%); }
+.is-presenter .deck { left: 0; top: 0; }
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  padding: 70px 96px 96px;
+  background:
+    radial-gradient(1000px 600px at 0% 0%, color-mix(in srgb, var(--neon) 16%, transparent), transparent 60%),
+    radial-gradient(900px 600px at 100% 100%, color-mix(in srgb, var(--neon-2) 9%, transparent), transparent 60%),
+    linear-gradient(rgba(140, 160, 210, .05) 1px, transparent 1px) 0 0 / 60px 60px,
+    linear-gradient(90deg, rgba(140, 160, 210, .05) 1px, transparent 1px) 0 0 / 60px 60px,
+    var(--stage-bg);
+  font-family: var(--font-body);
+  font-size: 38px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.slide.is-current { display: block; animation: slide-in .45s var(--ease); }
+@keyframes slide-in { from { opacity: 0; transform: translateX(26px); } }
+.slide.is-back { animation-name: slide-in-back; }
+@keyframes slide-in-back { from { opacity: 0; transform: translateX(-26px); } }
+
+/* Neon frame */
+.slide::after {
+  content: "";
+  position: absolute;
+  inset: 26px;
+  border: 2px solid color-mix(in srgb, var(--neon) 80%, transparent);
+  border-radius: 28px;
+  box-shadow:
+    0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--neon) 60%, transparent),
+    inset 0 0 calc(30px * var(--glow)) color-mix(in srgb, var(--neon) 22%, transparent);
+  pointer-events: none;
+}
+.slide-inner { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; gap: 26px; }
+.slide-notes { display: none; }
+
+/* ---------- Typography ---------- */
+.slide h1, .slide h2, .slide h3 { font-family: var(--font-display); letter-spacing: -0.02em; margin: 0; color: var(--ink); }
+.slide h1 { font-size: 104px; line-height: 1.02; font-weight: 750; }
+.slide h2 { font-size: 66px; line-height: 1.08; font-weight: 700; }
+.slide h3 { font-size: 46px; }
+.slide h2 { text-shadow: 0 0 calc(22px * var(--glow)) color-mix(in srgb, var(--neon) 45%, transparent); }
+.slide p { margin: 0; color: var(--ink-2); }
+.slide strong { color: var(--ink); }
+.slide em { color: var(--neon); font-style: normal; }
+.slide ul, .slide ol { margin: 0; padding-left: 1.1em; display: grid; gap: 14px; color: var(--ink-2); }
+.slide li::marker { color: var(--neon); }
+.slide code { font-family: var(--font-mono); font-size: .86em; padding: .05em .3em; border-radius: 8px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .14); color: var(--ink); }
+.slide mark.hl {
+  background: none;
+  color: var(--neon);
+  padding: 0;
+  text-shadow: 0 0 calc(14px * var(--glow)) color-mix(in srgb, var(--neon) 80%, transparent);
+  border-bottom: 3px solid color-mix(in srgb, var(--neon) 70%, transparent);
+}
+.slide a { color: var(--neon-2); }
+
+/* ---------- Neon boxes ---------- */
+.slide .callout {
+  --c: var(--neon);
+  margin: 0;
+  padding: 26px 32px;
+  border: 2px solid color-mix(in srgb, var(--c) 85%, transparent);
+  border-left-width: 2px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--c) 7%, rgba(5, 8, 18, .85));
+  box-shadow: 0 0 calc(22px * var(--glow)) color-mix(in srgb, var(--c) 40%, transparent), inset 0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--c) 12%, transparent);
+}
+.slide .callout > * + * { margin-top: 12px; }
+.slide .callout-title { font-family: var(--font-display); font-size: 42px; font-weight: 700; color: var(--c); display: flex; gap: 14px; align-items: center; margin: 0 0 6px; text-shadow: 0 0 calc(12px * var(--glow)) color-mix(in srgb, var(--c) 60%, transparent); }
+.slide .callout-neon { --c: var(--neon); }
+.slide .callout-tip { --c: var(--neon-3); }
+.slide .callout-warning { --c: var(--neon-4); }
+.slide .callout-analogy { --c: var(--neon-5); }
+.slide .callout-story { --c: var(--neon-2); }
+.slide .callout-insight { --c: var(--neon-1); }
+.slide .callout-reveal { --c: var(--neon-3); }
+.slide .callout-example { --c: var(--neon-4); }
+
+/* ---------- Terminal on slides ---------- */
+.slide .term-block { margin: 0; border-radius: 20px; background: #070b16; border: 2px solid color-mix(in srgb, var(--neon) 55%, transparent); box-shadow: 0 0 calc(24px * var(--glow)) color-mix(in srgb, var(--neon) 30%, transparent); overflow: hidden; }
+.slide .term-block-bar { padding: 14px 22px; gap: 14px; }
+.slide .term-dots span { width: 16px; height: 16px; }
+.slide .term-block-title { font-size: 24px; }
+.slide .term-block-body { padding: 22px 30px; font-size: 32px; line-height: 1.5; }
+.slide .tb-line { display: block; white-space: pre; }
+.slide .tb-cmd { color: #f2f5ff; }
+.slide .tb-prompt { color: #3ddc97; }
+.slide .tb-out { color: #a9b3cb; }
+.slide .tb-add { color: #3ddc97; }
+.slide .tb-del { color: #ff6b81; }
+.slide .tb-hunk { color: #5fd7ff; }
+.slide .copy-btn { display: none; }
+.slide .try-btn { min-height: 44px; padding: 0 20px; font-size: 22px; border-radius: 12px; }
+.slide pre.out-block, .slide .code-block pre { font-size: 30px; border-radius: 18px; padding: 22px 28px; background: #070b16; border: 1px solid rgba(255,255,255,.12); }
+.slide .code-block .copy-btn { display: none; }
+
+/* Tables */
+.slide .table-wrap { border: 2px solid color-mix(in srgb, var(--neon) 50%, transparent); border-radius: 20px; overflow: hidden; box-shadow: 0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--neon) 22%, transparent); }
+.slide table { width: 100%; border-collapse: collapse; font-size: 32px; }
+.slide th, .slide td { padding: 16px 24px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.slide th { color: var(--neon); font-weight: 700; background: color-mix(in srgb, var(--neon) 8%, transparent); }
+.slide td { color: var(--ink-2); }
+
+/* Diagrams on slides reuse lesson markup, scaled up */
+.slide .diagram { margin: 0; padding: 14px; font-size: 16px; zoom: 2.2; border-radius: 14px; background: rgba(8, 12, 24, .7); border: 1px solid rgba(255, 255, 255, .12); container-type: normal; }
+.slide .diagram .dg-flow { flex-direction: row; }
+.slide .diagram .dg-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.slide .diagram .dg-cols.dg-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* ---------- Layouts ---------- */
+.slide-title .slide-inner { justify-content: center; gap: 30px; }
+.slide-title h1 { font-size: 128px; text-shadow: 0 0 calc(30px * var(--glow)) color-mix(in srgb, var(--neon) 55%, transparent); }
+.slide-title .kicker, .slide .kicker { font: 700 30px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--neon); }
+.slide-section .slide-inner { justify-content: center; align-items: flex-start; }
+.slide-section h1 { font-size: 140px; }
+.slide-two .slide-inner { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: min-content; column-gap: 46px; row-gap: 30px; align-content: start; }
+.slide-two .slide-inner > h2, .slide-two .slide-inner > .kicker, .slide-two .slide-inner > p:first-child { grid-column: 1 / -1; }
+.slide-three .slide-inner { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 30px; align-content: start; }
+.slide-three .slide-inner > h2 { grid-column: 1 / -1; }
+.slide-center .slide-inner { justify-content: center; align-items: center; text-align: center; }
+.slide-big p { font-size: 54px; line-height: 1.3; color: var(--ink); }
+.slide-quiz ol { list-style: upper-alpha; font-size: 40px; }
+
+/* Activity timer */
+.slide-timer {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 14px 34px;
+  border-radius: 999px;
+  border: 2px solid var(--neon);
+  font: 700 64px var(--font-mono);
+  color: var(--neon);
+  text-shadow: 0 0 calc(18px * var(--glow)) var(--neon);
+  box-shadow: 0 0 calc(22px * var(--glow)) color-mix(in srgb, var(--neon) 40%, transparent);
+}
+.slide-timer.is-running { animation: timer-glow 2s ease-in-out infinite; }
+.slide-timer.is-done { color: var(--neon-5); border-color: var(--neon-5); }
+@keyframes timer-glow { 50% { box-shadow: 0 0 calc(40px * var(--glow)) color-mix(in srgb, var(--neon) 60%, transparent); } }
+
+/* ---------- Fragments & highlights ---------- */
+.fragment { opacity: .07; transition: opacity .35s var(--ease), transform .35s var(--ease), box-shadow .4s; }
+.fragment.is-shown { opacity: 1; }
+li.fragment:not(.is-shown) { transform: translateX(-10px); }
+.fragment.is-latest { animation: neon-pulse 1.6s ease-out 1; }
+li.fragment.is-latest { color: var(--ink); }
+@keyframes neon-pulse {
+  0% { filter: drop-shadow(0 0 0 transparent); }
+  30% { filter: drop-shadow(0 0 calc(16px * var(--glow)) var(--neon)); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
+/* Spotlight: click a block to dim everything else */
+.slide.has-spot .slide-inner > *:not(.is-spot) { opacity: .14; filter: blur(1px); transition: opacity .3s, filter .3s; }
+.slide .is-spot { position: relative; z-index: 2; outline: 3px solid var(--neon); outline-offset: 10px; border-radius: 14px; box-shadow: 0 0 calc(40px * var(--glow)) color-mix(in srgb, var(--neon) 55%, transparent); }
+
+/* ---------- Chrome (toolbar, progress, overlays) ---------- */
+.deck-progress { position: fixed; left: 0; bottom: 0; height: 5px; width: 0; z-index: 20; background: var(--neon); box-shadow: 0 0 14px var(--neon); transition: width .4s var(--ease); }
+.deck-ui {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 30;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(10, 14, 28, .82);
+  border: 1px solid rgba(255, 255, 255, .14);
+  backdrop-filter: blur(10px);
+  width: max-content;
+  white-space: nowrap;
+  font: 13px var(--font-body);
+  color: var(--ink-2);
+  transition: opacity .4s, transform .4s;
+}
+.deck-ui.is-idle { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+.deck-ui a, .deck-ui button {
+  min-height: 34px;
+  min-width: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.deck-ui a:hover, .deck-ui button:hover, .deck-ui button[aria-pressed="true"] { background: rgba(255, 255, 255, .1); }
+.deck-count { padding: 0 8px; font-family: var(--font-mono); color: var(--ink-3); }
+.deck-blank { position: fixed; inset: 0; z-index: 40; background: #000; display: grid; place-items: center; color: #333; font: 20px var(--font-body); }
+.deck-help, .deck-overview {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: auto;
+  background: rgba(2, 4, 10, .94);
+  backdrop-filter: blur(6px);
+  padding: 40px;
+}
+.deck-help-box { max-width: 680px; margin: 6vh auto; padding: 28px 32px; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--neon) 50%, transparent); background: #080c18; box-shadow: 0 0 40px -10px var(--neon); }
+.deck-help h2 { margin: 0 0 16px; font-family: var(--font-display); }
+.deck-help dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 22px; margin: 0; }
+.deck-help dt { font-family: var(--font-mono); color: var(--neon); }
+.deck-help dd { margin: 0; color: var(--ink-2); }
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+.overview-item { position: relative; text-align: left; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255, 255, 255, .12); cursor: pointer; background: #000; padding: 0; }
+.overview-item.is-current { border-color: var(--neon); box-shadow: 0 0 18px var(--neon); }
+.overview-item .slide { display: block; transform-origin: 0 0; pointer-events: none; animation: none; }
+.overview-item .fragment { opacity: 1; transform: none; }
+.overview-num { position: absolute; left: 8px; top: 6px; z-index: 2; font: 700 14px var(--font-mono); color: #fff; background: rgba(0, 0, 0, .6); padding: 2px 8px; border-radius: 6px; }
+
+/* ---------- Presenter view ---------- */
+.presenter { position: fixed; inset: 0; display: grid; grid-template-columns: 1.55fr 1fr; grid-template-rows: auto 1fr; gap: 18px; padding: 18px; background: #05070d; color: var(--ink); font-family: var(--font-body); }
+.presenter header { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.presenter .p-clock { font: 700 42px var(--font-mono); color: var(--neon); }
+.presenter .p-meta { color: var(--ink-3); }
+.presenter .p-cur, .presenter .p-next { position: relative; border-radius: 14px; overflow: hidden; border: 2px solid var(--neon); background: #000; }
+.presenter .p-next { border-color: rgba(255, 255, 255, .15); aspect-ratio: 16 / 9; }
+.presenter .p-cur .slide.is-current, .presenter .p-next .slide { display: block; transform-origin: 0 0; animation: none; }
+.presenter .p-side { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+.presenter .p-label { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); margin: 0 0 4px; }
+.presenter .p-notes { flex: 1; min-height: 0; overflow: auto; padding: 16px 18px; border-radius: 14px; background: #0b1020; border: 1px solid rgba(255, 255, 255, .1); font-size: 20px; line-height: 1.55; color: var(--ink-2); }
+.presenter .p-notes p { margin: 0 0 10px; }
+.presenter .p-controls { display: flex; gap: 8px; }
+.presenter .p-controls button { flex: 1; white-space: nowrap; padding: 0 14px; min-height: 48px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .18); background: #10172b; color: var(--ink); font: 600 16px var(--font-body); cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide.is-current, .fragment.is-latest, .slide-timer.is-running { animation: none !important; }
+}
+
+/* ---------- Print: one slide per 16:9 page (F-13) ---------- */
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  .page-deck { overflow: visible; background: #fff; }
+  .deck-viewport { position: static; display: block; }
+  .deck { transform: none !important; height: auto; }
+  .slide { position: relative; display: block !important; height: 1080px; break-after: page; animation: none !important; background: #fff; color: #0d1222; }
+  .slide::after { box-shadow: none; }
+  .slide h1, .slide h2, .slide h3, .slide strong { color: #0d1222; text-shadow: none; }
+  .slide p, .slide li, .slide td { color: #2a3247; }
+  .fragment { opacity: 1 !important; transform: none !important; }
+  .deck-ui, .deck-progress { display: none !important; }
+}
+
+/* Presenter window */
+.is-presenter .deck-ui, .is-presenter .deck-progress { display: none !important; }
+.is-presenter { overflow: auto; }

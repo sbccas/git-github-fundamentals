@@ -3,30 +3,116 @@
 <head>
   <meta charset="utf-8">
   <title>Missions · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Fifteen story challenges with the Amroli Canteen team. Earn XP and badges.">
+  <meta name="description" content="Story-based Git challenges with the Amroli Canteen team. Real Git in your browser, automatic checking, XP and badges.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/playground.css">
+  <link rel="stylesheet" href="/styles/missions.css">
 </head>
-<body data-page="missions">
+<body data-page="missions" class="page-playground page-missions">
   <!-- @include header -->
 
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 3</p>
-        <h1>Missions</h1>
-        <p class="lead" style="margin-inline:auto">Fifteen story challenges with the Amroli Canteen team. Earn XP and badges.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">15 story missions</li>
-          <li class="chip">3-level hints</li>
-          <li class="chip">Automatic checking</li>
-          <li class="chip">XP & badges</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
-      </div>
+  <main id="main">
+    <!-- ============ HUB ============ -->
+    <section class="container ms-hub" data-hub>
+      <header class="ms-hero">
+        <div>
+          <p class="eyebrow">Story mode</p>
+          <h1>Missions</h1>
+          <p class="lead">Help the Amroli Canteen team with real Git problems. Each mission runs in its own sandbox and checks your work automatically.</p>
+        </div>
+        <div class="ms-stats card" data-stats></div>
+      </header>
+      <div data-mission-list></div>
+      <section class="ms-badges">
+        <h2>Badges</h2>
+        <div class="badge-grid" data-badges></div>
+      </section>
     </section>
+
+    <!-- ============ RUNNER ============ -->
+    <div class="pg" data-runner hidden>
+      <div class="pg-toolbar container">
+        <div class="pg-title">
+          <a class="mini-btn" href="{{base}}missions/">← Missions</a>
+          <h1 data-runner-title>Mission</h1>
+        </div>
+        <div class="pg-tools">
+          <span class="ms-progress" data-runner-progress></span>
+          <button class="mini-btn" type="button" data-mission-reset>Restart mission</button>
+        </div>
+      </div>
+
+      <div class="pg-grid container">
+        <section class="pg-term" data-terminal aria-label="Terminal">
+          <div class="term-bar">
+            <span class="term-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="term-title">MINGW64:/home/student</span>
+            <span class="term-busy" aria-hidden="true">running…</span>
+          </div>
+          <div class="tv-scroll" data-term-scroll>
+            <div class="tv-output" data-term-output role="log" aria-live="polite" aria-label="Terminal output"></div>
+            <form class="tv-form" data-term-form autocomplete="off">
+              <div class="tv-prompt" data-term-prompt></div>
+              <div class="tv-line">
+                <span class="p-dollar" aria-hidden="true">$</span>
+                <input class="tv-input" data-term-input type="text" aria-label="Type a command and press Enter"
+                  autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" enterkeyhint="send">
+              </div>
+            </form>
+          </div>
+          <div class="keybar" data-keybar aria-label="Terminal keys">
+            <div class="keybar-keys">
+              <button type="button" data-key="tab" aria-label="Tab (complete)">Tab</button>
+              <button type="button" data-key="up" aria-label="Previous command">↑</button>
+              <button type="button" data-key="down" aria-label="Next command">↓</button>
+              <button type="button" data-key="ctrl-c" aria-label="Cancel line">Ctrl+C</button>
+            </div>
+            <div class="keybar-chips">
+              <button type="button" data-insert="git ">git</button>
+              <button type="button" data-insert="status">status</button>
+              <button type="button" data-insert="add .">add .</button>
+              <button type="button" data-insert='commit -m ""' data-cursor="1">commit -m</button>
+              <button type="button" data-insert="log --oneline --graph --all">log</button>
+              <button type="button" data-insert="ls">ls</button>
+              <button type="button" data-insert="cd ">cd</button>
+              <button type="button" data-insert="clear">clear</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="pg-side" aria-label="Mission and repository views">
+          <div class="pg-tabs" role="tablist">
+            <button role="tab" type="button" aria-selected="true" data-tab="mission">Mission</button>
+            <button role="tab" type="button" aria-selected="false" data-tab="graph">Graph</button>
+            <button role="tab" type="button" aria-selected="false" data-tab="files">Files</button>
+            <button role="tab" type="button" aria-selected="false" data-tab="github">GitHub</button>
+          </div>
+          <div class="pg-panel ms-panel" role="tabpanel" data-panel="mission"></div>
+          <div class="pg-panel" role="tabpanel" data-panel="graph" hidden></div>
+          <div class="pg-panel" role="tabpanel" data-panel="files" hidden></div>
+          <div class="pg-panel" role="tabpanel" data-panel="github" hidden></div>
+        </section>
+      </div>
+      <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+    </div>
   </main>
 
+  <dialog class="editor" data-editor aria-label="Editor">
+    <div class="editor-head">
+      <span class="editor-path" data-editor-path></span>
+      <span class="editor-lines muted" data-editor-lines></span>
+    </div>
+    <textarea class="editor-text" data-editor-text spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="File contents"></textarea>
+    <div class="editor-foot">
+      <span class="editor-hint muted" data-editor-hint></span>
+      <div class="editor-actions">
+        <button class="mini-btn" type="button" data-editor-cancel>Cancel</button>
+        <button class="mini-btn mini-btn-primary" type="button" data-editor-save>Save</button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/missions.js"></script>
 </body>
 </html>

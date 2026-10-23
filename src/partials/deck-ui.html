@@ -1,0 +1,31 @@
+<nav class="deck-ui" aria-label="Slide controls">
+  <a href="{{base}}teach/" title="Back to Teach">← Teach</a>
+  <button type="button" data-act="prev" aria-label="Previous (←)">‹</button>
+  <span class="deck-count" data-count aria-live="polite"></span>
+  <button type="button" data-act="next" aria-label="Next (→)">›</button>
+  <button type="button" data-act="overview" title="Overview (O)">▦ Overview</button>
+  <button type="button" data-act="presenter" title="Presenter view (P)">🗒 Presenter</button>
+  <button type="button" data-act="timer" title="Activity timer (T)">⏱</button>
+  <button type="button" data-act="boost" data-boost aria-pressed="false" title="Projector boost (G)">✦ Boost</button>
+  <button type="button" data-act="fullscreen" title="Full screen (F)">⛶</button>
+  <button type="button" data-act="help" title="Keyboard shortcuts (?)">?</button>
+</nav>
+<div class="deck-blank" hidden>Screen paused · press B to continue</div>
+<div class="deck-help" hidden>
+  <div class="deck-help-box">
+    <h2>Presenting shortcuts</h2>
+    <dl>
+      <dt>→ Space PgDn</dt><dd>Next point or slide (works with presentation clickers)</dd>
+      <dt>← PgUp</dt><dd>Back</dd>
+      <dt>F</dt><dd>Full screen</dd>
+      <dt>O</dt><dd>Overview of all slides</dd>
+      <dt>P</dt><dd>Presenter view: notes, next slide and clock in a second window</dd>
+      <dt>T</dt><dd>Start / pause the activity timer</dd>
+      <dt>B</dt><dd>Blank the screen</dd>
+      <dt>G</dt><dd>Projector boost: brighter glow and contrast for washed-out projectors</dd>
+      <dt>Click</dt><dd>Spotlight a block (Esc to clear)</dd>
+      <dt>Home / End</dt><dd>First / last slide</dd>
+    </dl>
+  </div>
+</div>
+<div class="deck-overview" hidden><div class="overview-grid"></div></div>

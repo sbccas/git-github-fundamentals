@@ -11,6 +11,9 @@ Every session uses the course website (`https://sbccas.github.io/git-github-fund
 - **Terminal** = the in-browser practice terminal (Playground page). It runs real Git, works on phones, and needs no install.
 
 > Requirement IDs (M-xx, L-xx, P-xx) match `docs/PRD.md`.
+>
+> **Companions (being built alongside each unit):** projector slide decks for every session at `/teach/session-NN/`,
+> and the **Faculty Handbook** (`docs/faculty-handbook/`) with in-depth explanations and story examples for preparing each unit.
 
 ---
 

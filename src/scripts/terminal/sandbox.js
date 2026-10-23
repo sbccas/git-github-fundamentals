@@ -51,7 +51,7 @@ export function saveSettings(id, s) { write(settingsKey(id), s); }
  * The seed matches a lab PC where Git for Windows was installed with "Override the default branch name: main".
  */
 export async function openSandbox(id, { wipe = false } = {}) {
-  const fs = openFs(id, { wipe });
+  const fs = await openFs(id, { wipe });
   const h = helpers(fs);
   const seeded = await h.isFile(join(HOME, '.gitconfig'));
   if (!seeded) {

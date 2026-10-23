@@ -1,0 +1,116 @@
+{
+  "unit": 2,
+  "title": "Unit 2 quiz: Getting Started with Git",
+  "passMark": 60,
+  "questions": [
+    {
+      "id": "u2-1", "type": "single",
+      "q": "What does git init do?",
+      "options": [
+        "Uploads the folder to GitHub",
+        "Creates a hidden .git folder so Git starts tracking this folder",
+        "Deletes the history of the project",
+        "Installs Git on the computer"
+      ],
+      "answer": 1,
+      "explain": "git init creates the repository (the .git folder) in the current folder. Nothing is uploaded; it is purely local."
+    },
+    {
+      "id": "u2-2", "type": "order",
+      "q": "Put the three stages of Git in the order a change travels.",
+      "items": ["Working directory", "Staging area (index)", "Repository (commit)"],
+      "explain": "You edit in the working directory, git add moves changes to the staging area, git commit saves them in the repository."
+    },
+    {
+      "id": "u2-3", "type": "predict",
+      "q": "In a new repository, Krish creates menu.txt and runs git status. Under which heading is menu.txt listed?",
+      "code": "$ echo \"Samosa 15\" > menu.txt\n$ git status",
+      "options": ["Changes to be committed", "Changes not staged for commit", "Untracked files", "nothing to commit, working tree clean"],
+      "answer": 2,
+      "explain": "Git sees the new file but has never saved it, so it is untracked until you git add it."
+    },
+    {
+      "id": "u2-4", "type": "single",
+      "q": "Which command stages every change in the current folder and its subfolders?",
+      "options": ["git add .", "git commit -a", "git stage --all-files", "git push ."],
+      "answer": 0,
+      "explain": "git add . stages new, modified and deleted files under the current folder. git commit -a only stages files Git already tracks."
+    },
+    {
+      "id": "u2-5", "type": "single",
+      "q": "You staged secrets.txt by mistake. How do you unstage it but keep the file as it is?",
+      "options": ["git restore --staged secrets.txt", "git rm secrets.txt", "git commit --undo", "rm secrets.txt"],
+      "answer": 0,
+      "explain": "git restore --staged moves the file out of the staging area. Your edits stay. git rm would delete the file."
+    },
+    {
+      "id": "u2-6", "type": "single",
+      "q": "Which is the best commit message?",
+      "options": ["update", "final changes", "Add vada pav to menu", "asdf"],
+      "answer": 2,
+      "explain": "Good messages say what the commit does and start with a verb, so the history reads like a story."
+    },
+    {
+      "id": "u2-7", "type": "predict",
+      "q": "What does the 'M' in the left column of git status -s mean here?",
+      "code": "$ git status -s\nM  menu.txt\n?? menu.css",
+      "options": ["menu.txt is modified and staged", "menu.txt is modified but not staged", "menu.txt is merged", "menu.txt is missing"],
+      "answer": 0,
+      "explain": "In short status the left column is the staging area and the right column the working directory. M in the left column = staged change. ?? = untracked."
+    },
+    {
+      "id": "u2-8", "type": "single",
+      "q": "What does the -u in git push -u origin main do?",
+      "options": [
+        "Uploads only updated files",
+        "Sets origin/main as the upstream, so later plain git push and git pull work",
+        "Undoes the last push",
+        "Pushes to every remote"
+      ],
+      "answer": 1,
+      "explain": "-u (--set-upstream) links your local main to origin/main. Git prints: branch 'main' set up to track 'origin/main'."
+    },
+    {
+      "id": "u2-9", "type": "single",
+      "q": "What is the difference between git fetch and git pull?",
+      "options": [
+        "There is no difference",
+        "fetch downloads new commits without changing your branch; pull downloads and merges them",
+        "fetch uploads, pull downloads",
+        "pull only works on the first day"
+      ],
+      "answer": 1,
+      "explain": "git pull = git fetch + git merge. fetch lets you look first (for example with git log main..origin/main)."
+    },
+    {
+      "id": "u2-10", "type": "multi",
+      "q": "After git clone https://github.com/hetvi-desai/canteen-docs.git, what is true? (Choose all that apply.)",
+      "options": [
+        "A folder named canteen-docs is created",
+        "It contains the full history, not just the files",
+        "A remote called origin is already set",
+        "You must run git init inside it before committing"
+      ],
+      "answer": [0, 1, 2],
+      "explain": "clone creates the folder, downloads all history and sets up origin. It is already a repository, so no git init is needed."
+    },
+    {
+      "id": "u2-11", "type": "single",
+      "q": "Your push is rejected with '(fetch first)'. What should you do?",
+      "options": [
+        "Delete the GitHub repository and push again",
+        "Run git pull, then git push again",
+        "Run git init again",
+        "Use git push --force every time"
+      ],
+      "answer": 1,
+      "explain": "A teammate pushed first. Pull their work (and resolve any conflict), then push. Forcing would overwrite their commits."
+    },
+    {
+      "id": "u2-12", "type": "order",
+      "q": "Put a normal day of teamwork in order.",
+      "items": ["git pull", "Edit files", "git status", "git add", "git commit -m \"…\"", "git push"],
+      "explain": "Start by getting your team's latest work, then edit, check, stage, commit and share."
+    }
+  ]
+}

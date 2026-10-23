@@ -97,8 +97,25 @@ export function observeReveal() {
   els.forEach((el) => { el.setAttribute('data-reveal-bound', ''); revealObserver.observe(el); });
 }
 
+/** Any [data-copy] button copies its text (lessons, slides, handbook). */
+function initCopyButtons() {
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-copy]');
+    if (!btn) return;
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      btn.textContent = 'Copied ✓';
+    } catch {
+      btn.textContent = 'Press Ctrl+C';
+    }
+    setTimeout(() => { btn.textContent = label; }, 1600);
+  });
+}
+
 initTheme();
 initMenus();
+initCopyButtons();
 initHeaderShadow();
 initModKeys();
 initPalette();

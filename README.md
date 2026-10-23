@@ -13,7 +13,8 @@ story missions and quizzes mapped to the five-unit syllabus.
 | File | What it is |
 |---|---|
 | [`docs/PRD.md`](docs/PRD.md) | Product requirements: the agreed scope. Build only what is listed there. |
-| [`docs/faculty-guide.md`](docs/faculty-guide.md) | Session-by-session teaching guide (15 × 2 hours) |
+| [`docs/faculty-guide.md`](docs/faculty-guide.md) | Session-by-session teaching guide (15 × 2 hours) — also at `/teach/guide/` |
+| [`docs/faculty-handbook/`](docs/faculty-handbook/README.md) | Book-style faculty handbook: story bible + one chapter per unit — also at `/teach/handbook/` |
 | [`docs/reference-examples.md`](docs/reference-examples.md) | Teaching patterns and analogies, mapped to units |
 
 ## Run it locally
@@ -46,7 +47,14 @@ src/
   scripts/data/site.js  course facts: college, units, pages, commands
   scripts/lib/          storage, progress, palette
   styles/               tokens (colours, fonts), base, layout, components, page styles
-content/                lesson text, quizzes, missions (from Milestone 3)
+content/
+  units/unit-N.md       lesson text (Markdown + extras, see build/markdown.js)
+  quizzes/unit-N.json   quiz questions
+  missions/missions.js  story missions: brief, goals with checks, hints, setup
+  slides/session-NN.md  lecture decks (--- between slides, "Notes:" for speaker notes)
+  diagrams/*.html       diagrams used by lessons and slides
+  labs.md               the Labs page
+build/markdown.js       build-time Markdown renderer (lessons, slides, handbook)
 public/                 files copied as-is (favicon, later the PWA manifest)
 docs/                   PRD, faculty guide, reference notes
 ```

@@ -8,8 +8,22 @@ import { join, dirname } from './path.js';
 export const HOME = '/home/student';
 export const GITHUB_ROOT = '/.github';
 
-export function openFs(sandboxId, { wipe = false } = {}) {
-  const fs = new FS(`gg-sandbox-${sandboxId}`, { wipe });
+const instances = new Map();
+
+/**
+ * One LightningFS instance per sandbox for the life of the page. Re-opening with `wipe`
+ * re-initialises the same instance, which releases its storage lock first (opening a
+ * second instance on the same database makes the library "steal" the lock and throw).
+ */
+export async function openFs(sandboxId, { wipe = false } = {}) {
+  const name = `gg-sandbox-${sandboxId}`;
+  let fs = instances.get(name);
+  if (!fs) {
+    fs = new FS(name, { wipe });
+    instances.set(name, fs);
+  } else if (wipe) {
+    await fs.init(name, { wipe: true });
+  }
   return fs;
 }
 

@@ -1,0 +1,122 @@
+{
+  "unit": 1,
+  "title": "Unit 1 quiz: Introduction to Version Control",
+  "passMark": 60,
+  "questions": [
+    {
+      "id": "u1-1", "type": "single",
+      "q": "What is a version control system?",
+      "options": [
+        "Software that records changes to files over time so you can recall earlier versions",
+        "A website for storing photos and videos",
+        "A tool that compiles C programs faster",
+        "An antivirus that protects your source code"
+      ],
+      "answer": 0,
+      "explain": "A VCS records what changed, who changed it, when and why, and lets you bring back any earlier version."
+    },
+    {
+      "id": "u1-2", "type": "single",
+      "q": "Which type of version control has a single point of failure?",
+      "options": ["Local", "Centralized", "Distributed", "None of them"],
+      "answer": 1,
+      "explain": "In a centralized VCS (like SVN) everyone depends on one server. If it is down, nobody can commit or see history."
+    },
+    {
+      "id": "u1-3", "type": "single",
+      "q": "Git is an example of which kind of version control?",
+      "options": ["Local", "Centralized", "Distributed", "Cloud-only"],
+      "answer": 2,
+      "explain": "Git is distributed: every clone contains the full history, so you can work offline and any copy can restore the others."
+    },
+    {
+      "id": "u1-4", "type": "single",
+      "q": "Which statement about Git and GitHub is correct?",
+      "options": [
+        "Git and GitHub are two names for the same thing",
+        "GitHub works without Git",
+        "Git is a tool on your computer; GitHub is a website that hosts Git repositories",
+        "Git needs the internet to save a commit"
+      ],
+      "answer": 2,
+      "explain": "Git is the version control tool (works offline). GitHub is a hosting service for Git repositories with team features."
+    },
+    {
+      "id": "u1-5", "type": "multi",
+      "q": "Which are benefits of using Git and GitHub? (Choose all that apply.)",
+      "options": [
+        "Full history of who changed what and when",
+        "Safe experiments on branches",
+        "Your code is backed up on GitHub",
+        "Your code automatically has no bugs"
+      ],
+      "answer": [0, 1, 2],
+      "explain": "History, branching and backup are real benefits. Git does not find or fix bugs for you, though its history helps you find when a bug appeared."
+    },
+    {
+      "id": "u1-6", "type": "single",
+      "q": "Who created Git, and when?",
+      "options": ["Bill Gates, 1995", "Linus Torvalds, 2005", "GitHub Inc., 2008", "Dennis Ritchie, 1972"],
+      "answer": 1,
+      "explain": "Linus Torvalds created Git in 2005 to manage development of the Linux kernel. GitHub was founded later, in 2008."
+    },
+    {
+      "id": "u1-7", "type": "single",
+      "q": "Which command sets your name for every repository on this computer?",
+      "options": [
+        "git config user.name \"Krish Patel\"",
+        "git config --global user.name \"Krish Patel\"",
+        "git name --set \"Krish Patel\"",
+        "git init --name \"Krish Patel\""
+      ],
+      "answer": 1,
+      "explain": "--global saves the setting in ~/.gitconfig, used by all your repositories. Without --global (inside a repo) it applies to that repository only."
+    },
+    {
+      "id": "u1-8", "type": "predict",
+      "q": "Krish has run the two config commands shown in the lesson. What does this print?",
+      "code": "$ git config user.email",
+      "options": ["krish@example.com", "user.email", "Krish Patel", "Nothing: you must use --list"],
+      "answer": 0,
+      "explain": "git config <name> without a value reads the setting and prints it."
+    },
+    {
+      "id": "u1-9", "type": "single",
+      "q": "You want a quick summary of the options for git commit inside the terminal. What do you type?",
+      "options": ["git commit -h", "git help", "git commit --list", "git manual commit"],
+      "answer": 0,
+      "explain": "git <command> -h prints a short usage summary. git help commit (or git commit --help) opens the full manual page."
+    },
+    {
+      "id": "u1-10", "type": "single",
+      "q": "In the Git for Windows installer, what should you choose for the initial branch name?",
+      "options": ["Let Git decide (master)", "Override it with main", "trunk", "It does not matter, you can never change it"],
+      "answer": 1,
+      "explain": "GitHub uses main, so overriding the default to main keeps your local and GitHub branches consistent. (It can be renamed later with git branch -m.)"
+    },
+    {
+      "id": "u1-11", "type": "multi",
+      "q": "Which are good practices when creating your GitHub account? (Choose all that apply.)",
+      "options": [
+        "Use the same email as in git config",
+        "Pick a professional username like krish-patel",
+        "Turn on two-factor authentication and save recovery codes",
+        "Share your password with your team lead so they can push for you"
+      ],
+      "answer": [0, 1, 2],
+      "explain": "Never share your password. Teammates get access as collaborators on a repository instead."
+    },
+    {
+      "id": "u1-12", "type": "order",
+      "q": "Put the first-time setup steps in order.",
+      "items": [
+        "Download and install Git for Windows",
+        "Open Git Bash and run git --version",
+        "Set user.name and user.email with git config --global",
+        "Create a GitHub account with the same email",
+        "Turn on two-factor authentication"
+      ],
+      "explain": "Install, verify, configure your identity, then create the GitHub account (same email) and secure it with 2FA."
+    }
+  ]
+}

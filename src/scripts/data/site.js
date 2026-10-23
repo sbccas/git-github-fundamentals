@@ -112,6 +112,9 @@ export const PAGES = [
   { slug: 'bonus/', title: 'Bonus', desc: 'Beyond the syllabus', milestone: 5 },
   { slug: 'glossary/', title: 'Glossary', desc: 'Every term, explained', milestone: 5 },
   { slug: 'about/', title: 'About', desc: 'Course and college details', milestone: 5 },
+  { slug: 'teach/', title: 'Teach', desc: 'Lecture slides, session plans and the faculty handbook', milestone: 3 },
+  { slug: 'teach/guide/', title: 'Faculty guide', desc: 'How to run each of the 15 sessions', milestone: 3 },
+  { slug: 'teach/handbook/', title: 'Faculty handbook', desc: 'Story bible, deeper explanations and examples', milestone: 3 },
 ];
 
 /** Commands for the search palette — each points to the unit that teaches it. */

@@ -1,0 +1,63 @@
+/* ================= Teach hub (PRD F-04) ================= */
+.teach { padding-top: 40px; }
+.teach-hero { margin-bottom: 40px; }
+.teach-hero h1 { font-size: var(--fs-2xl); }
+.teach-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.teach-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--dur), transform var(--dur) var(--ease);
+}
+a.teach-card:hover { color: var(--text); border-color: var(--primary); transform: translateY(-2px); }
+.teach-card span:not(.teach-card-icon) { color: var(--text-2); font-size: var(--fs-sm); line-height: 1.7; }
+.teach-card-icon { font-size: 1.6rem; }
+.teach-card.is-keys .kbd { margin: 0 2px; }
+
+.teach-unit { margin: 28px 0; }
+.teach-unit h3 { font-size: 1.1rem; color: var(--u); margin-bottom: 10px; }
+.teach-sessions { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.teach-session {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.teach-session.is-soon { opacity: .7; }
+.ts-num { font: 700 1.3rem var(--font-mono); color: var(--u); width: 2.2ch; }
+.ts-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ts-body .muted { font-size: var(--fs-sm); }
+.ts-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.ts-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ts-btn:hover { color: var(--text); border-color: var(--u); }
+.ts-present { background: var(--u); border-color: var(--u); color: var(--bg); box-shadow: 0 0 18px -4px var(--u); }
+.ts-present:hover { color: var(--bg); filter: brightness(1.08); }
+.ts-btn.is-disabled { color: var(--muted); border-style: dashed; }
+
+@media (max-width: 860px) {
+  .teach-cards { grid-template-columns: minmax(0, 1fr); }
+  .teach-session { grid-template-columns: auto minmax(0, 1fr); }
+  .ts-actions { grid-column: 1 / -1; justify-content: flex-start; }
+}

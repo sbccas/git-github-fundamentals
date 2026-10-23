@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Teach · Git & GitHub Fundamentals</title>
+  <meta name="description" content="Everything faculty need to teach the Git & GitHub certificate course: projector slide decks, session plans and the faculty handbook.">
+  <!-- @include head -->
+  <link rel="stylesheet" href="/styles/teach.css">
+</head>
+<body data-page="teach" data-section="more">
+  <!-- @include header -->
+
+  <main id="main" class="container teach">
+    <header class="teach-hero">
+      <p class="eyebrow">For faculty</p>
+      <h1>Teach this course</h1>
+      <p class="lead">Fifteen two-hour sessions, each with a neon projector deck, a minute-by-minute session plan and a handbook chapter to prepare from.</p>
+      <div class="teach-cards">
+        <a class="teach-card" href="{{base}}teach/guide/">
+          <span class="teach-card-icon" aria-hidden="true">🗓️</span>
+          <strong>Faculty guide</strong>
+          <span>How to run each session: timeline, demo script, activity, check questions.</span>
+        </a>
+        <a class="teach-card" href="{{base}}teach/handbook/">
+          <span class="teach-card-icon" aria-hidden="true">📘</span>
+          <strong>Faculty handbook</strong>
+          <span>What to know: deeper explanations, the story bible and extra story examples.</span>
+        </a>
+        <div class="teach-card is-keys">
+          <span class="teach-card-icon" aria-hidden="true">⌨️</span>
+          <strong>Presenting</strong>
+          <span><kbd class="kbd">→</kbd> next · <kbd class="kbd">F</kbd> full screen · <kbd class="kbd">P</kbd> presenter view · <kbd class="kbd">O</kbd> overview · <kbd class="kbd">T</kbd> timer · <kbd class="kbd">G</kbd> projector boost · <kbd class="kbd">B</kbd> blank</span>
+        </div>
+      </div>
+    </header>
+    <section aria-labelledby="sessions-title">
+      <h2 id="sessions-title">Sessions</h2>
+      <div data-sessions></div>
+    </section>
+  </main>
+
+  <!-- @include footer -->
+  <script type="module" src="/scripts/pages/teach.js"></script>
+</body>
+</html>
