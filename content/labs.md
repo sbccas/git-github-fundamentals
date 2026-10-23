@@ -209,6 +209,97 @@ $ git push origin v1.0
 
 **Submit:** your repository link and the detective answers.
 
-## Unit 5 labs {#later}
+## Lab L-02: Create and configure a repository {#l-02}
 
-The GitHub collaboration labs, **L-02** *create and configure a repository*, **L-03** *open an issue* and **L-04** *fork and pull request*, arrive in the next milestone.
+**Time:** 30 minutes · **Unit 5**
+
+1. **+ → New repository**, name `canteen-menu`, description *"Menu for the Amroli Canteen app"*, **Public**, tick **Add a README**, choose the **.gitignore** template *Python* and the **MIT License**. Create it.
+2. Explore the page: find the **Code** button, the **commits** link, the **branch** menu and the **Settings** tab.
+3. Edit `README.md` **in the browser** (✏️): add a list of three menu items, commit with a clear message.
+4. Clone it to your computer, add `menu.txt`, commit and push. Refresh GitHub to see the file.
+5. In **Settings → Collaborators**, add a classmate. They accept the invitation.
+6. Optional: **Settings → Branches → Add rule** for `main`: *Require a pull request before merging*.
+7. Tag a release: `git tag -a v0.1 -m "First menu"` and `git push origin v0.1`, then on GitHub **Releases → Draft a new release** from tag `v0.1`.
+
+:::example Checklist
+- [ ] README, `.gitignore` and `LICENSE` exist
+- [ ] At least one commit made in the browser and one pushed from your computer
+- [ ] A collaborator has been added
+- [ ] Release `v0.1` is visible
+:::
+
+**Submit:** the repository link.
+
+## Lab L-03: Report and fix an issue {#l-03}
+
+**Time:** 30 minutes · **Unit 5** · work in pairs, using each other's `canteen-menu` repositories
+
+1. **Partner A** opens an issue on **B's** repository (**Issues → New issue**). Use this template:
+
+```markdown
+**Title:** Tea price missing from menu
+
+**Steps:** Open menu.txt.
+**Expected:** Tea 10 is listed.
+**Actual:** Tea is not on the menu.
+```
+
+2. **B** adds the label **bug** and assigns the issue to themself.
+3. **B** fixes it on their computer and closes the issue **from the commit message** (use the issue's number):
+
+```terminal notry
+$ git pull
+$ echo "Tea 10" >> menu.txt
+$ git commit -am "Add tea to menu (fixes #1)"
+$ git push
+```
+
+4. Refresh the issue: it is **closed** and links to the commit. Swap roles.
+
+**Submit:** the link to the closed issue.
+
+## Lab L-04: Fork and pull request {#l-04}
+
+**Time:** 60 minutes · **Unit 5** · uses the class practice repository your teacher created (for example `sbccas/git-practice-2026`)
+
+1. Open the class repository and read `CONTRIBUTING.md`.
+2. Click **Fork**: you now have `<your-username>/git-practice-2026`.
+3. Clone **your fork**, add the original as `upstream`, and create a branch:
+
+```terminal notry
+$ git clone https://github.com/<your-username>/git-practice-2026.git
+$ cd git-practice-2026
+$ git remote add upstream https://github.com/sbccas/git-practice-2026.git
+$ git remote -v
+$ git switch -c add-<your-username>
+```
+
+4. Add your profile card. Change **only your own file**, so pull requests don't conflict:
+
+```terminal notry
+$ echo "# <Your Name>" > students/<your-username>.md
+$ echo "- Programme: BCA / BSc DS / BSc IT" >> students/<your-username>.md
+$ echo "- Favourite Git command: git status" >> students/<your-username>.md
+$ git add .
+$ git commit -m "Add <your-username> profile card"
+$ git push -u origin add-<your-username>
+```
+
+5. On GitHub, click **Compare & pull request**. Check that the **base repository** is the class repository and **base** is `main`. Write a clear title and description, then **Create pull request**.
+6. Your teacher reviews it. If changes are requested, edit, commit and **push again to the same branch**. The PR updates automatically.
+7. After it is merged, update your fork:
+
+```terminal notry
+$ git switch main
+$ git pull upstream main
+$ git push
+```
+
+:::example Checklist
+- [ ] Your fork exists and has an `upstream` remote
+- [ ] Your PR changes only `students/<your-username>.md`
+- [ ] The PR has a clear title and description
+- [ ] After merging, your fork's `main` is up to date
+:::
+
+**Submit:** the link to your pull request.

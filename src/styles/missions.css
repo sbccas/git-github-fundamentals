@@ -7,6 +7,7 @@
 .ms-stat { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; font-size: var(--fs-xs); color: var(--muted); }
 .ms-num { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; color: var(--text); line-height: 1.1; }
 .ms-num small { font-size: .9rem; color: var(--muted); }
+.ms-move { grid-column: 1 / -1; text-align: center; font-size: var(--fs-xs); margin-top: 4px; }
 .ms-bar { display: block; width: 64px; height: 5px; border-radius: 9px; background: var(--surface-3); overflow: hidden; margin-top: 4px; }
 .ms-bar span { display: block; height: 100%; background: var(--grad); }
 

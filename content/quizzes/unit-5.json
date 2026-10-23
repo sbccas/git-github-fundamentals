@@ -1,0 +1,101 @@
+{
+  "unit": 5,
+  "title": "Unit 5 quiz: Introduction to GitHub",
+  "passMark": 60,
+  "questions": [
+    {
+      "id": "u5-1", "type": "single",
+      "q": "On a GitHub repository page, where do you find the URL to clone it?",
+      "options": ["The green Code button", "The Settings tab", "The Star button", "The Issues tab"],
+      "answer": 0,
+      "explain": "The Code button shows the HTTPS (and SSH) URL to use with git clone, and a Download ZIP option."
+    },
+    {
+      "id": "u5-2", "type": "single",
+      "q": "What does starring a repository do?",
+      "options": ["Bookmarks it and shows appreciation", "Copies it to your account", "Gives you permission to push", "Deletes your local copy"],
+      "answer": 0,
+      "explain": "A star is a bookmark and a sign of popularity. Copying to your account is a fork."
+    },
+    {
+      "id": "u5-3", "type": "single",
+      "q": "You will push an existing project from your laptop. How should you create the GitHub repository?",
+      "options": ["Empty: no README, .gitignore or licence", "With a README", "As a fork", "By cloning it first"],
+      "answer": 0,
+      "explain": "An empty repository avoids 'unrelated histories'. Add a README only when you will clone the new repository."
+    },
+    {
+      "id": "u5-4", "type": "single",
+      "q": "How does a teammate get permission to push to your repository?",
+      "options": ["Settings → Collaborators → add them", "Share your password", "They star the repository", "They open an issue"],
+      "answer": 0,
+      "explain": "Add them as a collaborator; they accept the invitation. Never share your password."
+    },
+    {
+      "id": "u5-5", "type": "multi",
+      "q": "Which belong in a good bug report (issue)? (Choose all that apply.)",
+      "options": ["A clear title", "Steps to reproduce", "Expected vs actual result", "Your GitHub password"],
+      "answer": [0, 1, 2],
+      "explain": "A good issue lets anyone reproduce the problem. Screenshots and error messages help too."
+    },
+    {
+      "id": "u5-6", "type": "predict",
+      "q": "This commit reaches main on GitHub. What happens to issue #3?",
+      "code": "$ git commit -m \"Fix cart total for repeated items (fixes #3)\"\n$ git push",
+      "options": ["It is closed automatically", "Nothing", "It is deleted", "It is reopened"],
+      "answer": 0,
+      "explain": "Keywords like fixes, closes or resolves followed by an issue number close it when the commit reaches the default branch."
+    },
+    {
+      "id": "u5-7", "type": "single",
+      "q": "What is a pull request?",
+      "options": [
+        "A request to review a branch and merge it into another branch",
+        "Another name for git pull",
+        "A way to download a repository",
+        "A bug report"
+      ],
+      "answer": 0,
+      "explain": "A PR proposes merging your branch (for example into main). Teammates review the changes before merging."
+    },
+    {
+      "id": "u5-8", "type": "single",
+      "q": "A reviewer asks for changes to your pull request. What do you do?",
+      "options": ["Push new commits to the same branch; the PR updates automatically", "Close it and open a new PR", "Delete the repository", "Merge it anyway"],
+      "answer": 0,
+      "explain": "A PR follows its branch. Every push to the branch appears in the PR."
+    },
+    {
+      "id": "u5-9", "type": "single",
+      "q": "Which merge option combines all of a PR's commits into ONE commit on main?",
+      "options": ["Squash and merge", "Create a merge commit", "Rebase and merge", "Close pull request"],
+      "answer": 0,
+      "explain": "Squash and merge keeps main's history short: one commit per pull request."
+    },
+    {
+      "id": "u5-10", "type": "single",
+      "q": "What is the difference between a fork and a clone?",
+      "options": [
+        "A fork is a copy on GitHub under your account; a clone is a copy on your computer",
+        "They are the same",
+        "A fork is on your computer; a clone is on GitHub",
+        "A fork deletes the original"
+      ],
+      "answer": 0,
+      "explain": "You fork on GitHub (button), then clone your fork to your computer."
+    },
+    {
+      "id": "u5-11", "type": "order",
+      "q": "Put the open-source contribution steps in order.",
+      "items": ["Fork the repository on GitHub", "Clone your fork", "Create a branch", "Commit your change", "Push to your fork", "Open a pull request to the original"],
+      "explain": "Fork → clone → branch → commit → push → pull request. Add the original as 'upstream' to stay up to date."
+    },
+    {
+      "id": "u5-12", "type": "single",
+      "q": "In a forked project, what does the remote named 'upstream' usually point to?",
+      "options": ["The original repository you forked from", "Your fork", "Your computer", "GitHub's homepage"],
+      "answer": 0,
+      "explain": "origin = your fork (you can push); upstream = the original (you pull updates from it)."
+    }
+  ]
+}

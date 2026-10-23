@@ -2,8 +2,10 @@
  * Command palette (PRD U-01): Ctrl/⌘+K or "/" opens a search over pages, units, topics and commands.
  */
 import { PAGES, UNITS, COMMANDS, pageUrl } from '../data/site.js';
+import TERMS from '../../../content/glossary.json';
+import { slug } from './glossary.js';
 
-const KIND_LABEL = { unit: 'Unit', topic: 'Topic', command: 'Command', page: 'Page' };
+const KIND_LABEL = { unit: 'Unit', topic: 'Topic', command: 'Command', page: 'Page', term: 'Term' };
 
 function buildIndex() {
   const items = [];
@@ -16,6 +18,9 @@ function buildIndex() {
   for (const c of COMMANDS) {
     const u = UNITS[c.unit - 1];
     items.push({ kind: 'command', title: c.cmd, sub: `${c.desc} — Unit ${u.n}`, href: pageUrl(`${u.slug}/`), color: u.color, keys: c.desc, mono: true });
+  }
+  for (const t of TERMS) {
+    items.push({ kind: 'term', title: t.term, sub: t.def, href: pageUrl(`glossary/#${slug(t.term)}`), color: UNITS[t.unit - 1].color, keys: (t.aliases ?? []).join(' ') });
   }
   for (const p of PAGES) {
     items.push({ kind: 'page', title: p.title, sub: p.desc, href: pageUrl(p.slug), keys: '' });

@@ -11,7 +11,8 @@ this handbook covers **what to know** before you teach it. It is also published 
 | [`02-unit-2.md`](02-unit-2.md) | Chapter 2 — Getting Started with Git |
 | [`03-unit-3.md`](03-unit-3.md) | Chapter 3 — Branching and Merging |
 | [`04-unit-4.md`](04-unit-4.md) | Chapter 4 — Advanced Git Commands |
-| *05-unit-5.md* | Chapter 5 — Introduction to GitHub *(Milestone 5)* |
+| [`05-unit-5.md`](05-unit-5.md) | Chapter 5 — Introduction to GitHub |
+| [`06-appendices.md`](06-appendices.md) | Course at a glance · site map for faculty · story quick reference · further reading |
 
 Every chapter follows the same structure: learning outcomes · the story episode · the ideas in depth · more story examples ·
 board diagrams · questions students ask · misconceptions · self-check for faculty · 10-minute recap.

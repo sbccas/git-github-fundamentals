@@ -3,6 +3,7 @@ import { MISSIONS } from '../../../content/missions/missions.js';
 import { UNITS, pageUrl } from '../data/site.js';
 import { load, markSection, setUnitTotal, recordQuiz, completeUnit, unitPercent, setLastVisited, completeGame, BADGES } from '../lib/progress.js';
 import { mountQuiz } from '../lib/quiz.js';
+import { linkTerms } from '../lib/glossary.js';
 
 const quizzes = import.meta.glob('../../../content/quizzes/unit-*.json', { import: 'default' });
 
@@ -66,6 +67,12 @@ lesson.addEventListener('click', (e) => {
 function renderPractice() {
   const p = load();
   const list = MISSIONS.filter((m) => m.unit === n);
+  const LABS = { 'L-01': 'Your profile README', 'L-02': 'Create & configure a repository', 'L-03': 'Report and fix an issue', 'L-04': 'Fork & pull request' };
+  const labCards = unit.missions.filter((id) => id.startsWith('L-')).map((id) => `<a class="practice-card is-lab" href="${pageUrl(`labs/#${id.toLowerCase()}`)}">
+      <span class="practice-kind">Lab ${id} · real GitHub</span>
+      <strong>${LABS[id]}</strong>
+      <span class="muted">Steps, checklist and what to submit</span>
+    </a>`);
   const cards = list.map((m) => {
     const done = p.missions[m.id]?.done;
     return `<a class="practice-card${done ? ' is-done' : ''}" href="${pageUrl(`missions/?m=${m.id}`)}">
@@ -74,7 +81,8 @@ function renderPractice() {
       <span class="muted">~${m.minutes} min in the browser</span>
     </a>`;
   });
-  cards.push(`<a class="practice-card is-lab" href="${pageUrl(`labs/#unit-${n}`)}">
+  cards.push(...labCards);
+  if (!labCards.length) cards.push(`<a class="practice-card is-lab" href="${pageUrl(`labs/#unit-${n}`)}">
       <span class="practice-kind">Lab · real computer</span>
       <strong>Unit ${n} lab</strong>
       <span class="muted">Practise on Git Bash and github.com</span>
@@ -126,6 +134,7 @@ async function renderConflictGame() {
   mountConflictGame(root, game, { onWin: () => completeGame('conflict') });
 }
 
+linkTerms(document.querySelector('.lesson-body'));
 renderPractice();
 renderQuiz();
 renderConflictGame();

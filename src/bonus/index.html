@@ -3,34 +3,31 @@
 <head>
   <meta charset="utf-8">
   <title>Bonus · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Useful topics beyond the syllabus.">
+  <meta name="description" content="Beyond the syllabus: .gitignore, .gitattributes, SSH keys, VS Code, GitHub Pages, Git on your phone and more.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
 </head>
-<body data-page="bonus" data-section="more">
+<body data-page="bonus" data-section="more" class="page-lesson" style="--u: var(--accent)">
   <!-- @include header -->
-
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 5</p>
-        <h1>Bonus</h1>
-        <p class="lead" style="margin-inline:auto">Useful topics beyond the syllabus.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">.gitignore</li>
-          <li class="chip">.gitattributes</li>
-          <li class="chip">.gitkeep</li>
-          <li class="chip">SSH vs HTTPS</li>
-          <li class="chip">Team workflow</li>
-          <li class="chip">VS Code</li>
-          <li class="chip">GitHub Pages</li>
-          <li class="chip">Git on your phone</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="Bonus topics">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit">Beyond the syllabus</p>
+        <nav aria-label="Sections"><!-- @toc content/bonus.md --></nav>
       </div>
-    </section>
+    </aside>
+    <article class="lesson">
+      <header class="lesson-hero">
+        <p class="eyebrow">Bonus · optional</p>
+        <h1>Beyond the syllabus</h1>
+        <p class="lead">Useful extras you'll meet on real projects: ignoring files, SSH keys, VS Code, publishing websites, Git on your phone and more.</p>
+      </header>
+      <div class="lesson-body">
+        <!-- @md content/bonus.md -->
+      </div>
+    </article>
   </main>
-
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/doc-simple.js"></script>
 </body>
 </html>

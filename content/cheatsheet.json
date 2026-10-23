@@ -1,0 +1,82 @@
+[
+  { "category": "Setup (once per computer)", "icon": "⚙️", "items": [
+    { "cmd": "git --version", "desc": "check that Git is installed", "unit": 1 },
+    { "cmd": "git config --global user.name \"Your Name\"", "desc": "set your name for all repositories", "unit": 1 },
+    { "cmd": "git config --global user.email \"you@example.com\"", "desc": "set your email (same as GitHub)", "unit": 1 },
+    { "cmd": "git config --global init.defaultBranch main", "desc": "new repositories start on main", "unit": 1 },
+    { "cmd": "git config --list", "desc": "show all settings", "unit": 1 },
+    { "cmd": "git help <command>", "desc": "full manual for a command", "unit": 1 },
+    { "cmd": "git <command> -h", "desc": "short options summary", "unit": 1 }
+  ]},
+  { "category": "Start a project", "icon": "🚀", "items": [
+    { "cmd": "git init", "desc": "turn the current folder into a repository", "unit": 2 },
+    { "cmd": "git clone <url>", "desc": "copy a repository (and its history) from GitHub", "unit": 2 },
+    { "cmd": "git remote add origin <url>", "desc": "connect a local repo to GitHub", "unit": 2 },
+    { "cmd": "git remote -v", "desc": "show remote URLs", "unit": 2 },
+    { "cmd": "git push -u origin main", "desc": "first push; sets the upstream", "unit": 2 }
+  ]},
+  { "category": "Everyday work", "icon": "📦", "items": [
+    { "cmd": "git status", "desc": "what changed? what is staged?", "unit": 2 },
+    { "cmd": "git status -s", "desc": "short status", "unit": 2 },
+    { "cmd": "git add <file>", "desc": "stage one file", "unit": 2 },
+    { "cmd": "git add .", "desc": "stage everything in this folder", "unit": 2 },
+    { "cmd": "git commit -m \"Add menu page\"", "desc": "save a snapshot of the staged changes", "unit": 2 },
+    { "cmd": "git commit -am \"Fix cart total\"", "desc": "stage tracked files and commit", "unit": 2 },
+    { "cmd": "git restore --staged <file>", "desc": "unstage a file (keep the edit)", "unit": 2 }
+  ]},
+  { "category": "Sync with GitHub", "icon": "☁️", "items": [
+    { "cmd": "git pull", "desc": "download and merge the team's work", "unit": 2 },
+    { "cmd": "git fetch", "desc": "download only; look before merging", "unit": 2 },
+    { "cmd": "git log --oneline main..origin/main", "desc": "commits on GitHub you don't have yet", "unit": 2 },
+    { "cmd": "git push", "desc": "upload your commits", "unit": 2 },
+    { "cmd": "git push origin <branch>", "desc": "upload a branch", "unit": 3 },
+    { "cmd": "git push origin --delete <branch>", "desc": "delete a branch on GitHub", "unit": 3 }
+  ]},
+  { "category": "Branches & merging", "icon": "🌿", "items": [
+    { "cmd": "git branch", "desc": "list branches (* = current)", "unit": 3 },
+    { "cmd": "git branch -a", "desc": "list local and remote branches", "unit": 3 },
+    { "cmd": "git branch <name>", "desc": "create a branch (don't switch)", "unit": 3 },
+    { "cmd": "git switch <name>", "desc": "move to a branch", "unit": 3 },
+    { "cmd": "git switch -c <name>", "desc": "create and move to a branch", "unit": 3 },
+    { "cmd": "git checkout -b <name>", "desc": "classic form of switch -c", "unit": 3 },
+    { "cmd": "git merge <branch>", "desc": "merge a branch into the current one", "unit": 3 },
+    { "cmd": "git merge --abort", "desc": "cancel a conflicted merge", "unit": 3 },
+    { "cmd": "git branch -d <name>", "desc": "delete a merged branch", "unit": 3 },
+    { "cmd": "git branch -D <name>", "desc": "force-delete an unmerged branch", "unit": 3 }
+  ]},
+  { "category": "Inspect history", "icon": "🔍", "items": [
+    { "cmd": "git log", "desc": "full history", "unit": 4 },
+    { "cmd": "git log --oneline", "desc": "one line per commit", "unit": 4 },
+    { "cmd": "git log --oneline --graph --all", "desc": "all branches as a graph", "unit": 4 },
+    { "cmd": "git log --author=\"Dhruvi\"", "desc": "commits by one person", "unit": 4 },
+    { "cmd": "git log --grep=\"price\"", "desc": "search commit messages", "unit": 4 },
+    { "cmd": "git log -- <file>", "desc": "commits that changed a file", "unit": 4 },
+    { "cmd": "git show <commit>", "desc": "one commit with its diff", "unit": 4 },
+    { "cmd": "git show HEAD~1:<file>", "desc": "a file as it was in a commit", "unit": 4 },
+    { "cmd": "git diff", "desc": "unstaged changes", "unit": 4 },
+    { "cmd": "git diff --staged", "desc": "staged changes", "unit": 4 },
+    { "cmd": "git diff main feature", "desc": "compare two branches", "unit": 4 }
+  ]},
+  { "category": "Stash & tags", "icon": "🏷️", "items": [
+    { "cmd": "git stash", "desc": "park unfinished changes", "unit": 4 },
+    { "cmd": "git stash list", "desc": "list stashes", "unit": 4 },
+    { "cmd": "git stash pop", "desc": "bring the newest stash back", "unit": 4 },
+    { "cmd": "git tag -a v1.0 -m \"First release\"", "desc": "annotated release tag", "unit": 4 },
+    { "cmd": "git tag", "desc": "list tags", "unit": 4 },
+    { "cmd": "git push origin --tags", "desc": "upload all tags", "unit": 4 }
+  ]},
+  { "category": "Undo", "icon": "↩️", "items": [
+    { "cmd": "git restore <file>", "desc": "discard uncommitted edits (classic: git checkout -- <file>)", "unit": 4 },
+    { "cmd": "git reset --soft HEAD~1", "desc": "undo last local commit, keep changes staged", "unit": 4 },
+    { "cmd": "git reset HEAD~1", "desc": "undo last local commit, keep changes unstaged", "unit": 4 },
+    { "cmd": "git reset --hard HEAD~1", "desc": "⚠️ undo last local commit and delete its changes", "unit": 4 },
+    { "cmd": "git revert <commit>", "desc": "safely undo a pushed commit (new commit)", "unit": 4 },
+    { "cmd": "git commit --amend -m \"Better message\"", "desc": "replace the last (unpushed) commit", "unit": 4 }
+  ]},
+  { "category": "GitHub workflow", "icon": "🤝", "items": [
+    { "cmd": "git remote add upstream <original-url>", "desc": "track the repository you forked", "unit": 5 },
+    { "cmd": "git pull upstream main", "desc": "update from the original", "unit": 5 },
+    { "cmd": "git push -u origin <branch>", "desc": "push a branch, then open a pull request", "unit": 5 },
+    { "cmd": "git commit -m \"Fix total (fixes #3)\"", "desc": "close issue #3 when merged", "unit": 5 }
+  ]}
+]

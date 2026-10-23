@@ -3,29 +3,26 @@
 <head>
   <meta charset="utf-8">
   <title>Final self-check · Git & GitHub Fundamentals</title>
-  <meta name="description" content="A 40-question practice test across all five units with a score report.">
+  <meta name="description" content="A 40-question practice test across all five units, with a score report by unit.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
+  <link rel="stylesheet" href="/styles/extras.css">
 </head>
-<body data-page="self-check" data-section="more">
+<body data-page="self-check" data-section="more" style="--u: var(--accent)">
   <!-- @include header -->
-
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 5</p>
+  <main id="main" class="container sc">
+    <header class="cs-head">
+      <div>
+        <p class="eyebrow">Finish line</p>
         <h1>Final self-check</h1>
-        <p class="lead" style="margin-inline:auto">A 40-question practice test across all five units with a score report.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">40 questions</li>
-          <li class="chip">Score by unit</li>
-          <li class="chip">Revision tips</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+        <p class="lead">Test yourself on the whole course. You'll see your score for each unit and exactly what to revise.</p>
       </div>
-    </section>
+    </header>
+    <div class="sc-units" data-sc-units></div>
+    <div class="sc-quiz" data-sc-quiz></div>
+    <p class="muted sc-note">This is practice to help you prepare. Your certificate is issued by the college after the final practical assessment.</p>
   </main>
-
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/self-check.js"></script>
 </body>
 </html>

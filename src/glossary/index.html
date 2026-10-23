@@ -3,28 +3,30 @@
 <head>
   <meta charset="utf-8">
   <title>Glossary · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Every Git and GitHub term in plain English.">
+  <meta name="description" content="Every Git and GitHub term from the course, explained in plain English.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
+  <link rel="stylesheet" href="/styles/extras.css">
 </head>
 <body data-page="glossary" data-section="more">
   <!-- @include header -->
-
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 5</p>
+  <main id="main" class="container gl">
+    <header class="cs-head">
+      <div>
+        <p class="eyebrow">Reference</p>
         <h1>Glossary</h1>
-        <p class="lead" style="margin-inline:auto">Every Git and GitHub term in plain English.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">A–Z terms</li>
-          <li class="chip">Tap-to-define in lessons</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+        <p class="lead">Every Git and GitHub term in plain English. In the lessons, terms with a dotted underline show these definitions when you tap them.</p>
       </div>
-    </section>
+    </header>
+    <div class="cs-tools">
+      <label class="cs-search"><span class="visually-hidden">Search terms</span>
+        <input type="search" placeholder="Search terms…" data-gl-search autocomplete="off" spellcheck="false">
+      </label>
+      <nav class="gl-letters" aria-label="Jump to letter" data-gl-letters></nav>
+    </div>
+    <dl class="gl-list" data-gl-list></dl>
   </main>
-
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/glossary.js"></script>
 </body>
 </html>

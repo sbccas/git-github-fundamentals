@@ -12,12 +12,12 @@ export const SESSIONS = [
   { n: 10, unit: 4, title: 'Reading history: log, diff, show', practice: ['M-12'], deck: true },
   { n: 11, unit: 4, title: 'stash & tags', practice: ['M-13', 'M-14'], deck: true },
   { n: 12, unit: 4, title: 'Undoing changes: restore, reset, revert', practice: ['M-15'], deck: true },
-  { n: 13, unit: 5, title: 'The GitHub interface, repositories & issues', practice: ['L-02', 'L-03'], deck: false },
-  { n: 14, unit: 5, title: 'Forks, pull requests & the cheat sheet', practice: ['L-04'], deck: false },
-  { n: 15, unit: 0, title: 'Final practical, self-check & showcase', practice: [], deck: false },
+  { n: 13, unit: 5, title: 'The GitHub interface, repositories & issues', practice: ['L-02', 'L-03'], deck: true },
+  { n: 14, unit: 5, title: 'Forks, pull requests & the cheat sheet', practice: ['L-04'], deck: true },
+  { n: 15, unit: 0, title: 'Final practical, self-check & showcase', practice: [], deck: true },
 ];
 
 export const pad2 = (n) => String(n).padStart(2, '0');
 
 /** Handbook chapter per unit (anchor ids in docs/faculty-handbook). */
-export const HANDBOOK_CHAPTERS = { 1: 'chapter-1', 2: 'chapter-2', 3: 'chapter-3', 4: 'chapter-4' };
+export const HANDBOOK_CHAPTERS = { 1: 'chapter-1', 2: 'chapter-2', 3: 'chapter-3', 4: 'chapter-4', 5: 'chapter-5' };

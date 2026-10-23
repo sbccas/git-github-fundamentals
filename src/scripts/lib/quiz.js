@@ -15,14 +15,17 @@ function shuffle(arr) {
   return a;
 }
 
-export function mountQuiz(root, quiz, { onFinish, best = null } = {}) {
+export function mountQuiz(root, quiz, { onFinish, best = null, resultExtra = null, prepare = null } = {}) {
   let order;
   let index;
   let score;
   let answered;
+  let results; // [{ id, unit, correct }]
 
   function start() {
-    order = shuffle(quiz.questions).map((q) => {
+    results = [];
+    const pool = prepare ? prepare() : quiz.questions;
+    order = shuffle(pool).map((q) => {
       if (q.type === 'order') return { ...q, shuffled: shuffleUntilDifferent(q.items) };
       const opts = q.options.map((text, i) => ({ text, i }));
       return { ...q, opts: shuffle(opts) };
@@ -40,9 +43,9 @@ export function mountQuiz(root, quiz, { onFinish, best = null } = {}) {
 
   function renderIntro() {
     root.innerHTML = `<div class="quiz-card quiz-intro">
-      <p class="quiz-kicker">${quiz.questions.length} questions · pass mark ${quiz.passMark}%</p>
+      <p class="quiz-kicker">${quiz.count ?? quiz.questions.length} questions · pass mark ${quiz.passMark}%</p>
       <h3>${esc(quiz.title)}</h3>
-      <p>Answer one question at a time. You get instant feedback and an explanation for every answer.</p>
+      <p>${quiz.intro ?? 'Answer one question at a time. You get instant feedback and an explanation for every answer.'}</p>
       ${best !== null ? `<p class="quiz-best">Your best score: <strong>${best}%</strong></p>` : ''}
       <button class="btn btn-primary" type="button" data-q-start>${best !== null ? 'Try again' : 'Start the quiz'}</button>
     </div>`;
@@ -107,6 +110,7 @@ export function mountQuiz(root, quiz, { onFinish, best = null } = {}) {
     else if (q.type === 'multi') correct = [...q.answer].sort().join() === [...chosen].sort().join();
     else correct = chosen[0] === q.answer;
     if (correct) score++;
+    results.push({ id: q.id, unit: q.unit, correct });
 
     const fb = root.querySelector('[data-feedback]');
     if (q.type === 'order') {
@@ -138,13 +142,14 @@ export function mountQuiz(root, quiz, { onFinish, best = null } = {}) {
   function finish() {
     const percent = Math.round((score / order.length) * 100);
     const passed = percent >= quiz.passMark;
-    const result = onFinish?.(percent, passed) ?? {};
+    const result = onFinish?.(percent, passed, results) ?? {};
     best = Math.max(best ?? 0, percent);
     root.innerHTML = `<div class="quiz-card quiz-result ${passed ? 'is-pass' : 'is-retry'}">
       <div class="quiz-score" style="--p:${percent}"><span>${percent}%</span></div>
       <h3>${passed ? 'You passed! 🎉' : 'Keep practising'}</h3>
       <p>${score} of ${order.length} correct. ${passed ? 'Great work.' : `You need ${quiz.passMark}% to pass. Re-read the sections you missed and try again; questions are shuffled each time.`}</p>
       ${result.xp ? `<p class="quiz-xp">+${result.xp} XP${result.badges?.length ? ` · new badge!` : ''}</p>` : ''}
+      ${resultExtra ? resultExtra(results) : ''}
       <button class="btn btn-ghost" type="button" data-q-again>Try again</button>
     </div>`;
     root.querySelector('[data-q-again]').addEventListener('click', start);

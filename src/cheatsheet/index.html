@@ -3,30 +3,33 @@
 <head>
   <meta charset="utf-8">
   <title>Cheat sheet · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Every command from the course on one searchable, printable page.">
+  <meta name="description" content="Every Git command from the course on one searchable, printable page.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
+  <link rel="stylesheet" href="/styles/extras.css">
 </head>
-<body data-page="cheatsheet">
+<body data-page="cheatsheet" class="page-cheatsheet">
   <!-- @include header -->
-
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 5</p>
-        <h1>Cheat sheet</h1>
-        <p class="lead" style="margin-inline:auto">Every command from the course on one searchable, printable page.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">Search</li>
-          <li class="chip">Filter by unit</li>
-          <li class="chip">Copy buttons</li>
-          <li class="chip">Print layout</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+  <main id="main" class="container cs">
+    <header class="cs-head">
+      <div>
+        <p class="eyebrow">Reference</p>
+        <h1>Git cheat sheet</h1>
+        <p class="lead">Every command in the course. Search, filter by unit, copy, or print it as a two-page handout.</p>
       </div>
-    </section>
+      <button class="btn btn-ghost cs-print" type="button" onclick="window.print()">🖨 Print / PDF</button>
+    </header>
+    <div class="cs-tools">
+      <label class="cs-search"><span class="visually-hidden">Search commands</span>
+        <input type="search" placeholder="Search, e.g. undo, branch, push…" data-cs-search autocomplete="off" spellcheck="false">
+      </label>
+      <div class="cs-units" role="group" aria-label="Filter by unit" data-cs-units></div>
+    </div>
+    <p class="cs-count muted" data-cs-count aria-live="polite"></p>
+    <div class="cs-grid" data-cs-grid></div>
+    <p class="cs-foot muted">Git &amp; GitHub Fundamentals · SBCCAS, Amroli, Surat · sbccas.github.io/git-github-fundamentals</p>
   </main>
-
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/cheatsheet.js"></script>
 </body>
 </html>

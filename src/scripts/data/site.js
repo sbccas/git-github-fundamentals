@@ -10,6 +10,13 @@ export const FEATURES = {
   facultySection: false,
 };
 
+/**
+ * Faculty shown on the About page once FEATURES.facultySection is true (PRD D-6).
+ * Fill in when details are provided, e.g.
+ * { name: 'Prof. …', role: 'Course coordinator', dept: 'Department of Computer Science', email: '…' }
+ */
+export const FACULTY = [];
+
 export const COLLEGE = {
   name: 'Sutex Bank College of Computer Applications & Science',
   shortName: 'SBCCAS',

@@ -3,29 +3,63 @@
 <head>
   <meta charset="utf-8">
   <title>About · Git & GitHub Fundamentals</title>
-  <meta name="description" content="Course and college details.">
+  <meta name="description" content="About the Git & GitHub Fundamentals certificate course at SBCCAS, Amroli, Surat: course details, college, credits and your saved progress.">
   <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
+  <link rel="stylesheet" href="/styles/extras.css">
 </head>
 <body data-page="about" data-section="more">
   <!-- @include header -->
-
-  <main id="main" class="container">
-    <section class="placeholder">
-      <div class="card">
-        <p class="eyebrow">Coming in Milestone 5</p>
-        <h1>About</h1>
-        <p class="lead" style="margin-inline:auto">Course and college details.</p>
-        <ul class="placeholder-list" aria-label="What this page will include">
-          <li class="chip">Course details</li>
-          <li class="chip">College details</li>
-          <li class="chip">Credits & licence</li>
-        </ul>
-        <div class="placeholder-actions"><a class="btn btn-ghost" href="{{base}}">Back to home</a><a class="btn btn-primary" href="{{base}}unit-1/">Start Unit 1</a></div>
+  <main id="main" class="container about">
+    <header class="cs-head">
+      <div>
+        <p class="eyebrow">About</p>
+        <h1>Git &amp; GitHub Fundamentals</h1>
+        <p class="lead">A free, hands-on certificate course by Sutex Bank College of Computer Applications &amp; Science (Amroli College), Surat.</p>
       </div>
+    </header>
+
+    <div class="about-grid">
+      <section class="card about-card">
+        <h2>The course</h2>
+        <dl class="details-list" data-course></dl>
+        <p><a href="{{base}}#units">See the five units →</a></p>
+      </section>
+      <section class="card about-card">
+        <h2>The college</h2>
+        <dl class="details-list" data-college></dl>
+      </section>
+    </div>
+
+    <section class="card about-card" data-faculty hidden>
+      <h2>Faculty</h2>
+      <div class="faculty-grid" data-faculty-list></div>
+    </section>
+
+    <section class="card about-card" id="progress">
+      <h2>Your progress</h2>
+      <p>Your progress (lessons read, quiz scores, missions, XP and badges) is saved <strong>only in this browser, on this device</strong>. To move it to another phone or computer, export it here and import it there.</p>
+      <div class="about-progress" data-progress-summary></div>
+      <div class="about-actions">
+        <button class="btn btn-primary" type="button" data-export>⬇ Export progress</button>
+        <label class="btn btn-ghost about-import">⬆ Import progress<input type="file" accept="application/json,.json" data-import hidden></label>
+      </div>
+      <p class="muted" data-import-msg aria-live="polite"></p>
+    </section>
+
+    <section class="card about-card">
+      <h2>How this site works</h2>
+      <ul>
+        <li><strong>Real Git in your browser.</strong> The Playground and Missions run real Git (<a href="https://isomorphic-git.org/" target="_blank" rel="noopener">isomorphic-git</a>) on a file system stored in your browser (<a href="https://github.com/isomorphic-git/lightning-fs" target="_blank" rel="noopener">LightningFS</a>). The "GitHub" in the Playground is a practice copy in your browser; nothing is sent to github.com.</li>
+        <li><strong>Private by design.</strong> No accounts, no tracking, no cookies, no analytics.</li>
+        <li><strong>Open source.</strong> Built with <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> and published with GitHub Pages from <a href="https://github.com/sbccas" target="_blank" rel="noopener">github.com/sbccas</a>.</li>
+        <li><strong>For faculty.</strong> Slides, session plans and the faculty handbook are in <a href="{{base}}teach/">Teach</a>.</li>
+      </ul>
+      <h3>Licence</h3>
+      <p>Course content (lessons, quizzes, missions, guides) is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>; the code is MIT licensed. Fonts: Inter, Sora and JetBrains Mono (SIL Open Font License).</p>
     </section>
   </main>
-
   <!-- @include footer -->
-  <script type="module" src="/scripts/pages/placeholder.js"></script>
+  <script type="module" src="/scripts/pages/about.js"></script>
 </body>
 </html>
