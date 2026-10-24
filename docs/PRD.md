@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.10 — approved; Phase 1 live (Milestones 1–8 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.11 — approved; Phase 1 live (Milestones 1–8 done, Milestone 9 share previews in progress; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -205,6 +205,7 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 | U-04 | Glossary terms show a definition on hover/tap. |
 | U-05 | **PWA:** installable to home screen, works offline after first visit. |
 | U-06 | Subtle motion (graph animations, section reveals); respects "reduce motion" setting. |
+| U-07 | **Share previews**: every page has Open Graph / Twitter Card tags (title, description, site name, canonical URL) and a 1200 × 630 preview image under 300 KB, so links shared on WhatsApp and social media show a large card. Own images for the Student Edition, Faculty Edition and Git Passport. Milestone 9 |
 
 ---
 
@@ -310,6 +311,7 @@ git-github-fundamentals/
 | 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ **live 2026-10-23** — https://sbccas.github.io/git-github-fundamentals/ |
 | 7 | Git Passport | `/passport/` page, next-activity recommendations, print/PDF and PNG card, optional self-entered name, safer progress import — plan: [`docs/plans/MILESTONE-7-GIT-PASSPORT-PLAN.md`](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md) | ✅ **approved 2026-10-23 · live 2026-10-23** |
 | 8 | Course ebooks | Student Edition and Faculty Edition: web version + PDF download with cover, course and faculty details, clickable contents with page numbers (P-12, F-19) — plan: [`docs/plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) | ✅ **approved 2026-10-24 · live 2026-10-24** |
+| 9 | Share previews | Open Graph / Twitter tags on every page + 1200 × 630 preview images (U-07) — plan: [`docs/plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md`](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md) | ✅ **approved 2026-10-24** · in progress |
 
 ## 13. Out of scope (all phases unless moved by approval)
 
@@ -345,6 +347,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-24 | 1.11 | Milestone 9 approved: share previews for WhatsApp and social media (U-07) |
 | 2026-10-24 | 1.10 | Milestone 8 approved: course ebooks — Student Edition (P-12) and Faculty Handbook ebook (F-19), web + PDF |
 | 2026-10-23 | 1.9 | Milestone 7 — Git Passport (G-04 – G-08): passport page, next-activity rules, A4 print and PNG card, optional self-entered name, validated progress import with XP recalculation. Existing XP values, badge conditions and the version 1 progress format unchanged. Plans now live in `docs/plans/` |
 | 2026-10-23 | 1.8 | Milestone 6 polish built: PWA (manifest, icons, service worker precaching the whole site → offline after first visit, U-05/F-05), missions in Ctrl+K (U-01), session objectives on the Teach hub read from the faculty guide (F-04), plain-English hint lines under common errors (T-07) and a command list for unknown commands (T-14), 44 px touch targets on phones (N-01), WCAG AA contrast fixes in the light theme (N-04), print/PDF fixed and verified for slides, guide, handbook and cheat sheet (F-03, F-13, P-05), `npm test` (missions, engine, content) run by the deploy workflow. Progress report added: `docs/PROGRESS.md` |
