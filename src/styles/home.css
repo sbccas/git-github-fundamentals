@@ -350,3 +350,4 @@
   .stat:nth-child(-n + 2) { border-top: 0; }
   .stat:last-child { grid-column: 1 / -1; }
 }
+.book-link { margin: 14px 0 0; font-size: var(--fs-sm); color: var(--text-2); }

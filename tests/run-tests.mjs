@@ -271,6 +271,44 @@ console.log('\nGit Passport');
   }
 }
 
+/* ---------------- 5. Course ebooks (Milestone 8) ---------------- */
+console.log('\nEbooks');
+{
+  const check = (cond, msg) => (cond ? ok(msg) : fail(msg));
+  const BASE = '/git-github-fundamentals/';
+  const { createMarkdown } = await imp('build/markdown.js');
+  const { renderBook, BOOKS } = await imp('build/book.js');
+  const { FACULTY } = await imp('src/scripts/data/site.js');
+  const md = createMarkdown({ root: ROOT, base: BASE });
+  const pages = JSON.parse(fs.readFileSync(path.join(ROOT, 'build/book-pages.json'), 'utf8'));
+  const count = (html, re) => (html.match(re) ?? []).length;
+
+  for (const kind of ['student', 'faculty']) {
+    const html = renderBook(kind, md, BASE, ROOT);
+    const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
+    const toc = [...html.matchAll(/<li class="bk-toc-\d"><a href="#([^"]+)"/g)].map((m) => m[1]);
+    const broken = [...html.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]).filter((id) => !ids.includes(id));
+    check(html.includes('class="bk-cover"') && html.includes('id="about-book"') && html.includes('id="contents"'), `${kind}: cover, About this book and contents`);
+    check(!dupes.length, `${kind}: no duplicate anchors${dupes.length ? ` (${[...new Set(dupes)].slice(0, 5).join(', ')})` : ''}`);
+    check(!broken.length, `${kind}: every in-book link has a target${broken.length ? ` (missing ${broken.slice(0, 5).join(', ')})` : ''}`);
+    check(toc.length > 40 && toc.every((id) => Number.isInteger(pages[kind]?.[id])), `${kind}: ${toc.length} contents entries, each with a page number from build/book-pages.json`);
+    check(FACULTY.every((f) => html.includes(f.name) && (!f.photo || html.includes(`${BASE}${f.photo}`))), `${kind}: faculty details (name, photo) from FACULTY`);
+    check(!new RegExp(`href="${BASE}`).test(html.replace(/src="[^"]*"/g, '')), `${kind}: links inside the book go to the live site or within the book (work in the PDF)`);
+    const pdf = path.join(ROOT, 'public', BOOKS[kind].pdf);
+    check(fs.existsSync(pdf) && fs.readFileSync(pdf).subarray(0, 5).toString() === '%PDF-', `${kind}: PDF present at public/${BOOKS[kind].pdf}`);
+    if (kind === 'student') {
+      check(count(html, /<h3 id="u[1-5]-/g) === 56 && count(html, /class="diagram/g) === 14, 'student: all 56 lesson sections and 14 diagrams');
+      check(count(html, /<dt><code>/g) === 62 && count(html.split('bk-glossary')[1] ?? '', /<dt>/g) === 47, 'student: cheat sheet (62 commands) and glossary (47 terms) appendices');
+      check([1, 2, 3, 4, 5].every((n) => html.includes(`id="chapter-${n}"`)), 'student: five chapters');
+    } else {
+      check(['story-bible', 'chapter-1', 'chapter-2', 'chapter-3', 'chapter-4', 'chapter-5', 'appendices'].every((id) => html.includes(`id="${id}"`)), 'faculty: story bible, chapters 1–5 and appendices');
+    }
+  }
+  const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
+  check(/publicFiles\([^)]*\)\)\.filter\(\(f\) => !f\.endsWith\('\.pdf'\)\)/.test(config), 'service worker does not precache the ebook PDFs');
+}
+
 fs.rmSync(TMP, { recursive: true, force: true });
 console.log(failures ? `\n${failures} test(s) failed` : '\nAll tests passed');
 process.exit(failures ? 1 : 0);

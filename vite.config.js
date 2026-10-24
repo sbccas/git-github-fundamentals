@@ -4,6 +4,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { createMarkdown, renderDeck } from './build/markdown.js';
+import { renderBook } from './build/book.js';
 
 const PROJECT = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(PROJECT, 'src');
@@ -32,6 +33,7 @@ function findPages(dir, pages = {}) {
  *  <!-- @md path.md -->        → Markdown file rendered to HTML (path from the project root)
  *  <!-- @toc path.md -->       → table of contents (h2 headings) for that file
  *  <!-- @deck path.md -->      → slide deck rendered from a deck file
+ *  <!-- @book student|faculty --> → a whole ebook (build/book.js)
  */
 function partials() {
   let base = BASE;
@@ -62,6 +64,7 @@ function partials() {
         });
         out = out.replace(/<!--\s*@md\s+(\S+)\s*-->/g, (_, p) => md.renderFile(p).html);
         out = out.replace(/<!--\s*@deck\s+(\S+)\s*-->/g, (_, p) => renderDeck(md, p, PROJECT));
+        out = out.replace(/<!--\s*@book\s+(student|faculty)\s*-->/g, (_, kind) => renderBook(kind, md, base, PROJECT));
         out = out.replaceAll('{{base}}', base);
         const page = /<body[^>]*data-page="([^"]+)"/.exec(out)?.[1];
         const section = /<body[^>]*data-section="([^"]+)"/.exec(out)?.[1];
@@ -98,7 +101,8 @@ function serviceWorker() {
         files.push(name.endsWith('index.html') ? name.replace(/index\.html$/, '') : name);
         hash.update(name).update(item.type === 'chunk' ? item.code : item.source);
       }
-      const extra = publicFiles(resolve(PROJECT, 'public'));
+      // Ebook PDFs (several MB) are not precached; the worker caches one when it is first downloaded.
+      const extra = publicFiles(resolve(PROJECT, 'public')).filter((f) => !f.endsWith('.pdf'));
       for (const f of extra) hash.update(f).update(readFileSync(resolve(PROJECT, 'public', f)));
       const source = readFileSync(resolve(PROJECT, 'build/sw-template.js'), 'utf8')
         .replace('__VERSION__', hash.digest('hex').slice(0, 12))

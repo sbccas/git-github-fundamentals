@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node tests/run-tests.mjs"
+    "test": "node tests/run-tests.mjs",
+    "ebooks": "node scripts/ebooks.mjs"
   },
   "license": "MIT",
   "devDependencies": {

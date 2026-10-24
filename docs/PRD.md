@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.10 — approved; Phase 1 live (Milestones 1–7 done, Milestone 8 ebooks in progress; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.10 — approved; Phase 1 live (Milestones 1–8 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -309,7 +309,7 @@ git-github-fundamentals/
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ **committed 2026-10-23** |
 | 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ **live 2026-10-23** — https://sbccas.github.io/git-github-fundamentals/ |
 | 7 | Git Passport | `/passport/` page, next-activity recommendations, print/PDF and PNG card, optional self-entered name, safer progress import — plan: [`docs/plans/MILESTONE-7-GIT-PASSPORT-PLAN.md`](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md) | ✅ **approved 2026-10-23 · live 2026-10-23** |
-| 8 | Course ebooks | Student Edition and Faculty Edition: web version + PDF download with cover, course and faculty details, clickable contents with page numbers (P-12, F-19) — plan: [`docs/plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) | ✅ **approved 2026-10-24** · in progress |
+| 8 | Course ebooks | Student Edition and Faculty Edition: web version + PDF download with cover, course and faculty details, clickable contents with page numbers (P-12, F-19) — plan: [`docs/plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) | ✅ **approved 2026-10-24 · live 2026-10-24** |
 
 ## 13. Out of scope (all phases unless moved by approval)
 

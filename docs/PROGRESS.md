@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| **Report date** | 2026-10-23 |
+| **Report date** | 2026-10-24 |
 | **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
 | **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
-| **PRD version** | v1.9 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
-| **Phase** | Phase 1 (core platform) **live**: Milestones 1–7 done; real-device and projector checks remain |
+| **PRD version** | v1.10 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
+| **Phase** | Phase 1 (core platform) **live**: Milestones 1–8 done; real-device and projector checks remain |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
 > **Update it at the end of every milestone** (and whenever a requirement changes) in the same commit as the work.
@@ -31,6 +31,7 @@
 | 6a | Polish: PWA/offline, palette missions, Teach objectives, error hints, touch targets, contrast, print/PDF, `npm test` | ✅ | `35417b7` | 2026-10-23 |
 | 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
 | 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation `69a17e0` | 2026-10-23 |
+| 8 | Course ebooks: Student Edition and Faculty Edition, web + PDF with cover, course and faculty details, clickable contents with page numbers ([plan](plans/MILESTONE-8-EBOOKS-PLAN.md), approved 2026-10-24) | ✅ | plan `961e13b` · approval `0694a40` · implementation: see §8 | 2026-10-24 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -38,16 +39,17 @@
 
 | Area | Count / contents |
 |---|---|
-| Site pages | Home · Units 1–5 · Playground · Missions (hub + runner) · Labs · Cheat sheet · Glossary · Bonus · Self-check · About · **Git Passport** · Teach hub · 15 decks · Faculty guide page · Handbook page (**33 pages**) |
+| Site pages | Home · Units 1–5 · Playground · Missions (hub + runner) · Labs · Cheat sheet · Glossary · Bonus · Self-check · About · **Git Passport** · **Student ebook** · Teach hub · 15 decks · Faculty guide page · Handbook page · **Faculty ebook** (**35 pages**) |
 | Lessons | 5 units, 56 sections, 14 diagrams, flip cards, conflict game |
 | Practice | 15 browser missions · 4 GitHub labs (L-01 – L-04) + 4 unit labs · Playground with sandboxes |
 | Assessment | 5 unit quizzes × 12 questions (60) · 40-question self-check (25 own + 15 drawn from unit quizzes) |
 | Reference | Cheat sheet (62 commands, 9 groups) · Glossary (47 terms) · Bonus (11 topics) |
 | Faculty | Faculty guide (15 session plans, each with objectives) · Handbook (story bible, 5 chapters, appendices) · 15 neon decks (172 slides) |
+| Ebooks | Student Edition (65 pages: cover, about, contents, 5 chapters, cheat sheet, glossary, practice links, course at a glance) and Faculty Edition (48 pages), each as a web page and a PDF in `public/books/` — made with `npm run ebooks` |
 | Git engine | 24 `git` commands + 16 shell commands; simulated GitHub with teammate pushes; 26 plain-English error hints |
 | Gamification | XP, levels, 9 badges, progress rings, export/import (validated) · Git Passport page with next step, A4 print and PNG card |
 | Offline / install | Web app manifest, 4 icons, service worker precaching all 89 files (~2 MB) |
-| Tests | `npm test` (85 checks): 15 missions end-to-end, 20 engine checks, 10 content checks, 40 Git Passport / import checks — also run by the deploy workflow |
+| Tests | `npm test` (104 checks): 15 missions end-to-end, 20 engine checks, 10 content checks, 40 Git Passport / import checks, 19 ebook checks — also run by the deploy workflow. `npm run ebooks` also checks every PDF contents link against its printed page number |
 
 ## 3. Requirement cross-check
 
@@ -66,6 +68,7 @@
 | P-09 | Glossary (+ tap definitions in lessons) | ✅ | `content/glossary.json`, `scripts/lib/glossary.js` |
 | P-10 | About (college, course, faculty) | ✅ | `src/about/`; faculty section on (`FEATURES.facultySection`, `FACULTY` in `scripts/data/site.js`); "Created by" credit on About and in the footer |
 | P-11 | Teach | ✅ | `src/teach/**` |
+| P-12 | Student Edition ebook | ✅ | `/book/student/` + `public/books/git-github-fundamentals-student-edition.pdf`; `build/book.js`, `src/styles/book.css`. Linked from More menu, mobile menu, Ctrl+K, home course card, cheat sheet |
 
 ### 3.2 Practice terminal (§6.2)
 
@@ -142,6 +145,7 @@
 | F-16 | Chapter contents | ✅ | All 5 chapters follow the structure |
 | F-17 | Story bible | ✅ | `00-story-bible.md` |
 | F-18 | Handbook / slides / lessons / guide consistent | ✅ | Same cast, files, mission IDs and outputs across all four |
+| F-19 | Faculty Handbook ebook | ✅ | `/book/faculty/` + `public/books/git-github-fundamentals-faculty-handbook.pdf`; linked from the Teach hub ("Ebooks (PDF)") and the handbook page |
 
 ### 3.7 Global UX (§6.7)
 
@@ -195,6 +199,7 @@
 | Self-check mixes 25 own + 15 unit-quiz questions | Fresh mix each attempt without writing 40 single-use questions |
 | Imported XP is recalculated from recorded work (M7) | Every award is given once, so XP = missions × 75 + quiz passes × 100 + units marked complete × 50 + games × 50; honest files keep the same value, forged XP cannot be imported |
 | Plans are committed to `docs/plans/` before a milestone is built (M7 onward) | GitHub is the shared hand-off between ChatGPT and Claude Code |
+| Ebook PDFs are generated on a maintainer computer and committed (M8) | GitHub Pages serves static files; the deploy workflow does not need Chrome or Python |
 | Teach hub objectives come from the faculty guide | One source of truth instead of a second copy in code |
 | Light-theme accent colours slightly darker | WCAG AA contrast (N-04) |
 
@@ -208,6 +213,8 @@
 - After an update, a student who already has the site open sees new pages on the next navigation; very old tabs may need one refresh.
 - Git Passport: the Time Traveller badge leaves no other record, so an imported file can still claim it; Unit 5 labs happen on real GitHub and are not tracked (the Unit 5 badge needs the quiz, as before); the passport name is self-entered and not verified.
 - The PNG card uses the system emoji font for badge icons, so they look slightly different on Android, iPhone and Windows.
+- Ebook PDFs are not regenerated automatically: after editing a lesson or the handbook, run `npm run ebooks` and commit the PDFs. `npm test` fails if a lesson section is added or renamed without regenerating (its page number is missing), but a wording-only change would leave the PDF one edition behind.
+- The PDFs (3.6 MB and 2.5 MB) are not part of the offline download; each works offline after it has been opened once.
 
 ## 7. Milestone 6 checklist (polish & launch)
 
@@ -243,6 +250,22 @@
 | `npm test` (85 checks) and `npm run build` | — | ✅ |
 | **Real-device acceptance** on one Android phone and one iPhone: checks F1 – F8 on the back of the [trial checklist](launch/trial-checklist.pdf) (navigation, numbers match Missions, next step, name, PNG card opens, one-page PDF, offline from the installed app, layout and touch) | G-04 – G-07, N-01, U-05 | ⏳ **awaiting results** — handoff published 2026-10-23; nothing on real devices has been tested yet |
 
+## 7b. Milestone 8 checklist (course ebooks)
+
+| Task | PRD | Status |
+|---|---|---|
+| Plan committed and approved before building | process | ✅ [`docs/plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) — `961e13b`, approved `0694a40` |
+| Student Edition: cover, about (course, college, faculty, licence), contents, 5 chapters, 4 appendices | P-12 | ✅ 65-page PDF, web page |
+| Faculty Edition with the same design | F-19 | ✅ 48-page PDF, web page |
+| Contents: clickable, with page numbers | P-12, F-19 | ✅ 66 + 67 PDF links, each verified to open its printed page |
+| Chapters on new pages, page footer with book title and number, no number on the cover | P-12, F-19 | ✅ |
+| All lesson content present; no buttons; flip cards print both sides; diagrams keep their wide layout | P-12 | ✅ 56 sections, 14 diagrams, 62 commands, 47 terms |
+| Web links in the PDF go to the live site | P-12, F-19 | ✅ no `localhost` links |
+| 360 px web layout: no sideways scroll, links ≥ 44 px | N-01 | ✅ |
+| Offline: book pages precached, PDFs not | U-05 | ✅ |
+| `npm test` (104) and `npm run build` | — | ✅ |
+| On a phone: download each PDF, open it, tap contents lines; print a few pages on paper | P-12, F-19 | ⏳ needs you (trial checklist, section A) |
+
 ## 8. Change log of this report
 
 | Date | Change |
@@ -252,3 +275,4 @@
 | 2026-10-23 | Launched: pushed to GitHub, Pages live; history re-credited to Hitesh Patel, so commit IDs updated |
 | 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation `69a17e0` |
 | 2026-10-23 | Real-device acceptance handoff for Milestone 7: trial checklist page 2 (F1 – F8, Android + iPhone, automated vs device checks); PRD header date corrected |
+| 2026-10-24 | Milestone 8 — course ebooks (P-12, F-19) delivered |

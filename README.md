@@ -17,6 +17,7 @@ story missions and quizzes mapped to the five-unit syllabus.
 | [`docs/faculty-guide.md`](docs/faculty-guide.md) | Session-by-session teaching guide (15 × 2 hours) — also at `/teach/guide/` |
 | [`docs/faculty-handbook/`](docs/faculty-handbook/README.md) | Book-style faculty handbook: story bible + one chapter per unit — also at `/teach/handbook/` |
 | [`docs/reference-examples.md`](docs/reference-examples.md) | Teaching patterns and analogies, mapped to units |
+| [`public/books/`](public/books/) | Course ebooks (PDF): Student Edition and Faculty Handbook — also at `/book/student/` and `/book/faculty/`. Regenerate with `npm run ebooks` after editing lessons or the handbook |
 | [`docs/launch/`](docs/launch/) | Launch kit: trial checklist (phones, lab PC, projector, students; back page = Git Passport real-device acceptance), A4 student notice, WhatsApp announcement — each `.pdf` is printed from the `.html` beside it |
 
 ## Run it locally
@@ -34,6 +35,7 @@ Other commands:
 
 ```bash
 npm test          # missions end-to-end, Git engine and content checks (no browser needed)
+npm run ebooks    # make the Student / Faculty ebook PDFs in public/books/ (needs Chrome + Python with pypdfium2)
 npm run build     # production build into dist/ (also writes the offline service worker, dist/sw.js)
 npm run preview   # serve the production build at http://localhost:4173/git-github-fundamentals/
 ```
@@ -60,7 +62,9 @@ content/
   labs.md               the Labs page
 build/markdown.js       build-time Markdown renderer (lessons, slides, handbook)
 build/sw-template.js    offline service worker; vite.config.js fills in the file list at build time
-public/                 files copied as-is (favicon, app icons, PWA manifest)
+public/                 files copied as-is (favicon, app icons, PWA manifest, faculty photos, ebook PDFs in books/)
+build/book.js           the two ebooks (Student Edition, Faculty Handbook), rendered into src/book/*/
+scripts/                npm run ebooks: prints the ebooks with headless Chrome and checks their contents links
 tests/                  npm test (runs the Playground engine under Node)
 docs/                   PRD, progress report, faculty guide, handbook, reference notes
 ```

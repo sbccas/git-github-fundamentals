@@ -120,6 +120,7 @@ export const PAGES = [
   { slug: 'playground/', title: 'Playground', desc: 'Real Git terminal in your browser', milestone: 2 },
   { slug: 'missions/', title: 'Missions', desc: 'Story-based Git challenges', milestone: 3 },
   { slug: 'passport/', title: 'Git Passport', desc: 'Your XP, level, badges and next step', milestone: 7 },
+  { slug: 'book/student/', title: 'Student ebook', desc: 'The whole course as a book — read online or download the PDF', milestone: 8 },
   { slug: 'labs/', title: 'Labs', desc: 'Practical assignments on real GitHub', milestone: 3 },
   { slug: 'cheatsheet/', title: 'Cheat sheet', desc: 'Every command on one page', milestone: 5 },
   { slug: 'self-check/', title: 'Self-check', desc: 'Final 40-question practice test', milestone: 5 },
@@ -129,6 +130,7 @@ export const PAGES = [
   { slug: 'teach/', title: 'Teach', desc: 'Lecture slides, session plans and the faculty handbook', milestone: 3 },
   { slug: 'teach/guide/', title: 'Faculty guide', desc: 'How to run each of the 15 sessions', milestone: 3 },
   { slug: 'teach/handbook/', title: 'Faculty handbook', desc: 'Story bible, deeper explanations and examples', milestone: 3 },
+  { slug: 'book/faculty/', title: 'Faculty Handbook ebook', desc: 'The faculty handbook as a printable book (PDF)', milestone: 8 },
 ];
 
 /** Commands for the search palette — each points to the unit that teaches it. */

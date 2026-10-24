@@ -280,7 +280,7 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 .doc h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.8rem); }
 .doc h3 { padding-top: 8px; }
 .doc .aside-unit a, .page-doc .aside-unit a { color: var(--u); text-decoration: none; }
-.mini-print { margin-top: 14px; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 600 .8rem var(--font-body); cursor: pointer; }
+.mini-print { display: inline-flex; align-items: center; text-decoration: none; margin-top: 14px; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 600 .8rem var(--font-body); cursor: pointer; }
 .page-doc .toc-list + .toc-list { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); }
 @media print {
   .doc { max-width: none; font-size: 11pt; }
