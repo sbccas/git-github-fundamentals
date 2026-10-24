@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.9 — approved; Phase 1 live (Milestones 1–7 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.10 — approved; Phase 1 live (Milestones 1–7 done, Milestone 8 ebooks in progress; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -87,6 +87,7 @@ Session-by-session teaching plans (15 × 2 hours) are in [`faculty-guide.md`](fa
 | P-09 | **Glossary** (`/glossary`) | All terms; same terms show a hover/tap definition inside lessons |
 | P-10 | **About** (`/about`) | College details (§10), course details, hidden faculty section (§10) |
 | P-11 | **Teach** (`/teach/`, `/teach/session-NN/`, `/teach/handbook/`) | Lecture slide decks, presenter view and the Faculty Handbook — see §6.6 F-04 – F-18 |
+| P-12 | **Student Edition ebook** (`/book/student/` + PDF download) | Cover; inside cover with course, college and faculty details; clickable contents with page numbers; the five unit lessons as chapters; appendices (cheat sheet, glossary, missions and labs, course at a glance); licence. Printable on A4 and readable on phones. Milestone 8 |
 
 ### 6.2 Practice terminal (real Git in the browser)
 
@@ -192,6 +193,7 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 | F-16 | **Each chapter contains:** learning outcomes; in-depth explanations (deeper than the student lessons); the **Amroli Canteen story episode** for that unit; 2–3 **additional story examples** in other settings students know (college fest website, library management system, a class assignment); analogies and board diagrams to draw; worked command walkthroughs with real output; common student questions with model answers; misconceptions and how to correct them; a 10-question self-check for faculty with answers; a "10-minute recap" for revision lectures. |
 | F-17 | **Story bible** (front matter): the Amroli Canteen cast, their project, files and the full story arc across all five units, so every faculty member tells the same story. |
 | F-18 | Handbook, slides, lessons and faculty guide stay consistent — a change to a session's content updates all four in the same commit (extends F-02). |
+| F-19 | **Faculty Handbook ebook** (`/book/faculty/` + PDF download): the Student Edition design applied to the existing handbook, marked Faculty Edition, linked from Teach. Milestone 8 |
 
 ### 6.7 Global UX
 
@@ -307,6 +309,7 @@ git-github-fundamentals/
 | 5 | Unit 5 + extras | Unit 5, GitHub labs, cheat sheet, glossary, bonus, self-check, about · decks for sessions 13–15 · handbook chapter 5 + appendices · presenter view polish | ✅ **committed 2026-10-23** |
 | 6 | Polish & launch | PWA, accessibility & mobile/projector testing, PDF exports (guide, handbook, slides) · **push to github.com/sbccas step by step** · enable GitHub Pages | ✅ **live 2026-10-23** — https://sbccas.github.io/git-github-fundamentals/ |
 | 7 | Git Passport | `/passport/` page, next-activity recommendations, print/PDF and PNG card, optional self-entered name, safer progress import — plan: [`docs/plans/MILESTONE-7-GIT-PASSPORT-PLAN.md`](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md) | ✅ **approved 2026-10-23 · live 2026-10-23** |
+| 8 | Course ebooks | Student Edition and Faculty Edition: web version + PDF download with cover, course and faculty details, clickable contents with page numbers (P-12, F-19) — plan: [`docs/plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) | ✅ **approved 2026-10-24** · in progress |
 
 ## 13. Out of scope (all phases unless moved by approval)
 
@@ -335,13 +338,14 @@ git-github-fundamentals/
 |---|---|---|
 | 2026-10-22 | ~~Teach mode on the website~~ | **Approved** as the public Teach section (F-04 – F-14). A faculty-only version would need Phase 2 roles. |
 | 2026-10-22 | **Private exam bank** — real practical-exam variants kept out of the public repo | Faculty guide holds only sample tasks |
-| 2026-10-24 | **Course ebooks** — Student Edition (unit lessons + cheat sheet + glossary) and Faculty Handbook as ebooks with cover, course and faculty details, clickable contents with page numbers; PDF download + web version | Direction chosen by the course owner 2026-10-24; draft requirements P-12, F-19 in [`plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md). **Plan awaiting approval.** |
+| 2026-10-24 | ~~Course ebooks~~ — Student Edition (unit lessons + cheat sheet + glossary) and Faculty Handbook as ebooks with cover, course and faculty details, clickable contents with page numbers; PDF download + web version | **Approved 2026-10-24** as Milestone 8 (P-12, F-19) — [`plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md) |
 
 ## 16. Change log
 
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-24 | 1.10 | Milestone 8 approved: course ebooks — Student Edition (P-12) and Faculty Handbook ebook (F-19), web + PDF |
 | 2026-10-23 | 1.9 | Milestone 7 — Git Passport (G-04 – G-08): passport page, next-activity rules, A4 print and PNG card, optional self-entered name, validated progress import with XP recalculation. Existing XP values, badge conditions and the version 1 progress format unchanged. Plans now live in `docs/plans/` |
 | 2026-10-23 | 1.8 | Milestone 6 polish built: PWA (manifest, icons, service worker precaching the whole site → offline after first visit, U-05/F-05), missions in Ctrl+K (U-01), session objectives on the Teach hub read from the faculty guide (F-04), plain-English hint lines under common errors (T-07) and a command list for unknown commands (T-14), 44 px touch targets on phones (N-01), WCAG AA contrast fixes in the light theme (N-04), print/PDF fixed and verified for slides, guide, handbook and cheat sheet (F-03, F-13, P-05), `npm test` (missions, engine, content) run by the deploy workflow. Progress report added: `docs/PROGRESS.md` |
 | 2026-10-23 | 1.7 | Milestone 5 built: Unit 5 lesson (3 diagrams) + quiz, Labs L-02 – L-04, cheat sheet (62 commands, search, unit filter, print), glossary (47 terms, tap-to-define in lessons, Ctrl+K), bonus page, 40-question self-check with per-unit report, About page (hidden faculty section, export/import progress = G-03), decks 13–15, handbook chapter 5 + appendices |

@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Status** | 📝 Plan published 24 October 2026 — **awaiting the course owner's approval** before implementation |
+| **Status** | ✅ **Approved by the course owner (Hitesh Patel) on 24 October 2026** · plan first published in `961e13b` |
 | **Requested by** | Hitesh Patel (course owner), 24 October 2026: "make it look like a real ebook with an attractive cover page, details of the course with faculty details, an index with links, to share with students for physical or digital reference" |
 | **Decisions taken** (24 Oct 2026) | (1) Two books from one design: a **Student Edition** for students, and the **Faculty Handbook** as a faculty ebook. (2) Each book as a **ready PDF on the site** plus a **web version** that prints the same way. |
-| **PRD** | Recorded in §15 Backlog with draft requirements P-12 and F-19; moved into §6 and §12 (Milestone 8) once this plan is approved |
+| **PRD** | P-12 (§6.1) and F-19 (§6.6), Milestone 8 (§12), v1.10 |
 
 ## 1. Why two books
 
