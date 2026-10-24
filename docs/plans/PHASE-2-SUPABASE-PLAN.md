@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | **Revision 2 — awaiting the owner's review.** Direction approved by the owner (Hitesh Patel) on 24 October 2026 with two decisions: leaderboard **opt-in**, and **no automatic deletion** of accounts after one year. Revision 2 adds security acceptance criteria, sync rules, a test-project gate and data-protection rules (from review). **No implementation has started.** Each milestone still needs its own approved plan, and decision D-5 (Supabase project) must be done first. |
-| **History** | Rev 1 published 24 Oct 2026 (`dc38c9b`) · Rev 2 24 Oct 2026 (this version) |
-| **PRD** | §7 S-01 – S-12 (Phase 2), §4 Phases, §11 Architecture, N-05 Privacy, D-5 |
+| **Status** | **Revision 3 (final documentation revision) — awaiting the owner's review.** Direction approved by the owner (Hitesh Patel) on 24 October 2026 with two decisions: leaderboard **opt-in**, and **no automatic deletion** after a fixed period. **No implementation has started.** Before any milestone: its own approved plan, decision D-5 (Supabase projects), and — before real student data — the college sign-off in §5.6. |
+| **History** | Rev 1 `dc38c9b` · Rev 2 `0fbd084` (security, sync, test gate, data protection) · Rev 3, 24 Oct 2026 (certificate records, live-quiz and join-code security, verify URL, production sign-off, PRD consistency) |
+| **PRD** | §7 S-01 – S-12, §11 Architecture, §12b Phase 2 milestones, §14 D-5 and D-8 – D-12, N-05 |
 | **Builds on** | Phase 1 as delivered (Milestones 1–9): local progress in `src/scripts/lib/progress.js` (version 1), validated import (G-08), Git Passport (G-04) |
 
 ## 1. In one line
@@ -15,30 +15,31 @@ faculty get a **class dashboard**, an **opt-in leaderboard**, **live classroom q
 ## 2. Principles
 
 1. **Sign-in stays optional.** Everything in Phase 1 keeps working without an account, offline, exactly as today.
-   Signing in only adds sync and class features.
 2. **The device stays the first copy.** Progress is saved in the browser first and copied to Supabase when online.
    If Supabase is down or the free project is paused, the site still works.
 3. **The static site stays on GitHub Pages.** No server of our own: the browser talks to Supabase directly and every
-   table is protected by row-level security (RLS). The public anon key in the site is safe by design; the secret
-   service-role key is never put in the site, the repository or a chat.
-4. **Collect as little as possible** (N-05): GitHub identity, display name, programme, batch, progress. No phone
-   numbers, no analytics, no tracking.
-5. **Grades are not automated.** Missions run in the student's browser, so progress is a learning record. Certificates
-   are issued by faculty after the final practical (S-07), never automatically.
+   table is protected by row-level security (RLS). Only the public anon key is in the site.
+4. **Collect as little as possible** (N-05): GitHub identity, display name, programme, batch, progress, live-quiz
+   answers, certificate records. No phone numbers, no analytics, no tracking.
+5. **Grades are not automated.** Progress is a learning record. Certificates are issued by faculty after the final
+   practical (S-07), never automatically.
 
 ## 3. What students and faculty will see
 
 | Who | New | Requirement |
 |---|---|---|
-| Student | "Sign in with GitHub" (header and Git Passport); first sign-in shows the consent screen (§5.4), then asks for name, programme and batch | S-01, S-03, S-12 |
-| Student | Progress merged from this device on first sign-in; same progress on every device; sync status on the passport | S-01, S-02, S-10 |
-| Student | Batch leaderboard (XP) — **only students who opt in are listed; off by default** | S-04 |
-| Student | "Join live quiz" with a 6-letter code shown on the projector | S-05 |
-| Student | "Delete my account and online data" (local progress stays on the device) | S-12 |
+| Student | "Sign in with GitHub"; first sign-in shows the consent screen (§5.4), then name, programme and batch join code | S-01, S-03, S-12 |
+| Student | First sign-in **offers** to add this device's progress to the account; then the same progress on every device; sync status on the passport | S-01, S-02, S-10 |
+| Student | Batch leaderboard (XP) — only students who opt in are listed; **off by default** | S-04 |
+| Student | "Join live quiz" with a 6-letter session code shown on the projector | S-05 |
+| Student | "Download my data" (the existing progress export) and "Delete my account and online data" | S-12 |
 | Faculty | Teacher dashboard `/teach/dashboard/`: own batches only — units, missions, quiz scores; CSV export | S-06, S-12 |
-| Faculty | Live quiz host screen: pick a unit quiz, start, see answer counts as a chart (no names on the projector) | S-05 |
-| Faculty | Issue a certificate after the final practical; revoke if issued by mistake | S-07 |
-| Anyone | `/verify/?id=XXXX-XXXX` shows name, course, date, college and status of one certificate | S-07 |
+| Faculty | Live quiz host screen: start a unit quiz for a batch; the projector shows answer **counts** only | S-05 |
+| Faculty | Issue a certificate after the final practical; revoke with a reason | S-07 |
+| Anyone | `https://sbccas.github.io/git-github-fundamentals/verify/?id=XXXX-XXXX` shows one certificate | S-07 |
+
+The verification link uses a query string (`/verify/?id=…`) because GitHub Pages serves static files and cannot route
+`/verify/<id>` paths; the PRD uses the same format.
 
 ## 4. Architecture and data model
 
@@ -46,134 +47,171 @@ faculty get a **class dashboard**, an **opt-in leaderboard**, **live classroom q
 Browser (GitHub Pages site, offline-first)
   ├─ localStorage: progress v1 (unchanged) + sync metadata  ──sync──▶  Supabase Postgres (RLS on every table)
   ├─ supabase-js (separate chunk, loaded only when the student signs in or is signed in)
-  ├─ Auth: GitHub OAuth (PKCE) via Supabase Auth
-  └─ Live quiz: Supabase Realtime (channel per session)
+  ├─ Auth: GitHub OAuth (PKCE) via Supabase Auth — the only sign-in method
+  └─ Live quiz: Supabase Realtime, private channels authorised by RLS
 ```
 
-- **Region:** Mumbai (`ap-south-1`). **Config:** `src/scripts/data/supabase.js` (project URL + anon key, public by design).
-- **Schema as code:** `supabase/migrations/*.sql` (tables, RLS, functions, triggers), reviewed like any code;
-  `supabase/tests/*.sql` for the security tests (§6).
-- **Service worker:** requests to the Supabase domain are never cached (it only handles same-origin requests).
+- **Projects:** `gg-test` and `gg-prod`, region Mumbai (`ap-south-1`) (§5.3). **Config:** `src/scripts/data/supabase.js`.
+- **Schema as code:** `supabase/migrations/*.sql`; security tests in `supabase/tests/*.sql`.
+- **Service worker:** never caches Supabase requests (it only handles same-origin requests).
 
 | Table / function | Holds | Access (RLS; default deny) |
 |---|---|---|
-| `profiles` | user id, GitHub numeric id and username, display name, programme, batch, `leaderboard_opt_in` (default **false**), consent version and date | Own row: read; update only name, programme, opt-in. Faculty: read rows in batches they own |
-| `faculty_allowlist` | **GitHub numeric user ids** allowed the faculty role | No browser access at all (owner edits it in the Supabase dashboard) |
-| `batches` | name, programme, year, join code, owning faculty | Owning faculty: manage. Students: read their own batch. Joining only through `join_batch(code)` |
-| `progress` | per student: version 1 document (`jsonb`), server XP, `revision`, updated time | No direct writes. Read own row; faculty read rows in their batches. Written only by `save_progress` |
-| `live_sessions`, `live_answers` | session code, quiz, state; one answer per student per question | Faculty: own sessions. Students: active sessions of their batch; insert own answer once |
-| `certificates` | id, student, batch, issued by, issued/revoked time, status | Faculty of the batch: issue/revoke. No public table access |
-| `save_progress(doc, base_revision)` | validate, merge, recalculate XP, store | Signed-in users only; always the caller's own row |
-| `leaderboard(batch)` | display name + XP of **opted-in** students in the caller's batch | Students and faculty of that batch |
-| `verify_certificate(id)` | name, course, issue date, college, status | Anyone (including signed out) |
+| `profiles` | user id, GitHub numeric id and username, display name, programme, batch id, `leaderboard_opt_in` (default false), `leaderboard_hidden` (set by faculty), consent version and date | Own row: read; update only display name, programme, opt-in. Faculty: read rows in their batches |
+| `faculty_allowlist` | GitHub numeric user ids allowed the faculty role | No browser access (owner edits in the Supabase dashboard) |
+| `batches` | name, programme, year, owning faculty | Owning faculty: manage. Students: read **only their own batch's name and year** |
+| `batch_join_codes` | batch id, join code, enabled, created | **No browser read access** for anyone; faculty get their own batches' codes only via `batch_code(batch)` |
+| `join_attempts` | user id, time, success | Written only by `join_batch`; used for the attempt limit |
+| `progress` | per student: version 1 document (`jsonb`), server XP, `revision`, updated time | Read own row; faculty read rows in their batches. Written only by `save_progress` |
+| `live_sessions` | session code, batch, quiz id, current question, state (`waiting`/`open`/`closed`/`ended`), faculty | Faculty: own sessions. Students: read only active sessions of **their own** batch |
+| `live_answers` | session, question, student, option, time; **unique (session, question, student)** | Student: insert own answer once while the question is open; read **only their own**. Faculty of the session: read all of that session |
+| `certificates` | id, `student_id` (nullable), **snapshot** of recipient name, course, college and issue date, batch, issued by, status, revoked by/at/reason | Faculty of the batch: issue/revoke. No public table access; public reads only through `verify_certificate` |
+| `save_progress(doc, base_revision)` | validate, merge, recalculate XP, store | Signed-in users; always the caller's own row |
+| `join_batch(code)` | adds the caller to the matching batch | Signed-in students; attempt-limited (§5.1 J3) |
+| `leaderboard()` | display name + XP of opted-in, not-hidden students in the caller's batch | Students and faculty of that batch |
+| `live_results(session, question)` | answer counts per option | Faculty of the session (for the projector) |
+| `verify_certificate(id)` | recipient name, course, college, issue date, status | Anyone, including signed out |
 | `delete_my_account()` | removes the caller's data (§5.4) | Signed-in users, own account only |
 
-The PRD's indicative `quiz_attempts` and `mission_runs` are folded into the `progress` document, which already holds
-quiz scores and mission completions; one validated document avoids two copies drifting apart.
+The PRD's earlier indicative `quiz_attempts` and `mission_runs` tables are replaced by the single validated `progress`
+document, which already holds quiz scores and mission completions.
 
-## 5. Security, sync and data-protection rules
+## 5. Security, sync, data-protection and release rules
 
-### 5.1 Security acceptance criteria (S-09) — every item must pass in the test project (§6) before release
+### 5.1 Security acceptance criteria (S-09) — each must pass on `gg-test` (§6) before release
 
-**Faculty role assignment**
-- F1. The faculty role comes **only** from `faculty_allowlist`, which no browser request can read or write.
-- F2. The allowlist stores **GitHub numeric user ids**, not usernames: renaming a GitHub account to a faculty member's
-  username grants nothing.
-- F3. A student cannot become faculty by editing their profile: role is not a column students can update, and role
-  checks in RLS read the allowlist on every request (not a value cached in the browser or the token).
-- F4. Removing someone from the allowlist removes faculty access on their next request.
+**Faculty role** — F1 the role comes only from `faculty_allowlist`, which no browser request can read or write ·
+F2 the allowlist uses GitHub **numeric ids**, so renaming an account grants nothing · F3 students cannot change their
+role (not an updatable column; RLS checks the allowlist on every request) · F4 removal from the allowlist takes
+effect on the next request.
 
-**RLS isolation**
-- R1. RLS is enabled on every table; anything not explicitly allowed is denied, including to signed-out (anon) users.
-- R2. Student A cannot read, insert, update or delete student B's profile, progress, answers or certificates —
-  including by guessing ids.
-- R3. Faculty see only students in batches they own; they cannot change any student's progress.
-- R4. The leaderboard returns only opted-in students of the caller's own batch, and only display name and XP.
-- R5. Joining a batch requires its join code (`join_batch`); students cannot list or join other batches.
+**Isolation** — R1 RLS on every table, default deny, including for signed-out users · R2 student A cannot read,
+insert, update or delete student B's profile, progress, answers or certificates, even by guessing ids · R3 faculty see
+only their own batches and cannot change progress · R4 the leaderboard returns only opted-in, not-hidden students of
+the caller's batch, with display name and XP only · R5 students cannot list batches other than their own.
 
-**`save_progress` ownership and integrity**
-- P1. Takes no user-id parameter: it always writes the row of the signed-in caller (`auth.uid()`); signed-out calls fail.
-- P2. Runs with a fixed `search_path` and validates the document like `validateProgress()` (G-08): known version,
-  known ids, value ranges, size limit (64 KB). Invalid documents are rejected and nothing is stored.
-- P3. Recalculates XP on the server (`deriveXp()` rules) and merges with the stored copy (§5.2); a client can never
-  lower stored progress or set XP/leaderboard values directly.
+**Batch join codes** — J1 join codes live only in `batch_join_codes`, which has no browser read policy; reading
+`batches` never returns a code · J2 `join_batch(code)` returns only the joined batch's name, and the same "code not
+valid" message for every failure, so codes cannot be probed for other batches · J3 at most 10 failed join attempts per
+student per hour; codes are 8 random characters from a 32-letter alphabet; faculty can disable or regenerate a code ·
+J4 faculty can read codes only for batches they own (`batch_code`).
 
-**Public certificate verification**
-- C1. Certificate ids are random (`XXXX-XXXX` from a 32-letter alphabet, about 10¹² values), never sequential.
-- C2. `verify_certificate(id)` returns exactly one certificate's name, course, issue date, college and status
-  (`valid` / `revoked`) — no email, GitHub details, progress or batch; there is no way to list certificates.
-- C3. Only faculty of the student's batch can issue or revoke; each issue/revoke records who and when.
+**`save_progress`** — P1 no user-id parameter: always the caller's own row; signed-out calls fail · P2 fixed
+`search_path`; validates like `validateProgress()` (version, ids, ranges, 64 KB limit); invalid documents change
+nothing · P3 merges with the stored copy and recalculates XP on the server; a client can never lower progress or set XP.
 
-**Keys and sign-in**
-- K1. Only the anon key is in the site; `npm test` fails if a service-role key or other secret pattern appears in the repository.
-- K2. Auth redirects are allowed only to `https://sbccas.github.io/git-github-fundamentals/` (production) and to
-  the local development address in the **test** project only.
+**Live quiz** — L1 Realtime channels are private and authorised by RLS: only students in the session's batch and the
+session's faculty can subscribe · L2 students see a session only while it is active and only for their own batch ·
+L3 answers are accepted only while that question is open · L4 one answer per student per question (unique
+constraint); a second insert or any update is rejected · L5 students can read only their own answers; no student can
+read, change or delete another student's answer · L6 only the session's faculty can open/close questions, read
+answers or `live_results`; the projector view shows counts, never names.
+
+**Certificates** — C1 random ids (`XXXX-XXXX`, about 10¹² values), never sequential · C2 `verify_certificate(id)`
+returns exactly one certificate's recipient name, course, college, issue date and status — no email, GitHub details,
+progress or batch; certificates cannot be listed · C3 only faculty of the student's batch can issue or revoke; every
+issue/revoke records who, when and (for revocation) why · C4 deleting a student account keeps the certificate snapshot
+but removes the link to the account (§5.5).
+
+**Keys and sign-in** — K1 only the anon key is in the site; `npm test` fails on service-role keys or other secret
+patterns · K2 auth redirects only to the production site (and to the local development address in `gg-test` only) ·
+K3 GitHub is the only sign-in provider; email/password and anonymous sign-in are disabled in production.
 
 ### 5.2 Sync behaviour (S-10)
 
 | Situation | Behaviour |
 |---|---|
-| Normal change | Saved locally first (as today), then marked *pending*; sent to `save_progress` with the `revision` it was based on |
-| Two devices change at the same time | The server compares revisions. If the stored copy is newer, it **merges** both (rules below) and returns the result with a new revision; the device keeps the merged copy. No change is lost, and XP is not doubled |
-| Stale copy (an old phone comes back) | Merge rules only add or raise values, so a stale copy cannot remove progress |
-| Network failure or Supabase paused | Nothing is lost: the change stays *pending*; retried on reconnect, page load and every few minutes with back-off; the passport shows "Offline — will sync" or "Sync problem — retry" |
-| Repeated retries | Idempotent: sending the same document twice gives the same result |
-| Signed-out use | Phase 1 behaviour, no network calls |
-| Account switching / shared lab PC | Local progress is tagged with the account it was synced to. If another account signs in, or the device has untagged progress, the site **asks**: "Add this device's progress to *name*?" (Add / Keep separate). Never merged silently. On sign-out, "Remove my progress from this PC" is offered (data stays online) |
+| First sign-in on a device with progress | The site **asks** "Add this device's progress to *name*?" (Add / Keep separate). Never merged silently |
+| Normal change | Saved locally first, marked *pending*, sent to `save_progress` with the `revision` it was based on |
+| Two devices change at the same time | If the stored copy is newer, the server merges both and returns the result with a new revision; nothing is lost, XP is not doubled |
+| Stale copy | Merge only adds or raises values, so a stale copy cannot remove progress |
+| Network failure or project paused | Change stays *pending*; retried on reconnect, page load and every few minutes with back-off; passport shows "Offline — will sync" / "Sync problem — retry" |
+| Repeated retries | Idempotent: the same document twice gives the same result |
+| Account switching / shared lab PC | Local progress is tagged with the account it was synced to; another account signing in is asked before anything is merged; sign-out offers "Remove my progress from this PC" (data stays online) |
 | Session expired | Keeps working locally; asks to sign in again; pending changes sync afterwards |
-| Import while signed in | Merged into the account (never replaces it silently); replacing the online copy needs an explicit confirmation |
+| Import while signed in | Merged into the account; replacing the online copy needs an explicit confirmation |
+| Signed out | Phase 1 behaviour, no network calls |
 
-**Merge rules** (`mergeProgress(a, b)`, a pure function with Node tests): missions done, badges and lesson sections =
-union (earliest date kept); quiz best = maximum, passed = either; unit complete = either; self-check best = maximum;
-last visited and passport name = the newer one (time-stamped); XP recalculated. The same rules run in the browser
-and in `save_progress`.
+**Merge rules** (`mergeProgress(a, b)`, pure, with Node tests; same rules in `save_progress`): missions done, badges,
+lesson sections = union (earliest date kept); quiz best = maximum, passed = either; unit complete = either; self-check
+best = maximum; last visited and passport name = newer (time-stamped); XP recalculated.
 
 ### 5.3 Test-project gate (S-11)
 
-1. Two Supabase projects: **test** (`gg-test`) and **production** (`gg-prod`). The test project never holds real student data.
-2. Every migration is applied to the test project first; then the security suite (§6) runs; then the manual checks.
-3. A migration reaches production only after the suite passes and the owner approves the release in the milestone plan.
-4. Before each production migration the owner exports the data (Supabase dashboard or `supabase db dump`), because
-   the free plan does not provide restorable backups.
-5. Production migrations are append-only (new files, never edits to applied ones).
+1. Two projects: `gg-test` (never holds real student data) and `gg-prod`.
+2. Every migration goes to `gg-test` first; the security suite (§6) and manual checks run there.
+3. A migration reaches `gg-prod` only after the suite passes and the owner approves it in the milestone plan.
+4. Before each production migration the owner exports the data (no restorable backups on the free plan).
+5. Production migrations are append-only.
 
 ### 5.4 Consent, deletion, retention and faculty access (S-12)
 
-- **Consent** — before the first online save, a screen says what is stored (GitHub identity, display name, programme,
-  batch, progress), who can see it (the student; faculty of their batch; the batch leaderboard only if they opt in;
-  certificate details to anyone who has the certificate id), where (Supabase, Mumbai) and how to delete it. The student
-  must agree to continue; the consent version and date are stored. Declining keeps the site in signed-out mode.
-- **Deletion** — "Delete my account" removes the profile, progress, live-quiz answers and the sign-in account.
-  Local progress on the device stays. **Issued certificates are college records**: their name, course and date stay
-  verifiable after account deletion unless the college revokes or removes them (stated in the consent text).
-- **Retention** (owner decision, 24 Oct 2026) — **no automatic deletion after a fixed period.** Data is kept until the
-  student deletes their account or the college asks for deletion or closes the project.
-- **Faculty access to individual records** — faculty see only students in batches they own: display name, GitHub
-  username, programme, batch, and progress (units, missions, quiz scores, self-check). They cannot see other batches,
-  edit progress, or see students' answers outside their own live sessions. CSV exports contain only these fields and
-  are handled under college policy. Certificate issue/revoke is logged with faculty and time.
+- **Consent** — before the first online save the student sees what is stored (GitHub identity, display name,
+  programme, batch, progress, live-quiz answers), who can see it (the student; faculty of their batch; the batch
+  leaderboard only if they opt in; a certificate's public fields to anyone with its id), where (Supabase, Mumbai), how
+  long (until deletion — no fixed period), and how to delete it. Agreeing is required to sign in; the version and date
+  are stored. The wording is confirmed by the college before production (§5.6).
+- **Access to your data** — "Download my data" exports the student's progress (the existing export).
+- **Deletion** — "Delete my account" removes the profile, progress, live-quiz answers, join attempts and the sign-in
+  account. Local progress on the device stays. Certificates are handled as in §5.5.
+- **Retention** (owner, 24 Oct 2026) — **no automatic deletion after a fixed period**: data is kept until the student
+  deletes their account or the college asks for deletion or closes the project.
+- **Faculty access** — only faculty on the allowlist, and only for batches they own: display name, GitHub username,
+  programme, batch, progress (units, missions, quiz and self-check scores) and their own sessions' live answers. No
+  editing of progress; no other batches. Faculty may hide a student's display name from the leaderboard (moderation).
+  CSV exports contain only these fields and are handled under college policy. The list of authorised faculty is
+  confirmed by the college before production (§5.6).
+
+### 5.5 Certificate records, deletion and revocation (S-07, S-12)
+
+- At issue, the certificate stores a **snapshot**: recipient name (as confirmed by faculty), course, college and issue
+  date, plus `student_id` linking to the account.
+- `student_id` is a nullable foreign key with **`ON DELETE SET NULL`**: when a student deletes their account, the
+  certificate row stays, without any link to the account, profile or progress. `verify_certificate` keeps showing the
+  snapshot (name, course, college, date, status).
+- **Revocation** sets status `revoked` with who, when and why; verification then shows "Revoked" with the date (not
+  the reason).
+- **Removal**: if the college decides a certificate record must be removed (for example at the recipient's request),
+  the owner deletes the row in the dashboard; verification then shows "Not found". This is a college decision, logged
+  outside the site.
+- Whether certificate records stay verifiable after account deletion is confirmed by the college (D-9). If the
+  college decides otherwise, account deletion also revokes and anonymises the snapshot.
+
+### 5.6 Production sign-off (S-12) — before any real student data is collected
+
+The college confirms in writing (recorded in this plan and the PRD):
+
+1. the **consent wording** shown to students (D-11);
+2. **certificate-record retention** after account deletion (D-9);
+3. **who is authorised** to access student progress — the faculty allowlist and each person's batches (D-10);
+4. that students under 18, if any, are covered by the college's existing consent arrangements (D-12).
+
+Until then, Phase 2 runs only on `gg-test` with test accounts.
 
 ## 6. Testing
 
 - **Node (`npm test`):** merge rules (simultaneous, stale, repeated, imported), server XP rules mirrored from
-  `deriveXp()`, sync state machine (pending, retry, offline, expired session, account switch), the signed-out path
-  (Phase 1 unchanged with Supabase unreachable), and the secret scan (K1).
-- **Security suite (`supabase/tests/`), test project only:** one check per criterion F1–F4, R1–R5, P1–P3, C1–C3, K2,
-  run as different signed-in users (student A, student B, faculty X of batch 1, faculty Y of batch 2, signed-out).
-- **Manual:** two phones and a lab PC with real GitHub accounts (sync, account switching, leaderboard opt-in, live quiz
-  in a classroom, certificate link on WhatsApp).
+  `deriveXp()`, sync states (pending, retry, offline, expired session, account switch), the signed-out path with
+  Supabase unreachable, and the secret scan (K1).
+- **Security suite (`supabase/tests/`, `gg-test` only):** one test per criterion — F1–F4, R1–R5, J1–J4, P1–P3,
+  L1–L6, C1–C4, K2–K3 — run as student A and B (batch 1), student C (batch 2), faculty X (batch 1), faculty Y
+  (batch 2), a removed faculty member and a signed-out user. Live-quiz tests cover: joining a session of another batch
+  (denied), an ended session (denied), answering a closed question (denied), a second answer (denied), reading or
+  updating another student's answer (denied), subscribing to another batch's channel (denied).
+- **Manual (`gg-test`):** two phones and a lab PC with real GitHub test accounts — sync, account switching,
+  leaderboard opt-in, a classroom live quiz, certificate issue/revoke/verify, account deletion with a certificate.
 
-## 7. Milestones
+## 7. Milestones (PRD §12b)
 
-| # | Milestone | Requirements | Needs from the owner |
+| # | Milestone | Requirements | Needs from the owner / college |
 |---|---|---|---|
-| 10 | **Foundation:** test + production projects, schema and RLS migrations, security suite, sign in / out with GitHub, consent screen, profile form, delete account | S-01 (sign-in), S-03, S-08, S-09, S-11, S-12 | D-5 setup (§9); faculty GitHub usernames (we record their numeric ids) |
-| 11 | **Sync:** merge on first sign-in, background sync with retries, account-switch guard, sync status on the passport | S-01, S-02, S-10 | — |
-| 12 | **Batches, teacher dashboard, leaderboard:** join codes, dashboard + CSV, opt-in leaderboard | S-04, S-06 | Batch list |
-| 13 | **Live classroom quiz** (Realtime) | S-05 | A classroom test |
-| 14 | **Certificates:** issue/revoke, public `/verify/` page, certificate number on the passport | S-07 | Wording, signatory, printable PDF or not |
+| 10 | **Foundation:** `gg-test`/`gg-prod`, schema + RLS, security suite, sign-in, consent screen, profile, download/delete | S-01 (sign-in), S-03, S-08, S-09, S-11, S-12 | D-5 setup (§9); D-10 faculty list; D-11 consent wording; D-12 |
+| 11 | **Sync:** first-sign-in offer, background sync, retries, account-switch guard, sync status | S-01, S-02, S-10 | — |
+| 12 | **Batches, dashboard, leaderboard:** join codes, dashboard + CSV, opt-in leaderboard with moderation | S-04, S-06 | Batch list |
+| 13 | **Live classroom quiz** (private Realtime) | S-05, S-09 (L1–L6) | A classroom test on `gg-test` |
+| 14 | **Certificates:** issue/revoke, `/verify/?id=` page, certificate number on the passport | S-07, S-09 (C1–C4) | D-9; certificate wording, signatory, PDF or not |
 
-Each milestone gets its own short plan in `docs/plans/`, approved before it is built; none starts before D-5.
+Each milestone has its own plan in `docs/plans/`, approved before it is built. Production use starts only after §5.6.
 
 ## 8. Signed-out and offline guarantee
 
@@ -182,38 +220,55 @@ Git Passport, ebooks, offline install. `npm test` keeps all Phase 1 checks and a
 
 ## 9. Setup the owner does (D-5), step by step when Milestone 10 starts
 
-1. Create a free Supabase account and **two** projects: `gg-test` and `gg-prod` (region Mumbai). Keep the database passwords safe.
-2. On GitHub, create **OAuth Apps** under the `sbccas` organisation (one per project); paste each client ID and secret
-   into the matching Supabase project. **You do this yourself; secrets are never shared in chat.**
-3. Set redirect URLs (§5.1 K2).
-4. Send me only each project's **URL** and **anon (publishable) key** — both are public by design.
-5. Apply the migrations to `gg-test`, run the security suite, then to `gg-prod` after approval (§5.3); add faculty GitHub usernames.
+1. Create a free Supabase account and two projects, `gg-test` and `gg-prod` (Mumbai). Keep the database passwords safe.
+2. Create GitHub **OAuth Apps** under `sbccas` (one per project) and paste each client ID and secret into the matching
+   project. **You do this yourself; secrets are never shared in chat.**
+3. Enable only the GitHub provider; disable email and anonymous sign-in in `gg-prod` (K3); set redirect URLs (K2).
+4. Send me only each project's **URL** and **anon (publishable) key** — both public by design.
+5. Apply migrations to `gg-test`, run the suite; `gg-prod` only after approval and the §5.6 sign-off.
 
 ## 10. Cost, limits and risks
 
 | Topic | Note |
 |---|---|
-| Cost | Free plan is enough for class sizes (two free projects are allowed). |
-| Free projects pause | After about a week without activity; the site keeps working locally; the owner presses "Restore", or the college moves to a paid plan later. |
-| No free backups | Owner exports data before each production migration (§5.3) and at the end of each term. |
-| Shared lab PCs | Account-switch guard (§5.2); signed-in name shown on every page; sign-out offers to remove local progress. |
-| Cheating | Browser-based missions can be faked by a determined student; leaderboard and dashboard are learning signals; certificates depend on the faculty-run final practical. |
-| Offline | Unchanged (§8). |
+| Cost | Free plan; two free projects are allowed. |
+| Free projects pause | After about a week without activity; the site keeps working locally; the owner presses "Restore", or the college moves to a paid plan. |
+| No free backups | Export before each production migration and at the end of each term. |
+| Shared lab PCs | Account-switch guard; signed-in name shown on every page; sign-out offers to remove local progress. |
+| Cheating | Browser-based missions can be faked; leaderboard and dashboard are learning signals; certificates depend on the faculty-run final practical. |
 
-## 11. Decisions
+## 11. Decisions (same IDs as PRD §14)
 
-| Decision | Status |
-|---|---|
-| Phase 2 direction (Milestones 10–14) | ✅ Approved by the owner, 24 Oct 2026 |
-| Leaderboard | ✅ **Opt-in**, off by default (owner, 24 Oct 2026) |
-| Retention | ✅ **No automatic deletion** after a fixed period (owner, 24 Oct 2026) |
-| Revision 2 (§5 security, sync, test gate, data protection) | ⏳ Owner review |
-| Certificates after account deletion stay verifiable as college records (§5.4) | ⏳ Owner to confirm |
-| D-5: create `gg-test` and `gg-prod` + GitHub OAuth apps | ⏳ When Milestone 10 starts |
-| Faculty list (GitHub usernames) | ⏳ Before Milestone 10 |
-| Certificate wording, signatory, PDF | ⏳ Before Milestone 14 |
+| ID | Decision | Status |
+|---|---|---|
+| — | Phase 2 direction (Milestones 10–14) | ✅ Approved by the owner, 24 Oct 2026 |
+| — | Leaderboard opt-in, off by default | ✅ Owner, 24 Oct 2026 (S-04) |
+| — | No automatic deletion after a fixed period | ✅ Owner, 24 Oct 2026 (S-12) |
+| — | Revision 3 of this plan | ⏳ Owner review |
+| D-5 | Create `gg-test` and `gg-prod` + GitHub OAuth apps | ⏳ When Milestone 10 starts |
+| D-9 | Certificate records stay verifiable after account deletion (§5.5) | ⏳ College to confirm |
+| D-10 | Faculty authorised to access student progress, and their batches | ⏳ College, before production |
+| D-11 | Consent wording | ⏳ College, before production |
+| D-12 | Consent arrangements for any students under 18 | ⏳ College, before production |
+| — | Certificate wording, signatory, printable PDF | ⏳ Before Milestone 14 |
 
-## 12. Exclusions
+## 12. PRD consistency (checked 24 Oct 2026)
+
+| PRD | Plan | Status |
+|---|---|---|
+| S-01 merge on first sign-in | §5.2: offered, never silent | ✅ PRD wording aligned |
+| S-03 profile fields | §4 `profiles` | ✅ PRD lists the same fields |
+| S-04 opt-in leaderboard | §4 `leaderboard()`, R4 | ✅ |
+| S-05 live quiz | §5.1 L1–L6 | ✅ PRD references the criteria |
+| S-06 dashboard | §5.4 faculty access | ✅ |
+| S-07 verification URL | `/verify/?id=XXXX-XXXX` | ✅ PRD aligned |
+| S-08 – S-12 | §5.1 – §5.6 | ✅ |
+| N-05 privacy | §2, §5.4 | ✅ PRD lists the Phase 2 data |
+| §11 architecture | §4 (two projects, private Realtime, GitHub-only sign-in) | ✅ PRD aligned |
+| Data tables | §4 (replaces `quiz_attempts`, `mission_runs`) | ✅ PRD aligned |
+| §14 D-5, D-8 – D-12 | §11 | ✅ same IDs |
+
+## 13. Exclusions
 
 No changes to course content, missions, quizzes, XP values or badge rules. No analytics, ads or third-party
-trackers. No paid services in Phase 2. No AI features (Phase 3, PRD §8, separate plan).
+trackers. No paid services in Phase 2. No AI features (Phase 3, PRD §8; its Claude key and budget are D-8).
