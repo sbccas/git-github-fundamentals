@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { createMarkdown, renderDeck } from './build/markdown.js';
 import { renderBook } from './build/book.js';
+import { socialMeta } from './build/meta.js';
 
 const PROJECT = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(PROJECT, 'src');
@@ -52,7 +53,7 @@ function partials() {
     },
     transformIndexHtml: {
       order: 'pre',
-      handler(html) {
+      handler(html, ctx) {
         let out = html;
         for (let i = 0; i < 3 && out.includes('<!-- @include'); i++) {
           out = out.replace(/<!--\s*@include\s+([\w-]+)\s*-->/g, (_, name) =>
@@ -66,6 +67,7 @@ function partials() {
         out = out.replace(/<!--\s*@deck\s+(\S+)\s*-->/g, (_, p) => renderDeck(md, p, PROJECT));
         out = out.replace(/<!--\s*@book\s+(student|faculty)\s*-->/g, (_, kind) => renderBook(kind, md, base, PROJECT));
         out = out.replaceAll('{{base}}', base);
+        out = socialMeta(out, ctx?.path); // share previews (PRD U-07)
         const page = /<body[^>]*data-page="([^"]+)"/.exec(out)?.[1];
         const section = /<body[^>]*data-section="([^"]+)"/.exec(out)?.[1];
         for (const key of [page, section].filter(Boolean)) {
@@ -101,8 +103,8 @@ function serviceWorker() {
         files.push(name.endsWith('index.html') ? name.replace(/index\.html$/, '') : name);
         hash.update(name).update(item.type === 'chunk' ? item.code : item.source);
       }
-      // Ebook PDFs (several MB) are not precached; the worker caches one when it is first downloaded.
-      const extra = publicFiles(resolve(PROJECT, 'public')).filter((f) => !f.endsWith('.pdf'));
+      // Ebook PDFs (several MB) and link-preview images are not precached; the worker caches a PDF when it is first downloaded.
+      const extra = publicFiles(resolve(PROJECT, 'public')).filter((f) => !f.endsWith('.pdf') && !f.startsWith('share/'));
       for (const f of extra) hash.update(f).update(readFileSync(resolve(PROJECT, 'public', f)));
       const source = readFileSync(resolve(PROJECT, 'build/sw-template.js'), 'utf8')
         .replace('__VERSION__', hash.digest('hex').slice(0, 12))

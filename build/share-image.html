@@ -1,0 +1,114 @@
+<!doctype html>
+<!-- Template for the 1200×630 share preview images (PRD U-07). Rendered by `npm run share-images`
+     (scripts/share-images.mjs) as share-image.html?v=course|student-ebook|faculty-ebook|passport. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Sora; src: url(../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: Inter; src: url(../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: Mono; src: url(../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2) format('woff2'); font-weight: 100 800; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: Inter, "Segoe UI", sans-serif;
+    color: #f2f5ff;
+    background:
+      radial-gradient(620px 420px at 0 0, rgba(139, 123, 255, .42), transparent 70%),
+      radial-gradient(620px 420px at 100% 100%, rgba(46, 230, 214, .28), transparent 70%),
+      linear-gradient(rgba(140, 160, 210, .07) 1px, transparent 1px) 0 0 / 30px 30px,
+      linear-gradient(90deg, rgba(140, 160, 210, .07) 1px, transparent 1px) 0 0 / 30px 30px,
+      #060912;
+  }
+  .frame { position: absolute; inset: 22px; border: 2px solid rgba(182, 156, 255, .6); border-radius: 26px; }
+  .wrap { position: absolute; inset: 0; padding: 58px 70px 104px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 44px; align-items: center; }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 21px; letter-spacing: .06em; text-transform: uppercase; color: #b2bbcf; }
+  .brand svg { width: 46px; height: 46px; }
+  h1 { margin: 24px 0 0; font: 700 58px/1.04 Sora, sans-serif; letter-spacing: -.02em; }
+  h1 .a { color: #b69cff; } h1 .b { color: #2ef2ff; }
+  .sub { margin: 16px 0 0; font-size: 23px; line-height: 1.4; color: #d7deee; max-width: 600px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .chips span { padding: 7px 16px; border: 1.5px solid rgba(46, 230, 214, .7); border-radius: 99px; font-size: 19px; font-weight: 600; color: #2ee6d6; }
+  .url { position: absolute; left: 70px; bottom: 44px; font: 600 21px Mono, monospace; color: #8a94ad; }
+  /* Right-hand visuals */
+  .term { border-radius: 18px; border: 2px solid rgba(182, 156, 255, .7); background: #04060d; box-shadow: 0 0 40px rgba(139, 123, 255, .35); overflow: hidden; }
+  .term-bar { display: flex; gap: 8px; padding: 13px 16px; border-bottom: 1px solid rgba(148, 163, 184, .18); }
+  .term-bar i { width: 13px; height: 13px; border-radius: 50%; background: #ff6b81; } .term-bar i:nth-child(2) { background: #ffc857; } .term-bar i:nth-child(3) { background: #3ddc97; }
+  .term pre { margin: 0; padding: 18px 20px; font: 17px/1.6 Mono, monospace; color: #d7deee; white-space: pre-wrap; }
+  .p { color: #3ddc97; } .y { color: #ffc857; } .o { color: #8a94ad; }
+  .book { position: relative; width: 280px; height: 390px; margin: 0 auto; border-radius: 10px 18px 18px 10px; padding: 34px 26px; color: #f2f5ff;
+    background: radial-gradient(260px 200px at 0 0, rgba(139, 123, 255, .5), transparent 70%), radial-gradient(260px 200px at 100% 100%, rgba(46, 230, 214, .35), transparent 70%), #0b1020;
+    border: 2px solid rgba(182, 156, 255, .8); box-shadow: 18px 22px 0 -2px rgba(46, 230, 214, .25), 0 30px 60px rgba(0, 0, 0, .5); transform: rotate(-4deg); }
+  .book::before { content: ""; position: absolute; left: 14px; top: 0; bottom: 0; width: 3px; background: rgba(182, 156, 255, .5); }
+  .book .k { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #2ee6d6; }
+  .book .t { margin-top: 18px; font: 700 38px/1.05 Sora, sans-serif; }
+  .book .t span { color: #b69cff; }
+  .book .e { position: absolute; left: 26px; bottom: 30px; padding: 5px 12px; border: 1.5px solid #2ee6d6; border-radius: 99px; font-size: 14px; font-weight: 700; color: #2ee6d6; }
+  .book svg { margin-top: 34px; width: 100%; }
+  .pass { text-align: center; }
+  .lvl { width: 210px; height: 210px; margin: 0 auto; border-radius: 50%; border: 5px solid #8b7bff; box-shadow: 0 0 50px rgba(139, 123, 255, .6), inset 0 0 30px rgba(139, 123, 255, .3); display: grid; place-items: center; }
+  .lvl span { display: block; font-size: 20px; font-weight: 700; letter-spacing: .14em; color: #8a94ad; }
+  .lvl b { display: block; font: 700 96px/1 Sora, sans-serif; }
+  .badges { margin-top: 28px; font-size: 34px; letter-spacing: 6px; white-space: nowrap; }
+  .badges .off { opacity: .25; }
+</style>
+</head>
+<body>
+<div class="frame"></div>
+<div class="wrap">
+  <div>
+    <div class="brand">
+      <svg viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b7bff"/><stop offset="1" stop-color="#2ee6d6"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="#0b1020"/><path d="M10 8v16M10 13c0 5 12 3 12 9" fill="none" stroke="url(#g)" stroke-width="2.6" stroke-linecap="round"/><circle cx="10" cy="8" r="3" fill="#8b7bff"/><circle cx="10" cy="24" r="3" fill="#8b7bff"/><circle cx="22" cy="22" r="3" fill="#2ee6d6"/></svg>
+      <span>SBCCAS · Amroli College, Surat</span>
+    </div>
+    <h1 data-title></h1>
+    <p class="sub" data-sub></p>
+    <div class="chips" data-chips></div>
+  </div>
+  <div data-visual></div>
+</div>
+<div class="url">sbccas.github.io/git-github-fundamentals</div>
+<script>
+  const bookSvg = '<svg viewBox="0 0 240 70"><path d="M8 50 H232" stroke="#8b7bff" stroke-width="4" fill="none"/><path d="M70 50 C95 50 95 18 120 18 H160 C185 18 185 50 210 50" stroke="#2ee6d6" stroke-width="4" fill="none"/>'
+    + [8, 40, 70, 210, 232].map((x) => `<circle cx="${x}" cy="50" r="7" fill="#0b1020" stroke="#b69cff" stroke-width="3"/>`).join('')
+    + [120, 160].map((x) => `<circle cx="${x}" cy="18" r="7" fill="#0b1020" stroke="#2ef2ff" stroke-width="3"/>`).join('') + '</svg>';
+  const terminal = `<div class="term"><div class="term-bar"><i></i><i></i><i></i></div><pre><span class="p">student@SBCCAS</span> <span class="y">~/canteen (main)</span>
+$ git commit -m "My first commit"
+<span class="o">[main (root-commit) bf59dd5] My first commit
+ 1 file changed, 1 insertion(+)</span>
+$ <span style="opacity:.9">▌</span></pre></div>`;
+  const V = {
+    course: {
+      title: 'Learn <span class="a">Git</span> &amp; <span class="b">GitHub</span><br>by typing real<br>commands',
+      sub: 'A free certificate course. Real Git runs right in your phone’s browser — no installs, no sign-up.',
+      chips: ['2 credits', '30 hours', '15 missions', 'Free'],
+      visual: terminal,
+    },
+    'student-ebook': {
+      title: 'The <span class="a">Git &amp; GitHub</span><br>Student Edition',
+      sub: 'The whole course as a book: 5 chapters, cheat sheet and glossary. Read online or download the PDF.',
+      chips: ['65 pages', 'Free PDF', 'Clickable contents'],
+      visual: `<div class="book"><div class="k">Student Edition</div><div class="t">Git &amp; <span>GitHub</span> Fundamentals</div>${bookSvg}<div class="e">SBCCAS</div></div>`,
+    },
+    'faculty-ebook': {
+      title: 'Teaching <span class="a">Git &amp; GitHub</span><br>with Stories',
+      sub: 'The faculty handbook as a book: story bible, deeper explanations and classroom examples for every unit.',
+      chips: ['48 pages', 'Faculty Edition', 'Free PDF'],
+      visual: `<div class="book"><div class="k">Faculty Edition</div><div class="t" style="font-size:30px">Teaching <span>Git &amp; GitHub</span> with Stories</div>${bookSvg}<div class="e">SBCCAS</div></div>`,
+    },
+    passport: {
+      title: 'My <span class="a">Git</span> <span class="b">Passport</span>',
+      sub: 'XP, levels, badges and your next step in the Git &amp; GitHub Fundamentals course.',
+      chips: ['9 badges', '15 missions', '5 units'],
+      visual: '<div class="pass"><div class="lvl"><div><span>LEVEL</span><b>3</b></div></div><div class="badges">🌱🧭🚀<span class="off">🌿🕵️🤝⚔️</span>⏳<span class="off">🏆</span></div></div>',
+    },
+  };
+  const v = V[new URLSearchParams(location.search).get('v')] ?? V.course;
+  document.querySelector('[data-title]').innerHTML = v.title;
+  document.querySelector('[data-sub]').innerHTML = v.sub;
+  document.querySelector('[data-chips]').innerHTML = v.chips.map((c) => `<span>${c}</span>`).join('');
+  document.querySelector('[data-visual]').innerHTML = v.visual;
+</script>
+</body>
+</html>

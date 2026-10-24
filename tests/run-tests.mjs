@@ -306,7 +306,41 @@ console.log('\nEbooks');
     }
   }
   const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
-  check(/publicFiles\([^)]*\)\)\.filter\(\(f\) => !f\.endsWith\('\.pdf'\)\)/.test(config), 'service worker does not precache the ebook PDFs');
+  check(/publicFiles\([^)]*\)\)\.filter\(\(f\) => !f\.endsWith\('\.pdf'\)/.test(config), 'service worker does not precache the ebook PDFs');
+}
+
+/* ---------------- 6. Share previews (Milestone 9) ---------------- */
+console.log('\nShare previews');
+{
+  const check = (cond, msg) => (cond ? ok(msg) : fail(msg));
+  const { socialMeta, pageSlug, SHARE_IMAGE, DEFAULT_IMAGE, LIVE } = await imp('build/meta.js');
+  const page = '<html><head><title>Student Edition ebook · Git &amp; GitHub Fundamentals</title>\n<meta name="description" content="The whole course as a book.">\n</head><body></body></html>';
+  const out = socialMeta(page, '/book/student/index.html');
+  const tag = (prop) => new RegExp(`<meta (property|name)="${prop}" content="([^"]*)"`).exec(out)?.[2];
+  check(pageSlug('/book/student/index.html') === 'book/student/' && pageSlug('/index.html') === '' && pageSlug('/git-github-fundamentals/passport/') === 'passport/', 'page paths become live URL slugs');
+  check(tag('og:title') === 'Student Edition ebook · Git &amp; GitHub Fundamentals' && tag('og:description') === 'The whole course as a book.', 'og:title and og:description come from the page');
+  check(tag('og:url') === `${LIVE}book/student/` && out.includes(`<link rel="canonical" href="${LIVE}book/student/">`), 'og:url and canonical point to the live page');
+  check(tag('og:image') === `${LIVE}share/student-ebook.jpg` && tag('twitter:card') === 'summary_large_image', 'page-specific image, large Twitter card');
+  check(socialMeta(page, '/unit-3/index.html').includes(`<meta property="og:image" content="${LIVE}${DEFAULT_IMAGE.file}">`), 'other pages use the course image');
+  check(socialMeta(out, '/book/student/') === out, 'tags are added only once');
+  // Images: JPEG, 1200 × 630, under 300 KB (WhatsApp skips larger previews).
+  const jpegSize = (buf) => {
+    for (let i = 2; i < buf.length - 9;) {
+      if (buf[i] !== 0xff) return null;
+      const marker = buf[i + 1];
+      if (marker >= 0xc0 && marker <= 0xc3) return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+    return null;
+  };
+  for (const { file } of [DEFAULT_IMAGE, ...Object.values(SHARE_IMAGE)]) {
+    const p = path.join(ROOT, 'public', file);
+    const buf = fs.existsSync(p) ? fs.readFileSync(p) : null;
+    const size = buf && jpegSize(buf);
+    check(buf && size?.w === 1200 && size?.h === 630 && buf.length < 300 * 1024, `public/${file}: 1200 × 630 JPEG, ${buf ? Math.round(buf.length / 1024) : '?'} KB`);
+  }
+  const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
+  check(config.includes("!f.startsWith('share/')") && config.includes('socialMeta(out, ctx?.path)'), 'tags added to every page at build time; images not precached');
 }
 
 fs.rmSync(TMP, { recursive: true, force: true });

@@ -5,8 +5,8 @@
 | **Report date** | 2026-10-24 |
 | **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
 | **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
-| **PRD version** | v1.10 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
-| **Phase** | Phase 1 (core platform) **live**: Milestones 1–8 done; real-device and projector checks remain |
+| **PRD version** | v1.11 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
+| **Phase** | Phase 1 (core platform) **live**: Milestones 1–9 done; real-device and projector checks remain |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
 > **Update it at the end of every milestone** (and whenever a requirement changes) in the same commit as the work.
@@ -32,6 +32,7 @@
 | 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
 | 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation `69a17e0` | 2026-10-23 |
 | 8 | Course ebooks: Student Edition and Faculty Edition, web + PDF with cover, course and faculty details, clickable contents with page numbers ([plan](plans/MILESTONE-8-EBOOKS-PLAN.md), approved 2026-10-24) | ✅ | plan `961e13b` · approval `0694a40` · implementation `9a8e51c` | 2026-10-24 |
+| 9 | Share previews: Open Graph / Twitter tags on every page + 1200 × 630 preview images ([plan](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md), approved 2026-10-24) | ✅ | plan `366dc3e` · implementation: see §8 | 2026-10-24 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -49,7 +50,7 @@
 | Git engine | 24 `git` commands + 16 shell commands; simulated GitHub with teammate pushes; 26 plain-English error hints |
 | Gamification | XP, levels, 9 badges, progress rings, export/import (validated) · Git Passport page with next step, A4 print and PNG card |
 | Offline / install | Web app manifest, 4 icons, service worker precaching all 89 files (~2 MB) |
-| Tests | `npm test` (104 checks): 15 missions end-to-end, 20 engine checks, 10 content checks, 40 Git Passport / import checks, 19 ebook checks — also run by the deploy workflow. `npm run ebooks` also checks every PDF contents link against its printed page number |
+| Tests | `npm test` (115 checks): 15 missions end-to-end, 20 engine checks, 10 content checks, 40 Git Passport / import checks, 19 ebook checks, 11 share-preview checks — also run by the deploy workflow. `npm run ebooks` also checks every PDF contents link against its printed page number |
 
 ## 3. Requirement cross-check
 
@@ -157,6 +158,7 @@
 | U-04 | Glossary hover/tap | ✅ | Lessons and Bonus |
 | U-05 | PWA: installable, offline | ✅ | `public/manifest.webmanifest`, `public/icons/`, service worker generated at build (`build/sw-template.js` → `dist/sw.js`): pages network-first with offline fallback, assets cache-first, old caches removed on update. A one-time "Saved for offline use" note. Verified by simulating install + offline fetches; **the Claude app's built-in browser does not run service workers, so check "Install app" on your phone once live.** |
 | U-06 | Subtle motion; reduced motion | ✅ | |
+| U-07 | ✅ | `build/meta.js` adds Open Graph / Twitter Card tags and a canonical link to all 35 pages; images in `public/share/` (course, Student Edition, Faculty Edition, Git Passport; 1200 × 630 JPEG, 92–110 KB) made with `npm run share-images` from `build/share-image.html`; not precached |
 
 ### 3.8 Non-functional (§9)
 
@@ -215,6 +217,7 @@
 - The PNG card uses the system emoji font for badge icons, so they look slightly different on Android, iPhone and Windows.
 - Ebook PDFs are not regenerated automatically: after editing a lesson or the handbook, run `npm run ebooks` and commit the PDFs. `npm test` fails if a lesson section is added or renamed without regenerating (its page number is missing), but a wording-only change would leave the PDF one edition behind.
 - The PDFs (3.6 MB and 2.5 MB) are not part of the offline download; each works offline after it has been opened once.
+- WhatsApp and other apps cache link previews: a link shared before the share tags existed may keep showing the plain preview for a while.
 
 ## 7. Milestone 6 checklist (polish & launch)
 
@@ -266,6 +269,16 @@
 | `npm test` (104) and `npm run build` | — | ✅ |
 | On a phone: download each PDF, open it, tap contents lines; print a few pages on paper | P-12, F-19 | ⏳ needs you (trial checklist, section A) |
 
+## 7c. Milestone 9 checklist (share previews)
+
+| Task | PRD | Status |
+|---|---|---|
+| Plan committed and approved before building | process | ✅ [`docs/plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md`](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md) — `366dc3e` |
+| Share tags on every page (title, description, URL, image, large card, canonical) | U-07 | ✅ 35 of 35 pages |
+| Preview images 1200 × 630, under 300 KB, own images for both ebooks and the Git Passport | U-07 | ✅ 4 images, 92–110 KB |
+| `npm test` (115) and `npm run build` | — | ✅ |
+| Share the course link in WhatsApp and see the large preview card | U-07 | ⏳ needs you |
+
 ## 8. Change log of this report
 
 | Date | Change |
@@ -276,3 +289,4 @@
 | 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation `69a17e0` |
 | 2026-10-23 | Real-device acceptance handoff for Milestone 7: trial checklist page 2 (F1 – F8, Android + iPhone, automated vs device checks); PRD header date corrected |
 | 2026-10-24 | Milestone 8 — course ebooks (P-12, F-19) delivered in `9a8e51c` |
+| 2026-10-24 | Milestone 9 — share previews (U-07) delivered |

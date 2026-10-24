@@ -36,6 +36,7 @@ Other commands:
 ```bash
 npm test          # missions end-to-end, Git engine and content checks (no browser needed)
 npm run ebooks    # make the Student / Faculty ebook PDFs in public/books/ (needs Chrome + Python with pypdfium2)
+npm run share-images  # make the 1200x630 link-preview images in public/share/ (needs Chrome + Python with Pillow)
 npm run build     # production build into dist/ (also writes the offline service worker, dist/sw.js)
 npm run preview   # serve the production build at http://localhost:4173/git-github-fundamentals/
 ```
@@ -62,7 +63,8 @@ content/
   labs.md               the Labs page
 build/markdown.js       build-time Markdown renderer (lessons, slides, handbook)
 build/sw-template.js    offline service worker; vite.config.js fills in the file list at build time
-public/                 files copied as-is (favicon, app icons, PWA manifest, faculty photos, ebook PDFs in books/)
+public/                 files copied as-is (favicon, app icons, PWA manifest, faculty photos, ebook PDFs in books/, link-preview images in share/)
+build/meta.js           share tags (Open Graph / Twitter) added to every page at build time
 build/book.js           the two ebooks (Student Edition, Faculty Handbook), rendered into src/book/*/
 scripts/                npm run ebooks: prints the ebooks with headless Chrome and checks their contents links
 tests/                  npm test (runs the Playground engine under Node)

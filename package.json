@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node tests/run-tests.mjs",
-    "ebooks": "node scripts/ebooks.mjs"
+    "ebooks": "node scripts/ebooks.mjs",
+    "share-images": "node scripts/share-images.mjs"
   },
   "license": "MIT",
   "devDependencies": {
