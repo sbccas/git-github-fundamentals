@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ **Approved by the course owner (Hitesh Patel) on 24 October 2026** · plan first published in `961e13b` |
+| **Status** | ✅ **Approved by the course owner (Hitesh Patel) on 24 October 2026** · plan first published in `961e13b` · ✅ **Delivered 24 October 2026** in commit `9a8e51c` (results: [PROGRESS.md §7b](../PROGRESS.md)) |
 | **Requested by** | Hitesh Patel (course owner), 24 October 2026: "make it look like a real ebook with an attractive cover page, details of the course with faculty details, an index with links, to share with students for physical or digital reference" |
 | **Decisions taken** (24 Oct 2026) | (1) Two books from one design: a **Student Edition** for students, and the **Faculty Handbook** as a faculty ebook. (2) Each book as a **ready PDF on the site** plus a **web version** that prints the same way. |
 | **PRD** | P-12 (§6.1) and F-19 (§6.6), Milestone 8 (§12), v1.10 |
