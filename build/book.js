@@ -99,7 +99,8 @@ function about(kind, base) {
         <h3>The college</h3>
         <p><strong>${esc(COLLEGE.name)}</strong> (${esc(COLLEGE.popularName)})<br>${esc(COLLEGE.location)}<br>
         Affiliated to ${esc(COLLEGE.affiliation)} · Managed by ${esc(COLLEGE.trust)}<br>
-        <a href="${COLLEGE.website}">${COLLEGE.website.replace('https://', '')}</a> · <a href="mailto:${COLLEGE.email}">${COLLEGE.email}</a></p>
+        <a href="${COLLEGE.website}">${COLLEGE.website.replace('https://', '')}</a> · <a href="mailto:${COLLEGE.email}">${COLLEGE.email}</a><br>
+        Instagram <a href="${COLLEGE.instagram}">@${COLLEGE.instagram.split('/').filter(Boolean).pop()}</a></p>
         <h3>Faculty</h3>
         <div class="bk-people">${faculty}</div>
         <p class="bk-small">Book and website created by <a href="${CREATOR.github}">${esc(CREATOR.name)}</a>.</p>

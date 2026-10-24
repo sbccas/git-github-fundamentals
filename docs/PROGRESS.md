@@ -290,3 +290,4 @@
 | 2026-10-23 | Real-device acceptance handoff for Milestone 7: trial checklist page 2 (F1 – F8, Android + iPhone, automated vs device checks); PRD header date corrected |
 | 2026-10-24 | Milestone 8 — course ebooks (P-12, F-19) delivered in `9a8e51c` |
 | 2026-10-24 | Milestone 9 — share previews (U-07) delivered in `9b008d4` |
+| 2026-10-24 | College Instagram changed to @amrolicollege.official (footer, About, PRD, both ebooks) |

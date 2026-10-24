@@ -24,7 +24,7 @@ document.querySelector('[data-college]').innerHTML = [
   row('Website', `<a href="${COLLEGE.website}" target="_blank" rel="noopener">amrolicollege.ac.in</a>`),
   row('Email', `<a href="mailto:${COLLEGE.email}">${COLLEGE.email}</a>`),
   row('GitHub', `<a href="${COLLEGE.github}" target="_blank" rel="noopener">github.com/sbccas</a> · <a href="${COLLEGE.portal}" target="_blank" rel="noopener">learning portal</a>`),
-  row('Instagram', `<a href="${COLLEGE.instagram}" target="_blank" rel="noopener">@amrolibca</a>`),
+  row('Instagram', `<a href="${COLLEGE.instagram}" target="_blank" rel="noopener">@${COLLEGE.instagram.split('/').filter(Boolean).pop()}</a>`),
 ].join('');
 
 // Faculty section (PRD D-6): shown when FEATURES.facultySection is on and FACULTY has entries.

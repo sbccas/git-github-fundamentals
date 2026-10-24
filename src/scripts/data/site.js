@@ -34,7 +34,7 @@ export const COLLEGE = {
   website: 'https://www.amrolicollege.ac.in',
   github: 'https://github.com/sbccas',
   portal: 'https://sbccas.github.io/',
-  instagram: 'https://www.instagram.com/amrolibca/',
+  instagram: 'https://www.instagram.com/amrolicollege.official/',
   programmes: ['BCA', 'BCA – AI', 'B.Sc. Data Science', 'M.Sc. IT'],
 };
 

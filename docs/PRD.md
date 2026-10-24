@@ -260,7 +260,7 @@ Source: `github.com/sbccas` and `sbccas.github.io`.
 - **Location:** Amroli, Surat, Gujarat, India
 - **Affiliation:** Veer Narmad South Gujarat University (VNSGU)
 - **Managed by:** Jivan Jyot Trust
-- **Contact:** info@amrolicollege.ac.in · www.amrolicollege.ac.in · Instagram @amrolibca · GitHub @sbccas
+- **Contact:** info@amrolicollege.ac.in · www.amrolicollege.ac.in · Instagram @amrolicollege.official · GitHub @sbccas
 - **Programmes:** BCA · BCA – AI · B.Sc. Data Science · M.Sc. IT
 - **Links back to:** sbccas.github.io portal and github-showcase
 - **Faculty section:** built but **hidden** (feature flag) until faculty details are provided.
