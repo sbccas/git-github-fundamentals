@@ -7,7 +7,7 @@
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
 | **Status** | v1.9 — approved; Phase 1 live (Milestones 1–7 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
-| **Last updated** | 2026-10-23 |
+| **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
 > Any new idea goes into **§15 Backlog** first and is built only after it is approved and moved into a phase.
@@ -335,6 +335,7 @@ git-github-fundamentals/
 |---|---|---|
 | 2026-10-22 | ~~Teach mode on the website~~ | **Approved** as the public Teach section (F-04 – F-14). A faculty-only version would need Phase 2 roles. |
 | 2026-10-22 | **Private exam bank** — real practical-exam variants kept out of the public repo | Faculty guide holds only sample tasks |
+| 2026-10-24 | **Course ebooks** — Student Edition (unit lessons + cheat sheet + glossary) and Faculty Handbook as ebooks with cover, course and faculty details, clickable contents with page numbers; PDF download + web version | Direction chosen by the course owner 2026-10-24; draft requirements P-12, F-19 in [`plans/MILESTONE-8-EBOOKS-PLAN.md`](plans/MILESTONE-8-EBOOKS-PLAN.md). **Plan awaiting approval.** |
 
 ## 16. Change log
 
