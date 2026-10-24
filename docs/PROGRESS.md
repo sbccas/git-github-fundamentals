@@ -32,7 +32,7 @@
 | 6b | Launch: push to `github.com/sbccas` (as collaborator `contact2hitech`), GitHub Pages via Actions, live site verified | ✅ | (no code change) | 2026-10-23 |
 | 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation `69a17e0` | 2026-10-23 |
 | 8 | Course ebooks: Student Edition and Faculty Edition, web + PDF with cover, course and faculty details, clickable contents with page numbers ([plan](plans/MILESTONE-8-EBOOKS-PLAN.md), approved 2026-10-24) | ✅ | plan `961e13b` · approval `0694a40` · implementation `9a8e51c` | 2026-10-24 |
-| 9 | Share previews: Open Graph / Twitter tags on every page + 1200 × 630 preview images ([plan](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md), approved 2026-10-24) | ✅ | plan `366dc3e` · implementation: see §8 | 2026-10-24 |
+| 9 | Share previews: Open Graph / Twitter tags on every page + 1200 × 630 preview images ([plan](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md), approved 2026-10-24) | ✅ | plan `366dc3e` · implementation `9b008d4` | 2026-10-24 |
 | Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
@@ -289,4 +289,4 @@
 | 2026-10-23 | Milestone 7 — Git Passport (G-04 – G-08) delivered; plan `6ce6ded`; implementation `69a17e0` |
 | 2026-10-23 | Real-device acceptance handoff for Milestone 7: trial checklist page 2 (F1 – F8, Android + iPhone, automated vs device checks); PRD header date corrected |
 | 2026-10-24 | Milestone 8 — course ebooks (P-12, F-19) delivered in `9a8e51c` |
-| 2026-10-24 | Milestone 9 — share previews (U-07) delivered |
+| 2026-10-24 | Milestone 9 — share previews (U-07) delivered in `9b008d4` |

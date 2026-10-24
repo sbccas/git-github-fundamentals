@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ Approved by the course owner (Hitesh Patel) on 24 October 2026 ("yes, add the WhatsApp preview image and share tags") |
+| **Status** | ✅ Approved by the course owner (Hitesh Patel) on 24 October 2026 ("yes, add the WhatsApp preview image and share tags") · ✅ **Delivered** in commit `9b008d4` |
 | **PRD** | U-07 (§6.7 Global UX), Milestone 9 |
 
 ## Problem
