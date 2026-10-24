@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.14 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain; Phase 2 direction approved, plan revision 3 awaiting owner review). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.15 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain; Phase 2 direction approved, plan revision 4 awaiting approval as the implementation baseline). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -221,14 +221,14 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 | S-06 | **Teacher dashboard:** per-batch completion of units, missions, quiz scores; CSV export. Faculty on the allowlist, own batches only; fields as in S-12. |
 | S-07 | **Certificate verification:** faculty approve completion after the final practical → certificate record with a random id and a snapshot of name, course, college and date → public page `/verify/?id=XXXX-XXXX` (query string, because GitHub Pages is static) shows name, course, date, college and status. Revocation and account deletion as in plan §5.5. Certificates are issued by the college, not auto-generated. |
 | S-08 | Row-level security on every table, default deny: students see only their own data; faculty see only their own batches. Batch join codes are never readable through ordinary batch reads (S-09 J1–J4). |
-| S-09 | **Security acceptance criteria**, each tested on the test project before release: faculty role only from an allowlist of GitHub numeric ids (F1–F4); RLS isolation (R1–R5); batch join codes not readable or enumerable (J1–J4); `save_progress` writes only the caller's own row, validates and recalculates XP (P1–P3); live-quiz batch membership, active sessions, one answer per question, no access to others' answers (L1–L6); certificate ids random, public fields only, deletion keeps the snapshot (C1–C4); keys and sign-in (K1–K3). Full list: plan §5.1. |
+| S-09 | **Security acceptance criteria**, each tested on the test project before release: faculty role only from an allowlist of GitHub numeric ids (F1–F4); RLS isolation (R1–R5); batch join codes not readable or enumerable (J1–J4); `save_progress` writes only the caller's own row, validates and recalculates XP (P1–P3); live-quiz batch membership, active sessions, one answer per question, no access to others' answers (L1–L6); certificate ids random, public fields only, deletion handled by the approved D-9 policy (C1–C4); privileged database functions with explicit grants, fixed `search_path` and per-function permission tests (X1–X6); keys and sign-in (K1–K3). Live-quiz tests run against Realtime channel authorisation itself, not only table policies. Full list: plan §5.1. |
 | S-10 | **Sync rules** — local-first; revision check with merge on simultaneous changes; stale copies cannot remove progress; pending changes retried after network failures; idempotent retries; never merge another account's progress without asking (shared PCs, account switching). Plan §5.2. |
 | S-11 | **Test-project gate** — separate test and production Supabase projects; migrations and the security suite run on the test project first; production only after the suite passes and the owner approves; data export before every production migration. Plan §5.3. |
-| S-12 | **Data protection** — consent screen before the first online save; download-my-data and self-service account deletion; certificate records kept as a snapshot after deletion if the college confirms (D-9); no automatic deletion after a fixed period (owner decision 2026-10-24); faculty see only their own batches and cannot edit progress. **Production sign-off:** before any real student data, the college confirms the consent wording, certificate-record retention and who may access student progress (D-9 – D-12). Plan §5.4 – §5.6. |
+| S-12 | **Data protection** — consent screen before the first online save; "Download my data" exports everything stored online about the student (profile, consent record, batch, progress, live-quiz answers, certificates) and says what is not included; self-service account deletion; certificate records on deletion follow the college's D-9 policy (`keep` or `anonymise`, both tested); no automatic deletion after a fixed period (owner decision 2026-10-24); faculty see only their own batches and cannot edit progress. **Production sign-off:** before any real student data, the college confirms the consent wording, certificate-record retention and who may access student progress (D-9 – D-12). Plan §5.4 – §5.6. |
 
 Data (plan §4): `profiles`, `faculty_allowlist`, `batches`, `batch_join_codes`, `join_attempts`, `progress` (one validated document per student — replaces the earlier indicative `quiz_attempts` and `mission_runs`), `live_sessions`, `live_answers`, `certificates`.
 
-**Plan:** [`docs/plans/PHASE-2-SUPABASE-PLAN.md`](plans/PHASE-2-SUPABASE-PLAN.md) — Milestones 10–14 (§12b). Direction approved by the owner 2026-10-24 (leaderboard opt-in; no automatic deletion). **Revision 3 awaiting owner review.** No implementation before D-5 and each milestone's own approved plan; no real student data before the college sign-off (S-12).
+**Plan:** [`docs/plans/PHASE-2-SUPABASE-PLAN.md`](plans/PHASE-2-SUPABASE-PLAN.md) — Milestones 10–14 (§12b). Direction approved by the owner 2026-10-24 (leaderboard opt-in; no automatic deletion). **Revision 4 awaiting the owner's approval as the implementation baseline; next, a separate Milestone 10 plan.** No implementation before D-5 and each milestone's own approved plan; no real student data before the college sign-off (S-12).
 
 ## 8. Functional requirements — Phase 3 (AI)
 
@@ -347,10 +347,10 @@ git-github-fundamentals/
 | D-3 | Language | English only · English + Gujarati/Hindi notes | ✅ **Decided:** English (regional notes may be proposed via Backlog) |
 | D-4 | Licence | CC BY-SA 4.0 content + MIT code · other | ✅ **Decided:** CC BY-SA 4.0 content + MIT code |
 | D-7 | Faculty guide visibility & format | Public/private · 15×2 h or 30×1 h | ✅ **Decided:** public, 15 × 2-hour sessions |
-| D-5 | Phase 2 accounts | College creates two Supabase projects (`gg-test`, `gg-prod`) and GitHub OAuth apps; secrets stay with the college | Before Milestone 10 — steps in the [Phase 2 plan](plans/PHASE-2-SUPABASE-PLAN.md) §9 |
+| D-5 | Phase 2 accounts | College creates two Supabase projects (`gg-test`, `gg-prod`) and two GitHub OAuth apps owned by the `sbccas` organisation; secrets entered only by the college in GitHub and Supabase | Before Milestone 10 — verified steps in the [Phase 2 plan](plans/PHASE-2-SUPABASE-PLAN.md) §9 |
 | D-6 | Faculty details | ✅ First entry 2026-10-23: Hitesh Patel, Department Coordinator, B.Sc. Data Science (GitHub contact2hitech) | Faculty section on; add more in `FACULTY` in `src/scripts/data/site.js` |
 | D-8 | Phase 3 account | College provides a Claude API key and a monthly budget | Before Phase 3 |
-| D-9 | Certificate records after account deletion | Keep the snapshot verifiable · revoke and anonymise | College to confirm — recommendation: keep (plan §5.5) |
+| D-9 | Certificate records after account deletion | `keep`: snapshot stays verifiable, unlinked · `anonymise`: revoked, name removed | College to confirm — recommendation: `keep`; both paths built and tested until decided (plan §5.5) |
 | D-10 | Who may access student progress | Faculty allowlist (GitHub accounts) and their batches | College, before production |
 | D-11 | Consent wording | Draft in plan §5.4 | College, before production |
 | D-12 | Students under 18 | Covered by the college's existing consent arrangements · other | College, before production |
@@ -368,6 +368,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-24 | 1.15 | Phase 2 plan revision 4 (documentation only): C4 follows the D-9 policy with both paths tested; privileged-function rules X1–X6 (S-09); complete "Download my data" export (S-12); OAuth/Supabase setup steps verified against current documentation (D-5); Realtime-layer live-quiz tests |
 | 2026-10-24 | 1.14 | Phase 2 plan revision 3 (documentation only): certificate records on deletion/revocation (S-07, S-12), live-quiz and batch-join-code criteria (S-05, S-08, S-09), verify URL `/verify/?id=`, production sign-off by the college (S-12, D-9 – D-12), D-5 split into Phase 2 (D-5) and Phase 3 (D-8), §12b Phase 2 milestones, S-01/S-03/N-05/§11 aligned with the plan. Awaiting owner review |
 | 2026-10-24 | 1.13 | Phase 2: owner approved the direction (leaderboard opt-in; no automatic deletion — S-04 updated). Plan revision 2 adds S-09 security criteria, S-10 sync rules, S-11 test-project gate, S-12 data protection; awaiting owner review |
 | 2026-10-24 | 1.12 | Phase 2 (Supabase) plan published — Milestones 10–14, awaiting approval |

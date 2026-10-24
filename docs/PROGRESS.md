@@ -5,7 +5,7 @@
 | **Report date** | 2026-10-24 |
 | **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
 | **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
-| **PRD version** | v1.14 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
+| **PRD version** | v1.15 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
 | **Phase** | Phase 1 (core platform) **live**: Milestones 1–9 done; real-device and projector checks remain |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
@@ -177,7 +177,7 @@
 
 | IDs | Status |
 |---|---|
-| S-01 – S-12 (Supabase) | ⏳ Not started (Phase 2, Milestones 10–14). [Plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 3 awaiting owner review; needs D-5, and the college sign-off (D-9 – D-12) before real student data. |
+| S-01 – S-12 (Supabase) | ⏳ Not started (Phase 2, Milestones 10–14). [Plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 awaiting approval as the implementation baseline; needs D-5, and the college sign-off (D-9 – D-12) before real student data. |
 | A-01 – A-08 (AI) | ⏳ Not started (Phase 3). Needs a Claude API key and a monthly budget (PRD D-8). |
 
 ## 4. Open decisions (from PRD §14)
@@ -293,4 +293,4 @@
 | 2026-10-24 | Milestone 8 — course ebooks (P-12, F-19) delivered in `9a8e51c` |
 | 2026-10-24 | Milestone 9 — share previews (U-07) delivered in `9b008d4` |
 | 2026-10-24 | College Instagram changed to @amrolicollege.official (footer, About, PRD, both ebooks) |
-| 2026-10-24 | Phase 2 plan revisions 2 and 3 (documentation only); decisions D-8 – D-12 added |
+| 2026-10-24 | Phase 2 plan revisions 2 – 4 (documentation only); decisions D-8 – D-12 added |
