@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.11 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.12 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain; Phase 2 plan awaiting approval). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-24 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -224,6 +224,8 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 
 Data (indicative): `profiles`, `batches`, `progress`, `quiz_attempts`, `mission_runs`, `live_sessions`, `live_answers`, `certificates`.
 
+**Plan:** [`docs/plans/PHASE-2-SUPABASE-PLAN.md`](plans/PHASE-2-SUPABASE-PLAN.md) — Milestones 10–14 (published 2026-10-24, **awaiting approval** and D-5).
+
 ## 8. Functional requirements — Phase 3 (AI)
 
 | ID | Requirement |
@@ -331,7 +333,7 @@ git-github-fundamentals/
 | D-3 | Language | English only · English + Gujarati/Hindi notes | ✅ **Decided:** English (regional notes may be proposed via Backlog) |
 | D-4 | Licence | CC BY-SA 4.0 content + MIT code · other | ✅ **Decided:** CC BY-SA 4.0 content + MIT code |
 | D-7 | Faculty guide visibility & format | Public/private · 15×2 h or 30×1 h | ✅ **Decided:** public, 15 × 2-hour sessions |
-| D-5 | Phase 2/3 accounts | College provides Supabase project + Claude API key & monthly budget | Confirm before Phase 2 starts |
+| D-5 | Phase 2/3 accounts | College provides Supabase project + Claude API key & monthly budget | Confirm before Phase 2 starts — setup steps in the [Phase 2 plan](plans/PHASE-2-SUPABASE-PLAN.md) §9 |
 | D-6 | Faculty details | ✅ First entry 2026-10-23: Hitesh Patel, Department Coordinator, B.Sc. Data Science (GitHub contact2hitech) | Faculty section on; add more in `FACULTY` in `src/scripts/data/site.js` |
 
 ## 15. Backlog (ideas not yet approved)
@@ -347,6 +349,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-24 | 1.12 | Phase 2 (Supabase) plan published — Milestones 10–14, awaiting approval |
 | 2026-10-24 | 1.11 | Milestone 9 approved: share previews for WhatsApp and social media (U-07) |
 | 2026-10-24 | 1.10 | Milestone 8 approved: course ebooks — Student Edition (P-12) and Faculty Handbook ebook (F-19), web + PDF |
 | 2026-10-23 | 1.9 | Milestone 7 — Git Passport (G-04 – G-08): passport page, next-activity rules, A4 print and PNG card, optional self-entered name, validated progress import with XP recalculation. Existing XP values, badge conditions and the version 1 progress format unchanged. Plans now live in `docs/plans/` |
