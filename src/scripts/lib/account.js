@@ -104,6 +104,13 @@ export const api = {
   save: (doc, baseRevision) => rpc('save_progress', { p_doc: doc, p_base_revision: baseRevision }),
   exportData: () => rpc('export_my_data'),
   deleteAccount: () => rpc('delete_my_account'),
+  joinBatch: (code) => rpc('join_batch', { p_code: code }),
+  // Faculty (Milestone 12): the database checks the allowlist and batch links on every call.
+  facultyBatches: () => rpc('faculty_batches'),
+  createBatch: (name, programme, year) => rpc('faculty_create_batch', { p_name: name, p_programme: programme, p_year: year }),
+  setCode: (batch, regenerate, enabled = null) => rpc('faculty_set_code', { p_batch: batch, p_regenerate: regenerate, p_enabled: enabled }),
+  addColleague: (batch, username) => rpc('faculty_add_colleague', { p_batch: batch, p_github_username: username }),
+  batchProgress: (batch) => rpc('faculty_batch_progress', { p_batch: batch }),
 };
 
 /** Remembers the display name for the header, so pages can show it without a network call. */

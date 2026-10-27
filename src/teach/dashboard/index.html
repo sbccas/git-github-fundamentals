@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Faculty dashboard · Git & GitHub Fundamentals</title>
+  <meta name="description" content="Faculty only: batches, join codes and each student's course progress.">
+  <meta name="robots" content="noindex">
+  <!-- @include head -->
+  <link rel="stylesheet" href="/styles/dashboard.css">
+</head>
+<body data-page="dashboard" data-section="more">
+  <!-- @include header -->
+  <main id="main" class="container dash">
+    <header>
+      <p class="eyebrow">Teach · Faculty only</p>
+      <h1>Faculty dashboard</h1>
+    </header>
+    <div class="acct-msg" data-dash-msg role="status" aria-live="polite"></div>
+    <div class="dash-view" data-dash-view tabindex="-1"><p class="muted">Loading…</p></div>
+  </main>
+  <div class="dash-projector" data-projector hidden role="dialog" aria-modal="true" aria-labelledby="proj-name">
+    <button class="icon-btn dash-projector-close" type="button" data-projector-close aria-label="Close">✕</button>
+    <p class="dash-projector-name" id="proj-name" data-proj-name></p>
+    <p class="dash-projector-label">Batch join code</p>
+    <p class="dash-projector-code" data-proj-code></p>
+    <p class="dash-projector-how">Sign in on the course site → <strong>Your account</strong> → <strong>Your batch</strong> → type the code</p>
+  </div>
+  <!-- @include footer -->
+  <script type="module" src="/scripts/pages/dashboard.js"></script>
+</body>
+</html>

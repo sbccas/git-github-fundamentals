@@ -1,0 +1,45 @@
+/* ================= Faculty dashboard (Milestone 12) — built only when accounts are enabled ================= */
+/* Cards, forms and messages reuse account.css (loaded with the account entry). */
+
+.dash { padding-top: 32px; padding-bottom: 48px; display: grid; gap: 16px; }
+.dash h1 { font-size: var(--fs-xl); margin: 4px 0 0; }
+.dash-view { display: grid; gap: 16px; outline: none; min-width: 0; }
+.dash-pick { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.dash-pick select, .dash-toolbar select, .dash-toolbar input { min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
+.dash-create summary, .dash-colleagues summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.dash-colleagues { margin-top: 12px; font-size: var(--fs-sm); }
+
+/* Join code */
+.dash-code-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.dash-label { margin: 0; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.dash-code-text { margin: 0; font: 700 clamp(1.8rem, 1.2rem + 2vw, 2.6rem) var(--font-mono); letter-spacing: .12em; }
+.dash-off { margin-left: 6px; color: var(--red); text-transform: none; letter-spacing: 0; }
+
+/* Students table: scrolls inside its card on small screens, never the page */
+.dash-students { min-width: 0; }
+.dash-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.dash-toolbar h2 { margin: 0 auto 0 0; }
+.dash-toolbar input { width: min(220px, 100%); }
+.dash-table-wrap { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.dash-table th, .dash-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; white-space: nowrap; }
+.dash-table thead th { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.dash-table tbody th { font-weight: 600; }
+.dash-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.dash-table .unit { text-align: center; min-width: 52px; }
+.dash-name { display: block; }
+.dash-sub { display: block; font-weight: 400; font-size: var(--fs-xs); color: var(--muted); }
+.dash-table td[data-tone="done"] { color: var(--green); font-weight: 700; }
+.dash-table td[data-tone="pass"] { color: var(--green); }
+.dash-table td[data-tone="tried"] { color: var(--amber); }
+.dash-table td[data-tone="started"] { color: var(--text-2); }
+.dash-table td[data-tone="none"] { color: var(--muted); }
+
+/* Projector view: the join code, very large */
+.dash-projector { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; gap: 12px; padding: 24px; text-align: center; background: var(--bg); }
+.dash-projector[hidden] { display: none; }
+.dash-projector-close { position: absolute; top: 16px; right: 16px; }
+.dash-projector-name { margin: 0; font: 700 var(--fs-xl) var(--font-display); }
+.dash-projector-label { margin: 0; font-size: var(--fs-md); color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+.dash-projector-code { margin: 0; font: 700 clamp(3rem, 2rem + 9vw, 10rem)/1.1 var(--font-mono); letter-spacing: .14em; color: var(--primary-strong); }
+.dash-projector-how { margin: 0; font-size: var(--fs-lg); color: var(--text-2); }

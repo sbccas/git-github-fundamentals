@@ -14,13 +14,13 @@ const BASE = '/git-github-fundamentals/';
 
 /**
  * Every index.html under src/ (except partials) becomes a page: src/unit-1/index.html → /unit-1/
- * src/account/ is built only when accounts are enabled (Milestone 11 plan §5).
+ * src/account/ and src/teach/dashboard/ are built only when accounts are enabled (Milestone 11 plan §5, M12 §3.2).
  */
 function findPages(dir, pages = {}, { accounts = false } = {}) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (['partials', 'scripts', 'styles'].includes(name)) continue;
-    if (name === 'account' && dir === ROOT && !accounts) continue;
+    if (!accounts && ((name === 'account' && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach')))) continue;
     if (statSync(full).isDirectory()) findPages(full, pages, { accounts });
     else if (name === 'index.html') {
       const key = full.slice(ROOT.length + 1).replace(/\\/g, '/').replace(/\/?index\.html$/, '') || 'home';

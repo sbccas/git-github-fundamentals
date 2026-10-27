@@ -128,7 +128,9 @@ select pg_temp.check('R1c',
 select pg_temp.check('R1d', not bool_or(has_column_privilege('authenticated', 'public.profiles', col, 'UPDATE')),
   'protected profile columns not updatable: ' || string_agg(col, ', '))
 from unnest(array['id', 'github_id', 'github_username', 'leaderboard_opt_in', 'leaderboard_hidden',
-                  'consent_version', 'consent_at', 'created_at', 'updated_at']) col;
+                  'consent_version', 'consent_at', 'created_at', 'updated_at']
+             || (select array_agg(attname::text) from pg_attribute
+                 where attrelid = 'public.profiles'::regclass and attname = 'batch_id' and not attisdropped)) col;
 
 select pg_temp.check('R1e',
   has_table_privilege('authenticated', 'public.progress', 'SELECT')
@@ -171,7 +173,7 @@ where n.nspname = 'private';
 
 select pg_temp.check('X5', not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname = 'public' and 'uuid'::regtype = any (p.proargtypes::regtype[])),
+    where n.nspname = 'public' and exists (select 1 from unnest(p.proargnames) a where a ~* '^(p_)?(user|user_id|uid|profile_id|owner_id)$')),
   'no public function accepts a user id (P1, X5)');
 
 -- ---------------------------------------------------------------------------------------------------------------

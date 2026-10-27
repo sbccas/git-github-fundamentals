@@ -27,13 +27,13 @@ export const PROGRAMMES = [
  * (private.consent_versions); the database rejects any other. "draft-1" exists only on the test project.
  */
 export const CONSENT = {
-  version: 'draft-1',
+  version: 'draft-2',
   draft: true,
   title: 'Save your progress online',
   points: [
-    ['What is saved', 'Your GitHub user id and username, the display name and programme you enter, the date you agreed, and your course progress (lessons read, quiz scores, missions, mini-games, badges, XP, self-check result, passport name, last page).'],
+    ['What is saved', 'Your GitHub user id and username, the display name and programme you enter, the batch you join with your teacher\'s code, the date you agreed, and your course progress (lessons read, quiz scores, missions, mini-games, badges, XP, self-check result, passport name, last page).'],
     ['The sign-in record', 'When you sign in with GitHub, our database service (Supabase) also keeps a sign-in record: the email address GitHub shares, sign-in dates and security logs. It is created as soon as GitHub sends you back here — even if you stop before saving your profile.'],
-    ['Who can see it', 'Only you. Faculty access to progress is not part of this test and needs the college\'s approval first.'],
+    ['Who can see it', 'You, and the course faculty of the batch you join: your display name, GitHub username, programme and progress — never your email address. Faculty cannot change your progress. Other students cannot see it.'],
     ['Where', 'Supabase, on servers in Mumbai, India.'],
     ['How long', 'Until you delete your account. Nothing is deleted automatically.'],
     ['Deleting', '"Delete my account" removes your profile and online progress at once; the college then removes your sign-in record. Supabase\'s security logs and your GitHub authorisation of this app (GitHub → Settings → Applications) are not removed by us.'],

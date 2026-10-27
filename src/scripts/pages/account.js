@@ -20,6 +20,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const programmeLabel = (v) => PROGRAMMES.find((p) => p.value === v)?.label ?? v;
 const session$ = { current: null };
 let sync = null;
+let accountState = null; // last account_status(): batch name, faculty role
 
 const ss = {
   get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } },
@@ -220,6 +221,8 @@ function showSignedIn(profile) {
       </form>
     </section>
 
+    ${batchSectionHtml()}
+
     ${dataSectionHtml()}`);
 
   $('[data-sync-now]', view).addEventListener('click', () => sync?.push());
@@ -239,7 +242,49 @@ function showSignedIn(profile) {
       message(explain(err), 'bad');
     }
   });
+  wireBatchSection();
   wireDataSection({ hasProfile: true });
+}
+
+/** "Your batch" (Milestone 12): join with the code shown in class; faculty get a link to the dashboard. */
+function batchSectionHtml() {
+  const batch = accountState?.batch_name;
+  return `
+    <section class="card acct-card" aria-labelledby="acct-batch-h">
+      <h2 id="acct-batch-h">Your batch</h2>
+      <p data-batch-now>${batch ? `You are in <strong>${esc(batch)}</strong>. Your teachers for this batch can see your progress.` : 'Not in a batch yet. Type the code your teacher shows in class.'}</p>
+      <form class="acct-form acct-inline" data-batch-form novalidate>
+        <label for="acct-code">${batch ? 'Change batch — code' : 'Batch code'}</label>
+        <div class="acct-row">
+          <input id="acct-code" name="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="e.g. K7Q2 M9XA">
+          <button class="btn btn-primary" type="submit">Join</button>
+        </div>
+      </form>
+      ${accountState?.is_faculty ? `<p class="acct-faculty"><a class="btn btn-ghost" href="${BASE}teach/dashboard/">Open the faculty dashboard →</a></p>` : ''}
+    </section>`;
+}
+
+function wireBatchSection() {
+  const form = $('[data-batch-form]', view);
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = form.code.value.trim();
+    if (!code) { message('Please type the batch code.', 'bad'); form.code.focus(); return; }
+    const btn = form.querySelector('[type="submit"]');
+    btn.disabled = true;
+    try {
+      const res = await api.joinBatch(code);
+      if (!res.ok) { message(res.message, 'bad'); return; }
+      accountState = { ...accountState, batch_name: res.batch_name };
+      $('[data-batch-now]', view).innerHTML = `You are in <strong>${esc(res.batch_name)}</strong>. Your teachers for this batch can see your progress.`;
+      form.reset();
+      message(`You joined ${res.batch_name}.`, 'ok');
+    } catch (err) {
+      message(explain(err), 'bad');
+    } finally {
+      btn.disabled = false;
+    }
+  });
 }
 
 /** Re-consent declined (§4.8.3): only download, delete and sign out remain. */
@@ -384,6 +429,7 @@ async function afterSession() {
     $('[data-retry]', view).addEventListener('click', afterSession);
     return;
   }
+  accountState = st;
   if (st.current_consent_version !== CONSENT.version) {
     render('<section class="card acct-card"><h2>Please reload</h2><p>The consent text has been updated since this page was loaded. Reload the page to see the current version.</p></section>');
     return;

@@ -325,7 +325,7 @@ git-github-fundamentals/
 |---|---|---|---|
 | 10 | Foundation: test + production projects, schema and RLS, security suite, sign-in, consent, profile, download/delete | S-01, S-03, S-08, S-09, S-11, S-12 | 🔧 Built and tested on the test project 2026-10-27 (accounts off on the live site); deletion completion time and production gates open |
 | 11 | Sync | S-01, S-02, S-10 | 🔧 Built and tested on the test project 2026-10-27, with Milestone 10 (accounts off on the live site) |
-| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06 | ⏳ Not started |
+| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06 | 🔧 Dashboard, batches and join codes built and tested on the test project 2026-10-27 ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); leaderboard (S-04) later (M12-D1) |
 | 13 | Live classroom quiz | S-05, S-09 L1–L6 | ⏳ Not started |
 | 14 | Certificates and verification | S-07, S-09 C1–C4 | ⏳ Not started |
 

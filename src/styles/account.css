@@ -38,3 +38,6 @@
 .acct-msg:empty, .acct-msg[hidden] { display: none; }
 .acct-msg[data-tone="ok"] { border-color: color-mix(in srgb, var(--green) 55%, transparent); }
 .acct-msg[data-tone="bad"] { border-color: color-mix(in srgb, var(--red) 60%, transparent); }
+.acct-row { display: flex; gap: 8px; }
+.acct-row input { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .08em; font-family: var(--font-mono); }
+.acct-faculty { margin: 16px 0 0; }

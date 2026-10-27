@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ **Approved by the owner on 27 Oct 2026** ("approve all": M12-D1 – M12-D6 as recommended) with three owner additions recorded in §5: two faculty share one batch (M12-D7), one Supabase project for test and live use (M12-D8), first batch "BCA 2026 – SY AI". Builds on Milestones 10 + 11 as implemented and tested on `gg-test` on 27 Oct 2026. No test in this plan has been run. |
+| **Status** | ✅ **Approved by the owner on 27 Oct 2026** ("approve all": M12-D1 – M12-D6 as recommended) with three owner additions recorded in §5: two faculty share one batch (M12-D7), one Supabase project for test and live use (M12-D8), first batch "BCA 2026 – SY AI". Builds on Milestones 10 + 11. **Implemented and tested on `gg-test` on 27 Oct 2026**: SQL suite 36/36 and the Milestone 10–11 suite 69/69 PASS, 12 manual tests PASS with the instructor and coordinator accounts ([evidence](../evidence/m12/)); `npm test` DB1–DB2 pass. Not live. |
 | **Source baseline** | [Phase 2 plan](PHASE-2-SUPABASE-PLAN.md) rev 4 §3 (faculty row), §4 (`faculty_allowlist`, `batches`, `batch_join_codes`, `join_attempts`, `join_batch`, `batch_code`), §5.1 F1–F4, R3–R5, J1–J4, X1–X6, §5.4 faculty access · [PRD](../PRD.md) S-03 (batch), S-06, S-08, S-12 · [Milestone 11 plan](MILESTONE-11-SYNC-PLAN.md) M11-D4 (allowlist moved here) |
 | **Owner request (27 Oct 2026)** | A faculty page showing the class list and each student's current progress; build and test locally first, then go live once fully satisfied |
 

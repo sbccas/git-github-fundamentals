@@ -481,8 +481,29 @@ console.log('\nAccounts and sync');
   const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
   const mainJs = fs.readFileSync(path.join(ROOT, 'src/scripts/main.js'), 'utf8');
   check(/accounts && mode === 'production'\) \{\s*throw/.test(config) && config.includes("define: { __ACCOUNTS__: JSON.stringify(accounts) }")
-    && config.includes("name === 'account' && dir === ROOT && !accounts") && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
-    'SY6 accounts are compiled in only when enabled, never in a production build, and /account/ is left out when off');
+    && config.includes("(name === 'account' && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach'))")
+    && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
+    'SY6 accounts are compiled in only when enabled, never in a production build; /account/ and /teach/dashboard/ left out when off');
+
+  // DB — faculty dashboard helpers (Milestone 12)
+  const D = await imp('src/scripts/lib/dashboard.js');
+  const row = { display_name: 'Asha', github_username: 'asha-gh', programme: 'BCA-AI', xp: 325, updated_at: at(26),
+    units: { 1: { sections: ['a', 'b', 'c'], total: 9, quiz: { best: 80, last: 70, passed: true }, complete: true },
+      2: { sections: ['a', 'b'], total: 7, quiz: { best: 40, last: 40, passed: false }, complete: false }, 3: { sections: ['x'], total: 6, quiz: null, complete: false } },
+    missions: ['M-01', 'M-02', 'M-03'], badges: ['first-commit', 'unit-1'], games: [], self_check_best: 65 };
+  const sum = D.summarize(row);
+  check(sum.level === 2 && sum.unitsComplete === 1 && sum.missions === 3 && sum.badges === 2 && sum.units[2].read === 1 && sum.units[4].quizBest === null
+    && D.MISSION_TOTAL === 15 && D.BADGE_TOTAL === 9, 'DB1 a dashboard row summarises XP, level, units, missions and badges');
+  check(D.unitCell(sum.units[0]).text === '✓' && D.unitCell(sum.units[1]).text === '40%' && D.unitCell(sum.units[1]).tone === 'tried'
+    && D.unitCell(sum.units[2]).text === '1/6' && D.unitCell(sum.units[3]).text === '—', 'DB1 unit cells: complete, quiz score, lessons read, not started');
+  const order = D.sortStudents([D.summarize({ ...row, display_name: 'zed', xp: 10 }), sum, D.summarize({ ...row, display_name: 'Bina', xp: 900 })], 'xp').map((s) => s.name);
+  check(order.join() === 'Bina,Asha,zed', 'DB1 students sort by XP (highest first)');
+  check(D.csvCell('=HYPERLINK("x")') === `"'=HYPERLINK(""x"")"` && D.csvCell('+91 98') === "'+91 98" && D.csvCell('-x') === "'-x" && D.csvCell('@a') === "'@a"
+    && D.csvCell('Shah, Asha') === '"Shah, Asha"' && D.csvCell(null) === '', 'DB2 CSV cells: formulas neutralised, commas and quotes escaped');
+  const csv = D.toCsv([D.summarize({ ...row, display_name: '=cmd|calc' })], 'BCA 2026 – SY AI');
+  const csvLines = csv.replace(/^﻿/, '').trim().split('\r\n');
+  check(csv.startsWith('﻿') && csvLines.length === 2 && csvLines[1].startsWith("BCA 2026 – SY AI,'=cmd|calc,asha-gh,BCA-AI,325,2,3,9,80,yes,yes")
+    && csvLines[0].split(',').length === csvLines[1].split(',').length && !/email/i.test(csv), 'DB2 CSV: one row per student, no email, aligned columns');
 
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');
