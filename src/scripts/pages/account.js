@@ -7,7 +7,7 @@ import '../main.js';
 import { CONSENT, PROGRAMMES, configured } from '../data/supabase.js';
 import { BASE } from '../data/site.js';
 import { showStatus, STATUS_TEXT } from '../lib/account-boot.js';
-import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberName } from '../lib/account.js';
+import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberAccount } from '../lib/account.js';
 import { createSync, deviceSituation, linkDevice, leaveDevice, forgetDeviceLink, hasStash, syncMeta, classify } from '../lib/sync.js';
 
 const $ = (s, root = document) => root.querySelector(s);
@@ -50,6 +50,12 @@ function explain(err) {
 
 /** Name rules shared with the database: 1–60 characters, no < > or control characters. */
 const cleanName = (s) => String(s ?? '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+/** Roll number / SID (M12-D9): 1–20 letters, digits, - or /, stored in capitals. */
+const cleanRoll = (s) => String(s ?? '').replace(/\s+/g, '').toUpperCase();
+const validRoll = (s) => /^[A-Z0-9/-]{1,20}$/.test(s);
+const rollField = (value = '') => `
+        <label for="acct-roll">Roll no / SID <span class="muted">(needed to join your class batch)</span></label>
+        <input id="acct-roll" name="roll" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 23BCA-AI-045" value="${esc(value)}">`;
 
 /* ---------------- Screens ---------------- */
 
@@ -119,6 +125,7 @@ function showProfileForm() {
           <option value="">Choose…</option>
           ${PROGRAMMES.map((p) => `<option value="${esc(p.value)}">${esc(p.label)}</option>`).join('')}
         </select>
+        ${rollField()}
         <div class="acct-actions">
           <button class="btn btn-primary" type="submit">Save and continue</button>
           <button class="btn btn-ghost" type="button" data-not-now>Not now</button>
@@ -132,12 +139,17 @@ function showProfileForm() {
     const programme = form.programme.value;
     if (!name) { message('Please enter a display name.', 'bad'); form.name.focus(); return; }
     if (!programme) { message('Please choose your programme.', 'bad'); form.programme.focus(); return; }
+    const roll = cleanRoll(form.roll.value);
+    if (roll && !validRoll(roll)) { message('Roll no / SID: up to 20 letters, digits, - or /.', 'bad'); form.roll.focus(); return; }
     const btn = form.querySelector('[type="submit"]');
     btn.disabled = true;
     message('Saving…');
     try {
       await api.acceptConsent(CONSENT.version, name, programme);
       ss.del(AGREED_KEY);
+      if (roll) {
+        try { await api.updateProfile({ roll_no: roll }); } catch { message('Profile saved, but the roll number could not be saved — add it in "Edit profile".', 'bad'); }
+      }
       message('Profile saved.', 'ok');
       afterSession();
     } catch (err) {
@@ -200,7 +212,7 @@ function showSignedIn(profile) {
   render(`
     <section class="card acct-card" aria-labelledby="acct-me-h">
       <h2 id="acct-me-h">Signed in as ${esc(profile.display_name)}</h2>
-      <p class="muted">GitHub @${esc(profile.github_username || user.user_name || '')} · ${esc(programmeLabel(profile.programme))}</p>
+      <p class="muted">GitHub @${esc(profile.github_username || user.user_name || '')} · ${esc(programmeLabel(profile.programme))}${profile.roll_no ? ` · Roll no ${esc(profile.roll_no)}` : ''}</p>
       <p class="acct-sync" data-tone="busy"><span class="acct-dot" aria-hidden="true"></span><span data-sync-text>${esc(STATUS_TEXT.checking)}</span></p>
       <div class="acct-actions">
         <button class="btn btn-ghost" type="button" data-sync-now>Save now</button>
@@ -217,11 +229,12 @@ function showSignedIn(profile) {
         <select id="acct-prog" name="programme" required>
           ${PROGRAMMES.map((p) => `<option value="${esc(p.value)}"${p.value === profile.programme ? ' selected' : ''}>${esc(p.label)}</option>`).join('')}
         </select>
+        ${rollField(profile.roll_no ?? '')}
         <div class="acct-actions"><button class="btn btn-ghost" type="submit">Save profile</button></div>
       </form>
     </section>
 
-    ${batchSectionHtml()}
+    ${batchSectionHtml(profile)}
 
     ${dataSectionHtml()}`);
 
@@ -232,9 +245,13 @@ function showSignedIn(profile) {
     e.preventDefault();
     const name = cleanName(form.name.value);
     if (!name) { message('Please enter a display name.', 'bad'); return; }
+    const roll = cleanRoll(form.roll.value);
+    if (roll && !validRoll(roll)) { message('Roll no / SID: up to 20 letters, digits, - or /.', 'bad'); form.roll.focus(); return; }
     try {
-      const saved = await api.updateProfile(name, form.programme.value);
-      rememberName(saved.display_name);
+      const saved = await api.updateProfile({ display_name: name, programme: form.programme.value, roll_no: roll || null });
+      rememberAccount({ name: saved.display_name });
+      form.roll.value = saved.roll_no ?? '';
+      $('[data-roll-hint]', view)?.remove();
       Object.assign(profile, saved);
       $('#acct-me-h', view).textContent = `Signed in as ${saved.display_name}`;
       message('Profile saved.', 'ok');
@@ -247,12 +264,13 @@ function showSignedIn(profile) {
 }
 
 /** "Your batch" (Milestone 12): join with the code shown in class; faculty get a link to the dashboard. */
-function batchSectionHtml() {
+function batchSectionHtml(profile) {
   const batch = accountState?.batch_name;
   return `
     <section class="card acct-card" aria-labelledby="acct-batch-h">
       <h2 id="acct-batch-h">Your batch</h2>
       <p data-batch-now>${batch ? `You are in <strong>${esc(batch)}</strong>. Your teachers for this batch can see your progress.` : 'Not in a batch yet. Type the code your teacher shows in class.'}</p>
+      ${profile?.roll_no || accountState?.is_faculty ? '' : '<p class="muted acct-small" data-roll-hint>Add your roll no / SID in "Edit profile" above first.</p>'}
       <form class="acct-form acct-inline" data-batch-form novalidate>
         <label for="acct-code">${batch ? 'Change batch — code' : 'Batch code'}</label>
         <div class="acct-row">
@@ -274,7 +292,11 @@ function wireBatchSection() {
     btn.disabled = true;
     try {
       const res = await api.joinBatch(code);
-      if (!res.ok) { message(res.message, 'bad'); return; }
+      if (!res.ok) {
+        message(res.message, 'bad');
+        if (res.needs_roll_no) $('#acct-roll', view)?.focus();
+        return;
+      }
       accountState = { ...accountState, batch_name: res.batch_name };
       $('[data-batch-now]', view).innerHTML = `You are in <strong>${esc(res.batch_name)}</strong>. Your teachers for this batch can see your progress.`;
       form.reset();
@@ -444,7 +466,7 @@ async function afterSession() {
   }
   let profile;
   try { profile = await api.profile(); } catch (err) { message(explain(err), 'bad'); return; }
-  rememberName(profile.display_name);
+  rememberAccount({ name: profile.display_name, faculty: !!st.is_faculty });
   if (!st.consent_current) { showStatus('consent'); showConsent({ signedIn: true, reconsent: true, profile }); return; }
   const situation = deviceSituation(session$.current.user.id);
   if (situation === 'guest' || situation === 'other-account') { showStatus('setup'); showDeviceChoice(situation, profile); return; }

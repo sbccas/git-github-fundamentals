@@ -25,6 +25,7 @@ export function summarize(row) {
   });
   return {
     name: row.display_name ?? '',
+    roll: row.roll_no ?? '',
     github: row.github_username ?? '',
     programme: row.programme ?? '',
     xp,
@@ -46,10 +47,11 @@ export function unitCell(u) {
   return { text: '—', tone: 'none', title: `Unit ${u.n} not started` };
 }
 
-/** Sort students: 'name' (A–Z), 'xp' (highest first), 'updated' (most recent first). */
+/** Sort students: 'name' (A–Z), 'roll' (roll number, missing last), 'xp' (highest first), 'updated' (most recent first). */
 export function sortStudents(list, by) {
   const out = [...list];
-  if (by === 'xp') out.sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name));
+  if (by === 'roll') out.sort((a, b) => (!a.roll) - (!b.roll) || a.roll.localeCompare(b.roll, undefined, { numeric: true, sensitivity: 'base' }) || a.name.localeCompare(b.name));
+  else if (by === 'xp') out.sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name));
   else if (by === 'updated') out.sort((a, b) => (Date.parse(b.updated) || 0) - (Date.parse(a.updated) || 0) || a.name.localeCompare(b.name));
   else out.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   return out;
@@ -67,11 +69,11 @@ export function csvCell(value) {
 }
 
 export function toCsv(students, batchName = '') {
-  const header = ['Batch', 'Display name', 'GitHub username', 'Programme', 'XP', 'Level',
+  const header = ['Batch', 'Roll no / SID', 'Display name', 'GitHub username', 'Programme', 'XP', 'Level',
     ...UNITS.flatMap((u) => [`Unit ${u.n} lessons read`, `Unit ${u.n} lessons`, `Unit ${u.n} quiz best %`, `Unit ${u.n} quiz passed`, `Unit ${u.n} complete`]),
     `Missions done (of ${MISSION_TOTAL})`, `Badges (of ${BADGE_TOTAL})`, 'Self-check best %', 'Last synced'];
   const yesNo = (b) => (b ? 'yes' : 'no');
-  const lines = students.map((s) => [batchName, s.name, s.github, s.programme, s.xp, s.level,
+  const lines = students.map((s) => [batchName, s.roll, s.name, s.github, s.programme, s.xp, s.level,
     ...s.units.flatMap((u) => [u.read, u.total, u.quizBest ?? '', yesNo(u.passed), yesNo(u.complete)]),
     s.missions, s.badges, s.selfCheck ?? '', s.updated ?? ''].map(csvCell).join(','));
   return `﻿${[header.map(csvCell).join(','), ...lines].join('\r\n')}\r\n`; // BOM: Excel reads UTF-8 names correctly

@@ -164,6 +164,22 @@ begin
   r := pg_temp.as_user(pg_temp.uid('Y'), format('select public.faculty_batch_progress(%L)::text', bx));
   perform pg_temp.check('R3a', r like 'ERROR 42501%', 'faculty Y cannot see X''s students: ' || r);
 
+  -- Roll number / SID (M12-D9): required to join, set and corrected by the student only
+  r := pg_temp.as_user(pg_temp.uid('A'), format('select public.join_batch(%L)::text', code_x));
+  perform pg_temp.check('RN1', pg_temp.js(r) ->> 'needs_roll_no' = 'true' and (select batch_id from public.profiles where id = pg_temp.uid('A')) is null,
+    'joining without a roll number is refused with a clear message: ' || r);
+  r := pg_temp.as_user(pg_temp.uid('A'), $q$with u as (update public.profiles set roll_no = '<b>x</b>' returning 1) select count(*)::text from u$q$);
+  perform pg_temp.check('RN2', r like 'ERROR 23514%', 'an invalid roll number is rejected: ' || r);
+  foreach lbl in array array['A', 'B', 'C'] loop
+    perform pg_temp.as_user(pg_temp.uid(lbl), format(
+      'with u as (update public.profiles set roll_no = %L returning 1) select count(*)::text from u', '23BCA-AI/0' || lbl));
+  end loop;
+  perform pg_temp.check('RN3', (select count(*) from public.profiles where roll_no like '23BCA-AI/0%') = 3, 'students set their own roll numbers');
+  r := pg_temp.as_user(pg_temp.uid('B'), format(
+    'with u as (update public.profiles set roll_no = %L where id = %L returning 1) select count(*)::text from u', 'HACK', pg_temp.uid('A')));
+  perform pg_temp.check('RN4', r = '0' and (select roll_no from public.profiles where id = pg_temp.uid('A')) = '23BCA-AI/0A',
+    'a student cannot change another student''s roll number: ' || r);
+
   -- Students join with the code (J2, R5)
   r := pg_temp.as_user(pg_temp.uid('A'), format('select public.join_batch(%L)::text', lower(substr(code_x, 1, 4)) || ' ' || lower(substr(code_x, 5))));
   perform pg_temp.check('JN1', pg_temp.js(r) ->> 'ok' = 'true' and pg_temp.js(r) ->> 'batch_name' = 'BCA 2026 – SY AI',
@@ -202,7 +218,7 @@ begin
     '{"version": 1, "units": {"1": {"sections": ["why"], "total": 9, "quiz": {"best": 80, "last": 80, "passed": true}, "complete": true}}, "missions": {"M-01": {"done": true}}}'));
   r := pg_temp.as_user(pg_temp.uid('X'), format('select public.faculty_batch_progress(%L)::text', bx));
   j := pg_temp.js(r);
-  perform pg_temp.check('D1', jsonb_array_length(j) = 2 and j @> '[{"display_name": "Test A", "xp": 225}]'
+  perform pg_temp.check('D1', jsonb_array_length(j) = 2 and j @> '[{"display_name": "Test A", "roll_no": "23BCA-AI/0A", "xp": 225}]'
     and j @> '[{"display_name": "Test B", "xp": 0}]' and position('Test C' in r) = 0,
     'faculty X sees students A (225 XP) and B of their batch, not C');
   perform pg_temp.check('D2', position('email' in r) = 0 and position('example.invalid' in r) = 0
@@ -214,6 +230,9 @@ begin
   r := pg_temp.as_user(pg_temp.uid('X'), format(
     'with u as (update public.profiles set display_name = %L where id = %L returning 1) select count(*)::text from u', 'X', pg_temp.uid('A')));
   perform pg_temp.check('R3c', r = '0', 'faculty cannot change a student''s profile: ' || r);
+  r := pg_temp.as_user(pg_temp.uid('X'), format(
+    'with u as (update public.profiles set roll_no = %L where id = %L returning 1) select count(*)::text from u', 'X1', pg_temp.uid('A')));
+  perform pg_temp.check('RN5', r = '0', 'faculty cannot change a student''s roll number: ' || r);
 
   -- Colleague access (M12-D7) and removal (F4)
   r := pg_temp.as_user(pg_temp.uid('X'), format('select public.faculty_add_colleague(%L, %L)::text', bx, '@gg-test-faculty-y'));

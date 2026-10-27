@@ -487,7 +487,7 @@ console.log('\nAccounts and sync');
 
   // DB — faculty dashboard helpers (Milestone 12)
   const D = await imp('src/scripts/lib/dashboard.js');
-  const row = { display_name: 'Asha', github_username: 'asha-gh', programme: 'BCA-AI', xp: 325, updated_at: at(26),
+  const row = { display_name: 'Asha', roll_no: '23BCA-AI-045', github_username: 'asha-gh', programme: 'BCA-AI', xp: 325, updated_at: at(26),
     units: { 1: { sections: ['a', 'b', 'c'], total: 9, quiz: { best: 80, last: 70, passed: true }, complete: true },
       2: { sections: ['a', 'b'], total: 7, quiz: { best: 40, last: 40, passed: false }, complete: false }, 3: { sections: ['x'], total: 6, quiz: null, complete: false } },
     missions: ['M-01', 'M-02', 'M-03'], badges: ['first-commit', 'unit-1'], games: [], self_check_best: 65 };
@@ -498,12 +498,15 @@ console.log('\nAccounts and sync');
     && D.unitCell(sum.units[2]).text === '1/6' && D.unitCell(sum.units[3]).text === '—', 'DB1 unit cells: complete, quiz score, lessons read, not started');
   const order = D.sortStudents([D.summarize({ ...row, display_name: 'zed', xp: 10 }), sum, D.summarize({ ...row, display_name: 'Bina', xp: 900 })], 'xp').map((s) => s.name);
   check(order.join() === 'Bina,Asha,zed', 'DB1 students sort by XP (highest first)');
+  const rolls = D.sortStudents([D.summarize({ ...row, roll_no: '23BCA-AI-10', display_name: 'P' }), D.summarize({ ...row, roll_no: null, display_name: 'Q' }),
+    D.summarize({ ...row, roll_no: '23BCA-AI-9', display_name: 'R' })], 'roll').map((s) => s.name);
+  check(rolls.join() === 'R,P,Q', 'DB1 students sort by roll number (9 before 10), missing roll numbers last');
   check(D.csvCell('=HYPERLINK("x")') === `"'=HYPERLINK(""x"")"` && D.csvCell('+91 98') === "'+91 98" && D.csvCell('-x') === "'-x" && D.csvCell('@a') === "'@a"
     && D.csvCell('Shah, Asha') === '"Shah, Asha"' && D.csvCell(null) === '', 'DB2 CSV cells: formulas neutralised, commas and quotes escaped');
   const csv = D.toCsv([D.summarize({ ...row, display_name: '=cmd|calc' })], 'BCA 2026 – SY AI');
   const csvLines = csv.replace(/^﻿/, '').trim().split('\r\n');
-  check(csv.startsWith('﻿') && csvLines.length === 2 && csvLines[1].startsWith("BCA 2026 – SY AI,'=cmd|calc,asha-gh,BCA-AI,325,2,3,9,80,yes,yes")
-    && csvLines[0].split(',').length === csvLines[1].split(',').length && !/email/i.test(csv), 'DB2 CSV: one row per student, no email, aligned columns');
+  check(csv.startsWith('﻿') && csvLines.length === 2 && csvLines[1].startsWith("BCA 2026 – SY AI,23BCA-AI-045,'=cmd|calc,asha-gh,BCA-AI,325,2,3,9,80,yes,yes")
+    && csvLines[0].split(',').length === csvLines[1].split(',').length && !/email/i.test(csv), 'DB2 CSV: one row per student with the roll number, no email, aligned columns');
 
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');

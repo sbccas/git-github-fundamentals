@@ -215,7 +215,7 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 |---|---|
 | S-01 | **Sign in with GitHub** (Supabase Auth; the only sign-in method). On first sign-in the device's local progress is **offered** for merging into the account — never merged without the student's confirmation (S-10). Sign-in is optional; signed-out use stays as in Phase 1. |
 | S-02 | Progress sync across devices. |
-| S-03 | Student profile: display name, GitHub numeric id and username, programme (BCA / BCA-AI / B.Sc. DS / M.Sc. IT), batch/division (joined with a batch code), leaderboard opt-in, consent version and date. |
+| S-03 | Student profile: display name, GitHub numeric id and username, programme (BCA / BCA-AI / B.Sc. DS / M.Sc. IT), roll number / SID (entered by the student, required to join a batch — owner decision 2026-10-27, M12-D9), batch/division (joined with a batch code), leaderboard opt-in, consent version and date. |
 | S-04 | **Leaderboard** by batch (XP), **opt-in**: only students who choose to appear are listed; off by default (owner decision 2026-10-24). Shows display name and XP only. |
 | S-05 | **Live classroom quiz:** faculty starts a session for a batch, students of that batch join with a session code, questions appear in real time, the projector shows answer counts (no names). Private Realtime channels; one answer per student per question; students see only their own answers (S-09 L1–L6). |
 | S-06 | **Teacher dashboard:** per-batch completion of units, missions, quiz scores; CSV export. Faculty on the allowlist, own batches only; fields as in S-12. |

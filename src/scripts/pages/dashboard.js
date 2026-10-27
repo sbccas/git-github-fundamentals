@@ -6,7 +6,7 @@ import '../main.js';
 import '../lib/account-boot.js';
 import { configured, PROGRAMMES } from '../data/supabase.js';
 import { BASE } from '../data/site.js';
-import { getSession, api } from '../lib/account.js';
+import { getSession, api, rememberAccount } from '../lib/account.js';
 import { classify } from '../lib/sync.js';
 import { summarize, unitCell, sortStudents, toCsv, MISSION_TOTAL, BADGE_TOTAL } from '../lib/dashboard.js';
 
@@ -66,6 +66,7 @@ async function main() {
   }
   let st;
   try { st = await api.status(); } catch (err) { gate(`<h2>Could not check your account</h2><p>${esc(explain(err))}</p>`); return; }
+  rememberAccount({ faculty: !!st.is_faculty });
   if (!st.is_faculty) {
     gate(`<h2>This page is for course faculty</h2><p>Your GitHub account is not on the faculty list. If you teach this course, ask the course coordinator to add you.</p>
       <p><a class="btn btn-ghost" href="${BASE}account/">Back to your account</a></p>`);
@@ -151,9 +152,10 @@ function studentsShellHtml() {
     <section class="card acct-card dash-students" aria-labelledby="dash-st-h">
       <div class="dash-toolbar">
         <h2 id="dash-st-h">Students</h2>
-        <input type="search" data-filter placeholder="Find a student" aria-label="Find a student" value="${esc(filter)}">
+        <input type="search" data-filter placeholder="Find name or roll no" aria-label="Find a student by name, roll number or GitHub username" value="${esc(filter)}">
         <select data-sort aria-label="Sort students">
           <option value="name"${sortBy === 'name' ? ' selected' : ''}>Name A–Z</option>
+          <option value="roll"${sortBy === 'roll' ? ' selected' : ''}>Roll no</option>
           <option value="xp"${sortBy === 'xp' ? ' selected' : ''}>XP, highest first</option>
           <option value="updated"${sortBy === 'updated' ? ' selected' : ''}>Last synced</option>
         </select>
@@ -243,22 +245,24 @@ function renderTable() {
   const box = $('[data-table]', view);
   if (!box) return;
   const q = filter.trim().toLowerCase();
-  const list = sortStudents(students.filter((s) => !q || s.name.toLowerCase().includes(q) || s.github.toLowerCase().includes(q)), sortBy);
+  const list = sortStudents(students.filter((s) => !q || s.name.toLowerCase().includes(q) || s.github.toLowerCase().includes(q) || s.roll.toLowerCase().includes(q)), sortBy);
+  const noRoll = students.filter((s) => !s.roll).length;
   const avg = students.length ? Math.round(students.reduce((t, s) => t + s.xp, 0) / students.length) : 0;
   $('[data-summary]', view).textContent = students.length
-    ? `${students.length} student${students.length === 1 ? '' : 's'} · average ${avg} XP · updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (refreshes every minute)`
+    ? `${students.length} student${students.length === 1 ? '' : 's'} · average ${avg} XP${noRoll ? ` · ${noRoll} without a roll no` : ''} · updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (refreshes every minute)`
     : '';
   if (!students.length) { box.innerHTML = '<p>No students have joined yet. Show the join code in class.</p>'; return; }
   if (!list.length) { box.innerHTML = '<p>No student matches that search.</p>'; return; }
   box.innerHTML = `
     <table class="dash-table">
       <thead><tr>
-        <th scope="col">Student</th><th scope="col" class="num">XP</th><th scope="col" class="num">Level</th>
+        <th scope="col">Roll no</th><th scope="col">Student</th><th scope="col" class="num">XP</th><th scope="col" class="num">Level</th>
         ${[1, 2, 3, 4, 5].map((n) => `<th scope="col" class="unit">U${n}</th>`).join('')}
         <th scope="col" class="num">Missions</th><th scope="col" class="num">Badges</th><th scope="col" class="num">Self-check</th><th scope="col">Last synced</th>
       </tr></thead>
       <tbody>${list.map((s) => `
         <tr>
+          <td class="dash-roll">${s.roll ? esc(s.roll) : '<span class="dash-missing">missing</span>'}</td>
           <th scope="row"><span class="dash-name">${esc(s.name)}</span><span class="dash-sub">@${esc(s.github)} · ${esc(programmeLabel(s.programme))}</span></th>
           <td class="num"><strong>${s.xp}</strong></td><td class="num">${s.level}</td>
           ${s.units.map((u) => { const c = unitCell(u); return `<td class="unit" data-tone="${c.tone}" title="${esc(c.title)}">${esc(c.text)}</td>`; }).join('')}

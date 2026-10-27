@@ -60,6 +60,33 @@ function mount() {
   }
 }
 
+/**
+ * "Faculty dashboard" in the More menu and the phone menu — only for an account remembered as faculty
+ * (M12-D10). The dashboard itself checks the faculty list on every visit, so this link is a shortcut, not access.
+ */
+function facultyLinks() {
+  const faculty = !!read('account', null)?.faculty && storedSession();
+  const here = document.body.dataset.page === 'dashboard';
+  const place = (container, make) => {
+    if (!container) return;
+    const existing = container.querySelector('.acct-faculty-link');
+    if (!faculty) { existing?.remove(); return; }
+    if (existing) return;
+    const a = make();
+    a.classList.add('acct-faculty-link');
+    a.href = pageUrl('teach/dashboard/');
+    if (here) a.setAttribute('aria-current', 'page');
+    container.prepend(a);
+  };
+  place(document.getElementById('menu-more'), () => Object.assign(document.createElement('a'), {
+    className: 'nav-menu-link',
+    innerHTML: '<span><strong>Faculty dashboard</strong> Batches &amp; student progress</span>',
+  }));
+  place(document.querySelector('.mobile-grid'), () => Object.assign(document.createElement('a'), {
+    className: 'mobile-tile', textContent: 'Faculty dashboard',
+  }));
+}
+
 /** Shows the account / sync state in the header button and on the Git Passport. */
 export function showStatus(state) {
   const text = STATUS_TEXT[state] ?? STATUS_TEXT.error;
@@ -71,9 +98,14 @@ export function showStatus(state) {
   window.dispatchEvent(new CustomEvent('gg:account', { detail: { state } }));
 }
 
-const hasSession = (() => { try { return !!localStorage.getItem(AUTH_STORAGE_KEY); } catch { return false; } })();
+function storedSession() {
+  try { return !!localStorage.getItem(AUTH_STORAGE_KEY); } catch { return false; }
+}
+const hasSession = storedSession();
 
 mount();
+facultyLinks();
+window.addEventListener('gg:account-info', facultyLinks);
 if (!hasSession) {
   showStatus('signed-out');
 } else if (document.body.dataset.page !== 'account') {

@@ -28,6 +28,8 @@
 .dash-table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .dash-table .unit { text-align: center; min-width: 52px; }
 .dash-name { display: block; }
+.dash-roll { font-family: var(--font-mono); font-weight: 600; }
+.dash-missing { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-xs); color: var(--amber); }
 .dash-sub { display: block; font-weight: 400; font-size: var(--fs-xs); color: var(--muted); }
 .dash-table td[data-tone="done"] { color: var(--green); font-weight: 700; }
 .dash-table td[data-tone="pass"] { color: var(--green); }

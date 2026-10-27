@@ -78,7 +78,7 @@ export async function signInWithGitHub() {
 export async function signOutHere() {
   const client = await getClient();
   await client.auth.signOut({ scope: 'local' });
-  write('account', null);
+  rememberAccount(null);
 }
 
 const rpc = async (fn, args) => call((await getClient()).rpc(fn, args));
@@ -89,13 +89,13 @@ export const api = {
     rpc('accept_consent', { p_consent_version: version, p_display_name: name, p_programme: programme }),
   async profile() {
     const client = await getClient();
-    return call(client.from('profiles').select('display_name, programme, github_username, consent_version, consent_at').maybeSingle());
+    return call(client.from('profiles').select('display_name, programme, roll_no, github_username, consent_version, consent_at').maybeSingle());
   },
-  async updateProfile(name, programme) {
+  async updateProfile(fields) {
     const client = await getClient();
     const session = await getSession();
-    return call(client.from('profiles').update({ display_name: name, programme }).eq('id', session.user.id)
-      .select('display_name, programme').single());
+    return call(client.from('profiles').update(fields).eq('id', session.user.id)
+      .select('display_name, programme, roll_no').single());
   },
   async load() {
     const client = await getClient();
@@ -114,7 +114,11 @@ export const api = {
 };
 
 /** Remembers the display name for the header, so pages can show it without a network call. */
-export const rememberName = (name) => write('account', name ? { name } : null);
+/** Remembers the display name and faculty role for the header and menu, so pages need no network call to show them. */
+export function rememberAccount(info) {
+  write('account', info ? { ...(read('account', null) ?? {}), ...info } : null);
+  window.dispatchEvent(new CustomEvent('gg:account-info'));
+}
 export const rememberedName = () => read('account', null)?.name ?? '';
 
 /**
@@ -127,6 +131,7 @@ export async function startBackgroundSync(onStatus) {
   if (!session) { onStatus('signed-out'); return null; }
   let st;
   try { st = await api.status(); } catch (err) { onStatus(classify(err)); return null; }
+  rememberAccount({ faculty: !!st.is_faculty });
   if (!st.has_profile) { onStatus('setup'); return null; }
   if (!st.consent_current) { onStatus('consent'); return null; }
   if (syncMeta()?.account !== session.user.id) { onStatus('setup'); return null; }

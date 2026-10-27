@@ -36,3 +36,20 @@ Pre-check: both suites also passed twice in the local PGlite stand-in before the
 **Not covered manually:** the dashboard on a phone at 360 px (table scrolls inside its card by design); a wrong or
 disabled code typed in the browser, code regeneration and removal of a faculty member in the browser (all covered by
 the SQL suite: J2, J3, F4); more than one batch per faculty member.
+
+## Additions M12-D9 (roll number / SID) and M12-D10 (faculty menu link), same day
+
+| | |
+|---|---|
+| **Applied by the owner** | `supabase/migrations/20261027000004_m12_roll_number.sql`; `supabase/tests/seed_gg_test_draft3.sql` (consent `draft-3` current) |
+| **SQL suite** | `m12_dashboard_test.sql` with RN1–RN5 (join refused without a roll number; invalid value rejected; students set their own; nobody else — student or faculty — can change it; shown in dashboard rows): **41 / 41 PASS** on `gg-test` (and twice in the local pre-check, with the Milestone 10–11 suite 69 / 69) |
+
+| # | Manual test | Observed result | Result |
+|---|---|---|---|
+| 13 | Re-consent to `draft-3`, then set roll number in "Edit profile" (student A) | "Profile saved" | PASS |
+| 14 | Dashboard shows the roll number | Instructor: Student A, roll no 23BCA-AI-001 | PASS |
+| 15 | "Faculty dashboard" in the More menu for faculty | Appears for contact2hitech | PASS |
+| 16 | No faculty link for students | Not shown for student A | PASS |
+
+Not covered manually: a new student joining without a roll number in the browser (covered by RN1), CSV with the roll column
+opened in Excel after this change (covered by `npm test` DB2).
