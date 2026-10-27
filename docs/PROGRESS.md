@@ -177,7 +177,7 @@
 
 | IDs | Status |
 |---|---|
-| S-01 – S-12 (Supabase) | ⏳ Not started (Phase 2, Milestones 10–14). [Plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 awaiting approval as the implementation baseline; needs D-5, and the college sign-off (D-9 – D-12) before real student data. |
+| S-01 – S-12 (Supabase) | 🔧 Phase 2 [plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 approved as the baseline (2026-10-26). Milestones 10 + 11: plans approved ([M10](plans/MILESTONE-10-FOUNDATION-PLAN.md), [M11](plans/MILESTONE-11-SYNC-PLAN.md)); test project set up by the owner 2026-10-26; no code or migration yet, no test run. Production needs `gg-prod` (D-5) and the college sign-off (D-9 – D-12) before real student data. |
 | A-01 – A-08 (AI) | ⏳ Not started (Phase 3). Needs a Claude API key and a monthly budget (PRD D-8). |
 
 ## 4. Open decisions (from PRD §14)

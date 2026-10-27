@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | **Revision 4 (documentation clarifications) — awaiting the owner's approval as the implementation baseline.** Phase 2 architecture and direction approved by the owner (Hitesh Patel) on 24 October 2026 with two decisions: leaderboard **opt-in**, and **no automatic deletion** after a fixed period. **No implementation has started.** Next step after approval: a separate Milestone 10 plan. Gates: D-5 (Supabase projects and OAuth apps) before any setup; the college sign-off D-9 – D-12 (§5.6) before any real student data. |
+| **Status** | ✅ **Revision 4 — approved by the owner as the implementation baseline on 26 Oct 2026** (K-1 in the [Milestone 10 plan](MILESTONE-10-FOUNDATION-PLAN.md)). Milestones 10 and 11 have approved plans ([Milestone 10 plan](MILESTONE-10-FOUNDATION-PLAN.md), [Milestone 11 plan](MILESTONE-11-SYNC-PLAN.md)) and are built together on `gg-test` only; the owner's 26 Oct decisions there refine this plan: account deletion is two-step (Milestone 10 P-6 (c), S-12 clarified), the faculty allowlist moves to Milestone 12, and `sbccas` is a personal GitHub account. Originally: Phase 2 architecture and direction approved by the owner (Hitesh Patel) on 24 October 2026 with two decisions: leaderboard **opt-in**, and **no automatic deletion** after a fixed period. **No implementation has started.** Next step after approval: a separate Milestone 10 plan. Gates: D-5 (Supabase projects and OAuth apps) before any setup; the college sign-off D-9 – D-12 (§5.6) before any real student data. |
 | **History** | Rev 1 `dc38c9b` · Rev 2 `0fbd084` (security, sync, test gate, data protection) · Rev 3 `50d0ccf` (certificate records, live-quiz and join-code security, verify URL, production sign-off, PRD consistency) · Rev 4, 24 Oct 2026 (C4 tied to D-9, privileged-function rules X1–X6, complete data export, verified OAuth setup, Realtime-layer tests) |
 | **PRD** | §7 S-01 – S-12, §11 Architecture, §12b Phase 2 milestones, §14 D-5 and D-8 – D-12, N-05 |
 | **Builds on** | Phase 1 as delivered (Milestones 1–9): local progress in `src/scripts/lib/progress.js` (version 1), validated import (G-08), Git Passport (G-04) |
@@ -72,7 +72,7 @@ Browser (GitHub Pages site, offline-first)
 | `live_results(session, question)` | answer counts per option | Faculty of the session (for the projector) |
 | `verify_certificate(id)` | recipient name, course, college, issue date, status | Anyone, including signed out |
 | `export_my_data()` | the caller's profile, progress, live-quiz answers, batch name, consent record and certificates (§5.4) | Signed-in users, own data only |
-| `delete_my_account()` | removes the caller's data (§5.4) and applies the certificate policy (§5.5) | Signed-in users, own account only |
+| `delete_my_account()` | removes the caller's data (§5.4) — form decided 26 Oct 2026 (Milestone 10 P-6 (c)): deletes the caller's application data at once and records a removal request; the college removes the Auth user in the dashboard within an agreed time — and applies the certificate policy (§5.5) | Signed-in users, own account only |
 | `app_settings` | `certificate_policy` = `keep` or `anonymise` (set from D-9; §5.5) | No browser access; owner sets it in the dashboard |
 
 The PRD's earlier indicative `quiz_attempts` and `mission_runs` tables are replaced by the single validated `progress`
@@ -256,17 +256,18 @@ the owner, directly in GitHub and Supabase — never shared in chat, email or th
    database password in a password manager.
 2. **Callback URL** — in each project: Authentication → Sign In / Providers → GitHub, copy the callback URL
    (`https://<project-ref>.supabase.co/auth/v1/callback`).
-3. **GitHub OAuth Apps, owned by the `sbccas` organisation** (an organisation owner does this: organisation Settings →
-   Developer settings → OAuth Apps → New OAuth App). One app per project, so test and production never share a secret:
+3. **GitHub OAuth Apps, owned by the `sbccas` GitHub account** — a **personal** account, not an organisation (confirmed
+   26 Oct 2026): signed in as `sbccas`, Settings → Developer settings → OAuth Apps → New OAuth App. One app per project,
+   so test and production never share a secret:
    - Application name: "Git & GitHub Fundamentals (test)" / "Git & GitHub Fundamentals"
    - Homepage URL: `https://sbccas.github.io/git-github-fundamentals/`
    - Authorization callback URL: that project's Supabase callback URL from step 2
    - Enable Device Flow: **off**; other options left at GitHub's defaults
    - Register, copy the **Client ID**, generate a **client secret**.
-   Apps owned by the organisation are not blocked by its OAuth app access restrictions.
 4. **Connect** — in the matching Supabase project (Authentication → Sign In / Providers → GitHub): enable GitHub, paste
    the Client ID and client secret yourself, save.
-5. **Sign-in settings** — Authentication → URL Configuration: Site URL `https://sbccas.github.io/git-github-fundamentals/`;
+5. **Sign-in settings** — Authentication → URL Configuration: Site URL `https://sbccas.github.io/git-github-fundamentals/`
+   (`gg-test`: the local account address only — Milestone 11 plan §5);
    redirect URLs exact (no `**` wildcards); `gg-test` may also allow the local development address (K2). Disable email
    and anonymous sign-in in `gg-prod` (K3).
 6. **Send me only** each project's **URL** and **anon (publishable) key** — both public by design.
@@ -289,8 +290,8 @@ the owner, directly in GitHub and Supabase — never shared in chat, email or th
 | — | Phase 2 direction (Milestones 10–14) | ✅ Approved by the owner, 24 Oct 2026 |
 | — | Leaderboard opt-in, off by default | ✅ Owner, 24 Oct 2026 (S-04) |
 | — | No automatic deletion after a fixed period | ✅ Owner, 24 Oct 2026 (S-12) |
-| — | Revision 4 of this plan as the implementation baseline | ⏳ Owner approval |
-| D-5 | Create `gg-test` and `gg-prod` + GitHub OAuth apps | ⏳ When Milestone 10 starts |
+| — | Revision 4 of this plan as the implementation baseline | ✅ Owner, 26 Oct 2026 (K-1) |
+| D-5 | Create `gg-test` and `gg-prod` + GitHub OAuth apps | ◐ Test part done by the owner, 26 Oct 2026 (`git-github-fundamentals-test`); production part ⏳ |
 | D-9 | Certificate policy on account deletion: `keep` (recommended) or `anonymise` (§5.5) | ⏳ College to confirm; both paths tested meanwhile |
 | D-10 | Faculty authorised to access student progress, and their batches | ⏳ College, before production |
 | D-11 | Consent wording | ⏳ College, before production |
