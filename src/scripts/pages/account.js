@@ -1,0 +1,439 @@
+/**
+ * Account page (Milestone 10 plan §4.1, §4.5, §4.6, §4.8, §4.9.1; Milestone 11 plan §4.3).
+ * Consent first → GitHub sign-in → profile (accept_consent) → this device's progress → background sync.
+ * Built only when accounts are enabled; the database enforces every rule again (supabase/migrations/).
+ */
+import '../main.js';
+import { CONSENT, PROGRAMMES, configured } from '../data/supabase.js';
+import { BASE } from '../data/site.js';
+import { showStatus, STATUS_TEXT } from '../lib/account-boot.js';
+import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberName } from '../lib/account.js';
+import { createSync, deviceSituation, linkDevice, leaveDevice, forgetDeviceLink, hasStash, syncMeta, classify } from '../lib/sync.js';
+
+const $ = (s, root = document) => root.querySelector(s);
+const view = $('[data-acct-view]');
+const msgBox = $('[data-acct-msg]');
+const RETURN_KEY = 'gg-return-to';
+const AGREED_KEY = 'gg-consent-agreed';
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const programmeLabel = (v) => PROGRAMMES.find((p) => p.value === v)?.label ?? v;
+const session$ = { current: null };
+let sync = null;
+
+const ss = {
+  get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } },
+  set: (k, v) => { try { sessionStorage.setItem(k, v); } catch { /* ignore */ } },
+  del: (k) => { try { sessionStorage.removeItem(k); } catch { /* ignore */ } },
+};
+
+function message(text, tone = 'info') {
+  msgBox.textContent = text ?? '';
+  msgBox.dataset.tone = tone;
+  msgBox.hidden = !text;
+}
+
+function render(html) {
+  view.innerHTML = html;
+  view.focus({ preventScroll: true });
+}
+
+/** A short, specific message for a failed call (§4.6). */
+function explain(err) {
+  const kind = classify(err);
+  if (kind === 'offline') return 'You seem to be offline, or the account service is unavailable. Nothing was lost — try again when you are online.';
+  if (kind === 'auth') return 'Your sign-in has ended. Please sign in again.';
+  if (kind === 'consent') return 'Please review and accept the updated consent first.';
+  return err?.message || 'Something went wrong. Please try again.';
+}
+
+/** Name rules shared with the database: 1–60 characters, no < > or control characters. */
+const cleanName = (s) => String(s ?? '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+
+/* ---------------- Screens ---------------- */
+
+function consentHtml({ signedIn, reconsent }) {
+  const items = CONSENT.points.map(([h, t]) => `<li><strong>${esc(h)}.</strong> ${esc(t)}</li>`).join('');
+  const lead = reconsent
+    ? 'The wording below has changed since you agreed. Please read it and agree again to keep saving online.'
+    : 'Signing in is optional. If you agree, your progress is also saved online so you can continue on another device.';
+  return `
+    <section class="card acct-card" aria-labelledby="acct-consent-h">
+      ${CONSENT.draft ? '<p class="acct-draft"><strong>Test version.</strong> Draft wording, not yet approved by the college. Use test accounts only.</p>' : ''}
+      <h2 id="acct-consent-h">${esc(CONSENT.title)}</h2>
+      <p>${lead}</p>
+      <ul class="acct-points">${items}</ul>
+      <p class="muted acct-small">Consent version ${esc(CONSENT.version)}.</p>
+      <div class="acct-actions">
+        <button class="btn btn-primary" type="button" data-agree>${signedIn ? 'I agree' : 'I agree — continue with GitHub'}</button>
+        <button class="btn btn-ghost" type="button" data-not-now>Not now</button>
+      </div>
+    </section>`;
+}
+
+function showConsent({ signedIn = false, reconsent = false, profile = null } = {}) {
+  render(consentHtml({ signedIn, reconsent }));
+  $('[data-agree]', view).addEventListener('click', async (e) => {
+    e.currentTarget.disabled = true;
+    if (!signedIn) {
+      ss.set(AGREED_KEY, CONSENT.version);
+      try {
+        message('Opening GitHub…');
+        await signInWithGitHub();
+      } catch (err) {
+        e.currentTarget.disabled = false;
+        message(explain(err), 'bad');
+      }
+      return;
+    }
+    if (!reconsent) { ss.set(AGREED_KEY, CONSENT.version); showProfileForm(); return; }
+    try {
+      await api.acceptConsent(CONSENT.version, profile.display_name, profile.programme);
+      message('Thank you — consent recorded.', 'ok');
+      afterSession();
+    } catch (err) {
+      e.currentTarget.disabled = false;
+      message(explain(err), 'bad');
+    }
+  });
+  $('[data-not-now]', view).addEventListener('click', () => {
+    if (!signedIn) { location.href = ss.get(RETURN_KEY) || BASE; return; }
+    if (reconsent) showLimited(profile);
+    else showNotNow();
+  });
+}
+
+function showProfileForm() {
+  const meta = session$.current?.user?.user_metadata ?? {};
+  const suggested = cleanName(meta.full_name || meta.name || meta.user_name || '');
+  render(`
+    <section class="card acct-card" aria-labelledby="acct-profile-h">
+      <h2 id="acct-profile-h">Your profile</h2>
+      <p>Signed in with GitHub as <strong>@${esc(meta.user_name || meta.preferred_username || '')}</strong>. Saving this form records your consent (version ${esc(CONSENT.version)}) and creates your profile.</p>
+      <form class="acct-form" data-profile-form novalidate>
+        <label for="acct-name">Display name <span class="muted">(1–60 characters)</span></label>
+        <input id="acct-name" name="name" type="text" maxlength="60" autocomplete="name" required value="${esc(suggested)}">
+        <label for="acct-prog">Programme</label>
+        <select id="acct-prog" name="programme" required>
+          <option value="">Choose…</option>
+          ${PROGRAMMES.map((p) => `<option value="${esc(p.value)}">${esc(p.label)}</option>`).join('')}
+        </select>
+        <div class="acct-actions">
+          <button class="btn btn-primary" type="submit">Save and continue</button>
+          <button class="btn btn-ghost" type="button" data-not-now>Not now</button>
+        </div>
+      </form>
+    </section>`);
+  const form = $('[data-profile-form]', view);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = cleanName(form.name.value);
+    const programme = form.programme.value;
+    if (!name) { message('Please enter a display name.', 'bad'); form.name.focus(); return; }
+    if (!programme) { message('Please choose your programme.', 'bad'); form.programme.focus(); return; }
+    const btn = form.querySelector('[type="submit"]');
+    btn.disabled = true;
+    message('Saving…');
+    try {
+      await api.acceptConsent(CONSENT.version, name, programme);
+      ss.del(AGREED_KEY);
+      message('Profile saved.', 'ok');
+      afterSession();
+    } catch (err) {
+      btn.disabled = false; // the form keeps its values; consent is recorded only when the call succeeds
+      message(explain(err), 'bad');
+    }
+  });
+  $('[data-not-now]', view).addEventListener('click', showNotNow);
+}
+
+/** §4.1 6b: leaving before the profile is saved. */
+function showNotNow() {
+  render(`
+    <section class="card acct-card">
+      <h2>Not now</h2>
+      <p>Nothing has been saved online by this site yet. GitHub sign-in did create a sign-in record with Supabase (see the consent text).</p>
+      <div class="acct-actions acct-actions-col">
+        <button class="btn btn-primary" type="button" data-keep>Sign out and keep for later</button>
+        <button class="btn btn-ghost" type="button" data-remove>Ask the college to remove my sign-in record</button>
+        <button class="btn btn-ghost" type="button" data-back>Back to the profile form</button>
+      </div>
+    </section>`);
+  $('[data-keep]', view).addEventListener('click', async () => { await signOutHere(); ss.del(AGREED_KEY); signedOutDone('Signed out. You can finish setting up later.'); });
+  $('[data-remove]', view).addEventListener('click', () => confirmDelete({ hasProfile: false }));
+  $('[data-back]', view).addEventListener('click', showProfileForm);
+}
+
+/** Choice when this device already holds progress (plan §4.3). Never merged without an answer. */
+function showDeviceChoice(situation, profile) {
+  const uid = session$.current.user.id;
+  const whose = situation === 'guest' ? 'made while signed out' : 'from another account';
+  render(`
+    <section class="card acct-card" aria-labelledby="acct-device-h">
+      <h2 id="acct-device-h">This device already has progress</h2>
+      <p>This browser holds course progress ${whose}. Add it to <strong>${esc(profile.display_name)}</strong>?</p>
+      <div class="acct-actions acct-actions-col">
+        <button class="btn btn-primary" type="button" data-add>Add this device's progress to ${esc(profile.display_name)}</button>
+        <button class="btn btn-ghost" type="button" data-separate>Keep separate (it comes back when you sign out)</button>
+      </div>
+    </section>`);
+  $('[data-add]', view).addEventListener('click', () => { linkDevice(uid, { addLocal: true }); startSync(profile); });
+  $('[data-separate]', view).addEventListener('click', () => {
+    if (!linkDevice(uid, { addLocal: false })) {
+      message('This device has progress from another account that is not saved online yet. Sign in with that account first, or choose "Add".', 'bad');
+      return;
+    }
+    startSync(profile);
+  });
+}
+
+function syncLineText(state) {
+  const meta = syncMeta();
+  const when = meta?.lastSyncAt && state === 'saved' ? ` · ${new Date(meta.lastSyncAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : '';
+  return `${STATUS_TEXT[state] ?? state}${when}`;
+}
+
+function showSignedIn(profile) {
+  const user = session$.current.user.user_metadata ?? {};
+  const back = ss.get(RETURN_KEY);
+  render(`
+    <section class="card acct-card" aria-labelledby="acct-me-h">
+      <h2 id="acct-me-h">Signed in as ${esc(profile.display_name)}</h2>
+      <p class="muted">GitHub @${esc(profile.github_username || user.user_name || '')} · ${esc(programmeLabel(profile.programme))}</p>
+      <p class="acct-sync" data-tone="busy"><span class="acct-dot" aria-hidden="true"></span><span data-sync-text>${esc(STATUS_TEXT.checking)}</span></p>
+      <div class="acct-actions">
+        <button class="btn btn-ghost" type="button" data-sync-now>Save now</button>
+        ${back ? `<a class="btn btn-primary" href="${esc(back)}" data-back>Continue where you were →</a>` : ''}
+      </div>
+    </section>
+
+    <section class="card acct-card" aria-labelledby="acct-edit-h">
+      <h2 id="acct-edit-h">Edit profile</h2>
+      <form class="acct-form" data-edit-form novalidate>
+        <label for="acct-name">Display name</label>
+        <input id="acct-name" name="name" type="text" maxlength="60" required value="${esc(profile.display_name)}">
+        <label for="acct-prog">Programme</label>
+        <select id="acct-prog" name="programme" required>
+          ${PROGRAMMES.map((p) => `<option value="${esc(p.value)}"${p.value === profile.programme ? ' selected' : ''}>${esc(p.label)}</option>`).join('')}
+        </select>
+        <div class="acct-actions"><button class="btn btn-ghost" type="submit">Save profile</button></div>
+      </form>
+    </section>
+
+    ${dataSectionHtml()}`);
+
+  $('[data-sync-now]', view).addEventListener('click', () => sync?.push());
+  $('[data-back]', view)?.addEventListener('click', () => ss.del(RETURN_KEY));
+  const form = $('[data-edit-form]', view);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = cleanName(form.name.value);
+    if (!name) { message('Please enter a display name.', 'bad'); return; }
+    try {
+      const saved = await api.updateProfile(name, form.programme.value);
+      rememberName(saved.display_name);
+      Object.assign(profile, saved);
+      $('#acct-me-h', view).textContent = `Signed in as ${saved.display_name}`;
+      message('Profile saved.', 'ok');
+    } catch (err) {
+      message(explain(err), 'bad');
+    }
+  });
+  wireDataSection({ hasProfile: true });
+}
+
+/** Re-consent declined (§4.8.3): only download, delete and sign out remain. */
+function showLimited(profile) {
+  render(`
+    <section class="card acct-card">
+      <h2>Online saving is paused</h2>
+      <p>Until you agree to the updated consent, nothing new is saved online. Your progress on this device keeps working as before.</p>
+      <div class="acct-actions"><button class="btn btn-primary" type="button" data-review>Review the consent</button></div>
+    </section>
+    ${dataSectionHtml()}`);
+  $('[data-review]', view).addEventListener('click', () => showConsent({ signedIn: true, reconsent: true, profile }));
+  wireDataSection({ hasProfile: true });
+}
+
+function dataSectionHtml() {
+  const stash = hasStash();
+  return `
+    <section class="card acct-card" aria-labelledby="acct-data-h">
+      <h2 id="acct-data-h">Your data</h2>
+      <div class="acct-actions acct-actions-col">
+        <button class="btn btn-ghost" type="button" data-export>Download my data (JSON)</button>
+        ${stash
+          ? '<button class="btn btn-ghost" type="button" data-signout="restore">Sign out (this device\'s earlier progress comes back)</button>'
+          : `<button class="btn btn-ghost" type="button" data-signout="remove">Sign out and remove my progress from this PC</button>
+             <button class="btn btn-ghost" type="button" data-signout="keep">Sign out and keep my progress on this PC</button>`}
+        <button class="btn btn-ghost acct-danger" type="button" data-delete>Delete my account…</button>
+      </div>
+      <p class="muted acct-small">Signing out affects this device only. Your online copy stays until you delete your account.</p>
+    </section>`;
+}
+
+function wireDataSection({ hasProfile }) {
+  $('[data-export]', view)?.addEventListener('click', downloadData);
+  view.querySelectorAll('[data-signout]').forEach((b) => b.addEventListener('click', () => signOutFlow(b.dataset.signout)));
+  $('[data-delete]', view)?.addEventListener('click', () => confirmDelete({ hasProfile }));
+}
+
+async function downloadData() {
+  try {
+    const data = await api.exportData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'git-github-fundamentals-my-data.json' });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    message('Downloaded. It holds everything stored online about you; see "not_included" in the file for what is not.', 'ok');
+  } catch (err) {
+    message(explain(err), 'bad');
+  }
+}
+
+async function signOutFlow(mode) {
+  if (syncMeta()?.pending) {
+    await sync?.push();
+    if (syncMeta()?.pending && !confirm('Some progress has not been saved online yet. Sign out anyway? It stays on this device only if you keep it here.')) return;
+  }
+  sync?.stop();
+  try { await signOutHere(); } catch { /* local sign-out still clears this device below */ }
+  const result = leaveDevice({ removeLocal: mode === 'remove' });
+  signedOutDone(result === 'restored' ? 'Signed out. This device\'s earlier progress is back.'
+    : result === 'removed' ? 'Signed out. Your progress was removed from this PC; it is still saved online.'
+      : 'Signed out. Your progress stays on this PC.');
+}
+
+function confirmDelete({ hasProfile }) {
+  const what = hasProfile ? 'your profile and all progress saved online' : 'nothing is saved online yet';
+  render(`
+    <section class="card acct-card" aria-labelledby="acct-del-h">
+      <h2 id="acct-del-h">${hasProfile ? 'Delete my account' : 'Remove my sign-in record'}</h2>
+      <p>This deletes ${what} straight away. The college then removes your sign-in record from Supabase. Supabase's security logs and your GitHub authorisation of this app (GitHub → Settings → Applications) are not removed by us.</p>
+      <p>Progress saved on this device is not changed.</p>
+      <div class="acct-actions">
+        <button class="btn btn-primary acct-danger-solid" type="button" data-yes>Yes, ${hasProfile ? 'delete my account' : 'ask for removal'}</button>
+        <button class="btn btn-ghost" type="button" data-no>Cancel</button>
+      </div>
+    </section>`);
+  $('[data-no]', view).addEventListener('click', () => afterSession());
+  $('[data-yes]', view).addEventListener('click', async (e) => {
+    e.currentTarget.disabled = true;
+    try {
+      await api.deleteAccount();
+    } catch (err) {
+      // §4.9.1: never assume success from a missing response — check the status.
+      let st = null;
+      try { st = await api.status(); } catch { /* unknown */ }
+      if (!st?.deletion_requested) { e.currentTarget.disabled = false; message(st ? 'Deletion was not completed — you can try again.' : `Status unknown — check again later. (${explain(err)})`, 'bad'); return; }
+    }
+    sync?.stop();
+    try { await signOutHere(); } catch { /* ignore */ }
+    if (hasStash()) leaveDevice({ removeLocal: false }); // the device's earlier progress comes back
+    else forgetDeviceLink(); // this device's progress stays, no longer linked to the deleted account
+    signedOutDone('Your online data was deleted and removal of your sign-in record was requested from the college. You are signed out on this device.');
+  });
+}
+
+function showDeletionPending(profileName) {
+  render(`
+    <section class="card acct-card">
+      <h2>Removal requested</h2>
+      <p>Your online data was deleted. The college will remove your sign-in record.</p>
+      <div class="acct-actions acct-actions-col">
+        <button class="btn btn-primary" type="button" data-signout-plain>Sign out</button>
+        <button class="btn btn-ghost" type="button" data-reuse>Use my account again instead</button>
+      </div>
+    </section>`);
+  $('[data-signout-plain]', view).addEventListener('click', async () => { await signOutHere(); signedOutDone('Signed out.'); });
+  $('[data-reuse]', view).addEventListener('click', () => showConsent({ signedIn: true, profile: { display_name: profileName } }));
+}
+
+function signedOutDone(text) {
+  showStatus('signed-out');
+  message(text, 'ok');
+  showConsent();
+}
+
+/* ---------------- Flow ---------------- */
+
+async function startSync(profile) {
+  showSignedIn(profile);
+  const line = () => $('[data-sync-text]', view);
+  const onStatus = (state) => {
+    showStatus(state);
+    const p = line()?.closest('.acct-sync');
+    if (p) { p.dataset.tone = { saved: 'ok', saving: 'busy', pending: 'busy' }[state] ?? 'warn'; line().textContent = syncLineText(state); }
+  };
+  sync?.stop();
+  sync = createSync({ api, uid: session$.current.user.id, onStatus });
+  sync.attach();
+  await sync.pull();
+}
+
+async function afterSession() {
+  showStatus('checking');
+  let st;
+  try {
+    st = await api.status();
+  } catch (err) {
+    showStatus(classify(err));
+    render(`<section class="card acct-card"><h2>Could not check your account</h2><p>${esc(explain(err))}</p><div class="acct-actions"><button class="btn btn-primary" type="button" data-retry>Try again</button></div></section>`);
+    $('[data-retry]', view).addEventListener('click', afterSession);
+    return;
+  }
+  if (st.current_consent_version !== CONSENT.version) {
+    render('<section class="card acct-card"><h2>Please reload</h2><p>The consent text has been updated since this page was loaded. Reload the page to see the current version.</p></section>');
+    return;
+  }
+  if (!st.has_profile) {
+    showStatus('setup');
+    if (st.deletion_requested) { showDeletionPending(cleanName(session$.current.user.user_metadata?.full_name || 'Student')); return; }
+    // §4.1 6c: the wording is shown again unless the student agreed to this version moments ago in this tab.
+    if (ss.get(AGREED_KEY) === CONSENT.version) showProfileForm();
+    else showConsent({ signedIn: true });
+    return;
+  }
+  let profile;
+  try { profile = await api.profile(); } catch (err) { message(explain(err), 'bad'); return; }
+  rememberName(profile.display_name);
+  if (!st.consent_current) { showStatus('consent'); showConsent({ signedIn: true, reconsent: true, profile }); return; }
+  const situation = deviceSituation(session$.current.user.id);
+  if (situation === 'guest' || situation === 'other-account') { showStatus('setup'); showDeviceChoice(situation, profile); return; }
+  await startSync(profile);
+}
+
+async function main() {
+  if (!configured) {
+    render('<section class="card acct-card"><h2>Accounts are not set up</h2><p>This build has no account settings. Everything else on the site works without signing in.</p></section>');
+    return;
+  }
+  const params = new URLSearchParams(location.search);
+  const returning = params.has('code') || params.has('error');
+  const oauthError = params.get('error_description') || params.get('error');
+  if (returning) render('<p class="muted">Signing you in…</p>');
+  // Remember where the student came from (same site only), to offer the way back afterwards.
+  const ref = document.referrer && new URL(document.referrer, location.href);
+  if (!returning && ref && ref.origin === location.origin && ref.pathname.startsWith(BASE) && !ref.pathname.startsWith(`${BASE}account/`)) {
+    ss.set(RETURN_KEY, ref.pathname + ref.search + ref.hash);
+  }
+  await getClient({ detectSessionInUrl: true }); // completes the PKCE exchange when ?code= is present
+  try { session$.current = await getSession(); } catch { session$.current = null; }
+  if (returning) history.replaceState(null, '', location.pathname); // drop the one-time code from the address bar
+  if (!session$.current) {
+    showStatus('signed-out');
+    if (oauthError) message(`Sign-in was not completed (${oauthError}). You can try again.`, 'bad');
+    else if (returning) message('Sign-in could not be completed in this browser. Please start again here.', 'bad');
+    showConsent();
+    return;
+  }
+  const client = await getClient();
+  client.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') { sync?.stop(); showStatus('signed-out'); }
+  });
+  await afterSession();
+}
+
+main();

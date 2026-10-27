@@ -126,3 +126,7 @@ initModKeys();
 initPalette();
 observeReveal();
 initPwa();
+
+// Phase 2 accounts: __ACCOUNTS__ is replaced at build time (vite.config.js). When false — always for the live site
+// before the college sign-off — this line and all account code are left out of the build.
+if (__ACCOUNTS__) import('./lib/account-boot.js');

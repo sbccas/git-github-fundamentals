@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,12 +12,16 @@ const ROOT = resolve(PROJECT, 'src');
 const PARTIALS = join(ROOT, 'partials');
 const BASE = '/git-github-fundamentals/';
 
-/** Every index.html under src/ (except partials) becomes a page: src/unit-1/index.html → /unit-1/ */
-function findPages(dir, pages = {}) {
+/**
+ * Every index.html under src/ (except partials) becomes a page: src/unit-1/index.html → /unit-1/
+ * src/account/ is built only when accounts are enabled (Milestone 11 plan §5).
+ */
+function findPages(dir, pages = {}, { accounts = false } = {}) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (['partials', 'scripts', 'styles'].includes(name)) continue;
-    if (statSync(full).isDirectory()) findPages(full, pages);
+    if (name === 'account' && dir === ROOT && !accounts) continue;
+    if (statSync(full).isDirectory()) findPages(full, pages, { accounts });
     else if (name === 'index.html') {
       const key = full.slice(ROOT.length + 1).replace(/\\/g, '/').replace(/\/?index\.html$/, '') || 'home';
       pages[key] = full;
@@ -143,16 +147,28 @@ function sessionObjectives() {
   };
 }
 
-export default defineConfig({
-  root: ROOT,
-  base: BASE,
-  publicDir: resolve(ROOT, '../public'),
-  plugins: [partials(), sessionObjectives(), serviceWorker()],
-  build: {
-    outDir: resolve(ROOT, '../dist'),
-    emptyOutDir: true,
-    rollupOptions: { input: findPages(ROOT) },
-  },
-  server: { port: 5173, open: false },
-  preview: { port: 4173 },
+export default defineConfig(({ mode }) => {
+  // Phase 2 accounts (Milestone 11 plan §5): off unless VITE_ACCOUNTS_ENABLED=true in a git-ignored env file.
+  const env = loadEnv(mode, PROJECT, 'VITE_');
+  const accounts = env.VITE_ACCOUNTS_ENABLED === 'true';
+  if (accounts && mode === 'production') {
+    throw new Error('VITE_ACCOUNTS_ENABLED=true is not allowed in a production build: accounts stay off on the live '
+      + 'site until the college sign-off (G-4) and a separately approved release.');
+  }
+  return {
+    root: ROOT,
+    base: BASE,
+    envDir: PROJECT,
+    publicDir: resolve(ROOT, '../public'),
+    plugins: [partials(), sessionObjectives(), serviceWorker()],
+    define: { __ACCOUNTS__: JSON.stringify(accounts) },
+    build: {
+      outDir: resolve(ROOT, '../dist'),
+      emptyOutDir: true,
+      rollupOptions: { input: findPages(ROOT, {}, { accounts }) },
+    },
+    // A fixed port when accounts are on: GitHub sign-in returns only to the exact registered local address.
+    server: { port: 5173, strictPort: accounts, open: false },
+    preview: { port: 4173 },
+  };
 });

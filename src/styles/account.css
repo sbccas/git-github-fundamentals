@@ -1,0 +1,40 @@
+/* ================= Accounts (Phase 2, Milestones 10–11) — built only when accounts are enabled ================= */
+
+/* Header button and Git Passport line: a dot shows the sync state */
+.acct-btn { position: relative; }
+.acct-btn[aria-current="page"] { color: var(--text); border-color: var(--primary); }
+@media (max-width: 400px) { .acct-btn { display: none; } }  /* phones: Account tile in the mobile menu */
+.acct-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
+.acct-btn .acct-dot { position: absolute; top: 7px; right: 7px; box-shadow: 0 0 0 2px var(--bg); }
+[data-tone="none"] .acct-dot { display: none; }
+[data-tone="ok"] .acct-dot { background: var(--green); }
+[data-tone="busy"] .acct-dot { background: var(--primary); }
+[data-tone="warn"] .acct-dot { background: var(--amber); }
+[data-tone="bad"] .acct-dot { background: var(--red); }
+
+.acct-line { margin: 12px 0 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); }
+.acct-line[data-tone="none"]::before { content: "☁"; color: var(--muted); }
+
+/* Account page */
+.acct { padding-top: 32px; padding-bottom: 48px; display: grid; gap: 16px; max-width: 760px; }
+.acct h1 { font-size: var(--fs-xl); margin: 4px 0 0; }
+.acct-view { display: grid; gap: 16px; outline: none; }
+.acct-card { padding: 24px; }
+.acct-card h2 { font-size: var(--fs-lg); margin: 0 0 8px; }
+.acct-card p { margin: 0 0 12px; }
+.acct-small { font-size: var(--fs-sm); }
+.acct-draft { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--amber) 55%, transparent); background: color-mix(in srgb, var(--amber) 12%, transparent); font-size: var(--fs-sm); }
+.acct-points { margin: 0 0 12px; padding-left: 1.2em; display: grid; gap: 8px; }
+.acct-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.acct-actions-col { flex-direction: column; align-items: stretch; }
+.acct-actions-col .btn { justify-content: flex-start; text-align: left; height: auto; min-height: 46px; padding-top: 10px; padding-bottom: 10px; }
+.acct-form { display: grid; gap: 6px; }
+.acct-form label { font-weight: 600; font-size: var(--fs-sm); margin-top: 8px; }
+.acct-form input, .acct-form select { min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; width: 100%; }
+.acct-sync { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.acct-danger { color: var(--red); }
+.acct-danger-solid { background: var(--red); border-color: var(--red); color: #fff; box-shadow: none; }
+.acct-msg { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface); font-size: var(--fs-sm); }
+.acct-msg:empty, .acct-msg[hidden] { display: none; }
+.acct-msg[data-tone="ok"] { border-color: color-mix(in srgb, var(--green) 55%, transparent); }
+.acct-msg[data-tone="bad"] { border-color: color-mix(in srgb, var(--red) 60%, transparent); }

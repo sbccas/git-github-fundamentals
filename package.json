@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "node tests/run-tests.mjs",
     "ebooks": "node scripts/ebooks.mjs",
-    "share-images": "node scripts/share-images.mjs"
+    "share-images": "node scripts/share-images.mjs",
+    "check:dist": "node scripts/check-dist.mjs"
   },
   "license": "MIT",
   "devDependencies": {
@@ -22,6 +23,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/sora": "^5.3.0",
     "@isomorphic-git/lightning-fs": "^4.10.3",
+    "@supabase/supabase-js": "2.117.3",
     "buffer": "^6.0.3",
     "diff": "^9.0.0",
     "isomorphic-git": "^1.44.3"

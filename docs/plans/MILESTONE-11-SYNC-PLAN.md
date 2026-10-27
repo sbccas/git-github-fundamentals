@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ **Approved by the owner on 26 Oct 2026** ("approve all recommendations": M11-D1 – M11-D5 all (a), §10), together with the Milestone 10 decisions. `gg-test` set up by the owner the same day (§11). No application code, migration or SQL exists yet. **No test in this plan has been run.** |
+| **Status** | ✅ **Approved by the owner on 26 Oct 2026** ("approve all recommendations": M11-D1 – M11-D5 all (a), §10), together with the Milestone 10 decisions. `gg-test` set up by the owner the same day (§11). **Implemented 27 Oct 2026 on `gg-test` only** (uncommitted until the owner reviews the diff): `npm test` SY1–SY7 pass; SQL suite 69/69 and 15 manual tests pass ([evidence](../evidence/m10/)); browser offline test not run. |
 | **Source baseline** | [Phase 2 plan](PHASE-2-SUPABASE-PLAN.md) rev 4 (§4, §5.1 P1–P3 and X1–X6, §5.2, §6, §8) · [PRD](../PRD.md) v1.15 S-01, S-02, S-10, §12b Milestone 11 · [Milestone 10 plan](MILESTONE-10-FOUNDATION-PLAN.md) rev 3 |
 | **Inspected** | `src/scripts/lib/progress.js` (`load`, `save`, `deriveXp`, `validateProgress`, award functions), `build/sw-template.js`, `vite.config.js`, `.gitignore`, `.github/workflows/deploy.yml` at `04fb95d` |
 

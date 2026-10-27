@@ -287,6 +287,67 @@ export function validateProgress(input) {
   return out;
 }
 
+/** True when a progress document records any learning (used before offering to add it to an account). */
+export function hasProgress(data) {
+  const any = (o) => Object.keys(o ?? {}).length > 0;
+  return any(data?.units) || any(data?.missions) || any(data?.badges) || any(data?.games) || !!data?.selfCheck || !!data?.profile;
+}
+
+/** Same content, ignoring key order. */
+export function sameProgress(a, b) {
+  const canon = (v) => (Array.isArray(v) ? v.map(canon)
+    : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v);
+  return JSON.stringify(canon(a)) === JSON.stringify(canon(b));
+}
+
+/** Union of two date maps (missions hold { done, at }); the earliest date is kept. */
+function unionEarliest(a = {}, b = {}) {
+  const time = (v) => { const t = Date.parse(v && typeof v === 'object' ? v.at : v); return Number.isNaN(t) ? Infinity : t; };
+  const out = { ...a };
+  for (const [k, v] of Object.entries(b)) if (!(k in out) || time(v) < time(out[k])) out[k] = v;
+  return out;
+}
+
+/**
+ * Merge two valid progress documents (Phase 2 sync, Milestone 11 plan §4.2): `a` is the stored or older copy,
+ * `b` the incoming or newer one. Learning facts are united and scores only rise, so nothing is lost and XP is not
+ * doubled. The same rules run in the database (save_progress → private.merge_progress).
+ */
+export function mergeProgress(a, b) {
+  const units = {};
+  for (const n of new Set([...Object.keys(a.units ?? {}), ...Object.keys(b.units ?? {})])) {
+    const ua = a.units?.[n];
+    const ub = b.units?.[n];
+    if (!ua || !ub) { units[n] = ua ?? ub; continue; }
+    const qa = ua.quiz;
+    const qb = ub.quiz;
+    units[n] = {
+      sections: [...new Set([...(ua.sections ?? []), ...(ub.sections ?? [])])].slice(0, 100),
+      total: Math.max(ua.total ?? 0, ub.total ?? 0),
+      quiz: !qa ? qb ?? null : !qb ? qa : { best: Math.max(qa.best, qb.best), last: qb.last, passed: qa.passed || qb.passed },
+      complete: !!(ua.complete || ub.complete),
+    };
+  }
+  let selfCheck = b.selfCheck ?? a.selfCheck;
+  if (a.selfCheck && b.selfCheck) {
+    const newer = Date.parse(a.selfCheck.at) > (Date.parse(b.selfCheck.at) || -Infinity) ? a.selfCheck : b.selfCheck;
+    selfCheck = { ...newer, best: Math.max(a.selfCheck.best, b.selfCheck.best) };
+  }
+  const out = {
+    version: VERSION,
+    units,
+    missions: unionEarliest(a.missions, b.missions),
+    badges: unionEarliest(a.badges, b.badges),
+    games: unionEarliest(a.games, b.games),
+    xp: 0,
+    lastVisited: b.lastVisited ?? a.lastVisited ?? null, // no timestamp in v1: the latest save wins (M11-D3)
+  };
+  if (selfCheck) out.selfCheck = selfCheck;
+  const profile = b.profile ?? a.profile;
+  if (profile) out.profile = profile;
+  return validateProgress(out); // removes unjustified badges and recalculates XP
+}
+
 /** Replace this device's progress with an exported file. Throws, without saving anything, if the file is invalid. */
 export function importJson(text) {
   let data;

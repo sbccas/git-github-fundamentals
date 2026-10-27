@@ -6,6 +6,9 @@
  *     play the solution from its last hint, and check every required goal ticks.
  *  2. Git engine smoke test: a typical Unit 2–4 session with expected output fragments.
  *  3. Content: every quiz and the glossary/cheat sheet parse and are well-formed.
+ *  4.–6. Git Passport, ebooks, share previews.
+ *  7. Accounts and sync (Phase 2): merge rules, XP, sync engine, database constants, service worker, build switch,
+ *     secret scan. The database itself is tested on gg-test with supabase/tests/m10_m11_security_test.sql.
  */
 import os from 'node:os';
 import path from 'node:path';
@@ -341,6 +344,165 @@ console.log('\nShare previews');
   }
   const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
   check(config.includes("!f.startsWith('share/')") && config.includes('socialMeta(out, ctx?.path)'), 'tags added to every page at build time; images not precached');
+}
+
+/* ---------------- 7. Accounts and progress sync (Milestones 10–11, gg-test only) ---------------- */
+console.log('\nAccounts and sync');
+{
+  const check = (cond, msg) => (cond ? ok(msg) : fail(msg));
+  const store = new Map();
+  globalThis.localStorage = { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k) };
+  globalThis.window = new EventTarget();
+  const P = await imp('src/scripts/lib/progress.js');
+  const S = await imp('src/scripts/lib/sync.js');
+  const { UNITS, BASE } = await imp('src/scripts/data/site.js');
+  const at = (d) => `2026-10-${String(d).padStart(2, '0')}T10:00:00.000Z`;
+  const doc = (x = {}) => P.validateProgress({ version: 1, ...x });
+
+  // SY1 — merge rules (Milestone 11 plan §4.2)
+  const a = doc({ units: { 1: { sections: ['why', 'what'], total: 9, quiz: { best: 80, last: 80, passed: true }, complete: true } },
+    missions: { 'M-01': { done: true, at: at(20) }, 'M-03': { done: true, at: at(22) } }, badges: { 'first-commit': at(22) } });
+  const b = doc({ units: { 1: { sections: ['what', 'how'], total: 9, quiz: { best: 60, last: 60, passed: false } }, 2: { sections: ['init'], total: 7 } },
+    missions: { 'M-01': { done: true, at: at(18) }, 'M-02': { done: true, at: at(21) } }, games: { conflict: at(23) },
+    selfCheck: { best: 70, last: 70, byUnit: { 1: 70 }, at: at(24) }, profile: { name: 'Asha' } });
+  const ab = P.mergeProgress(a, b);
+  const ba = P.mergeProgress(b, a);
+  check(ab.units[1].sections.join() === 'why,what,how' && ab.units[1].quiz.best === 80 && ab.units[1].quiz.passed && ab.units[1].complete && ab.units[2],
+    'SY1 merge: lesson sections united, best score kept, passed and complete never undone');
+  check(ab.missions['M-01'].at === at(18) && Object.keys(ab.missions).length === 3 && ab.games.conflict && ab.badges['first-commit'],
+    'SY1 merge: missions, games and badges united, earliest date kept');
+  const facts = (d) => JSON.stringify([Object.keys(d.missions).sort(), Object.keys(d.badges).sort(), Object.keys(d.games).sort(), d.xp,
+    Object.entries(d.units).map(([n, u]) => [n, [...u.sections].sort(), u.quiz?.best, u.quiz?.passed, u.complete]).sort()]);
+  check(facts(ab) === facts(ba), 'SY1 merge: the order of the two copies does not change any learning fact');
+  check(P.sameProgress(P.mergeProgress(ab, ab), ab) && P.sameProgress(P.mergeProgress(ab, b), ab), 'SY1 merge: repeating a merge changes nothing (idempotent)');
+  const stale = doc({ missions: { 'M-01': { done: true, at: at(18) } } });
+  check(P.sameProgress(P.mergeProgress(ab, stale), ab), 'SY1 merge: a stale copy cannot remove or lower anything');
+  check(ab.profile?.name === 'Asha' && P.mergeProgress(b, doc({ selfCheck: { best: 90, last: 40, at: at(25) } })).selfCheck.last === 40
+    && P.mergeProgress(b, doc({ selfCheck: { best: 90, last: 40, at: at(25) } })).selfCheck.best === 90,
+    'SY1 merge: self-check best is the maximum, last comes from the newer attempt');
+
+  // SY2 — XP from the existing rules; retries add nothing
+  check(ab.xp === P.deriveXp(ab) && ab.xp === 3 * 75 + 100 + 50 + 50, `SY2 merged XP = deriveXp() = ${ab.xp}`);
+  const retry = P.mergeProgress(ab, doc({ units: { 1: { quiz: { best: 95, last: 95, passed: true } } } }));
+  check(retry.xp === ab.xp && retry.units[1].quiz.best === 95, 'SY2 a quiz passed again with a higher score raises the best score, not the XP');
+  check(P.mergeProgress(doc({ badges: { 'unit-2': at(1) } }), doc()).badges['unit-2'] === undefined, 'SY2 badges the work does not justify are removed');
+
+  // SY3 — sync engine with a fake save_progress (same rules as the database) and fake timers
+  const server = { row: null, calls: 0, fail: null, lose: false,
+    async load() { return this.row && { doc: this.row.doc, revision: this.row.revision }; },
+    async save(d, base) {
+      this.calls++;
+      if (this.fail) { const e = this.fail; this.fail = null; throw e; }
+      const was = this.row?.revision ?? 0;
+      const merged = this.row ? P.mergeProgress(this.row.doc, P.validateProgress(d)) : P.validateProgress(d);
+      const changed = !this.row || !P.sameProgress(merged, this.row.doc);
+      if (changed) this.row = { doc: merged, revision: was + 1 };
+      const res = { doc: this.row.doc, revision: this.row.revision, changed, merged_newer: was > 0 && base !== was };
+      if (this.lose) { this.lose = false; throw Object.assign(new Error('TypeError: Failed to fetch'), { code: '' }); }
+      return res;
+    } };
+  const timers = { q: [], setTimeout(fn, ms) { this.q.push({ fn, ms }); return this.q.length; }, clearTimeout() { this.q = []; },
+    async run() { const t = this.q.shift(); if (t) await t.fn(); return t?.ms; } };
+  const states = [];
+  store.clear();
+  P.completeMission('M-01');
+  check(S.deviceSituation('user-a') === 'guest', 'SY3 a device with signed-out progress is "guest" (the student is asked)');
+  S.linkDevice('user-a', { addLocal: true });
+  const sync = S.createSync({ api: server, uid: 'user-a', onStatus: (s) => states.push(s), timers });
+  await sync.pull();
+  check(server.row?.doc.missions['M-01'] && S.syncMeta().revision === 1 && !S.syncMeta().pending && states.at(-1) === 'saved',
+    'SY3 "Add": this device\'s progress is saved to the account; "saved" only after the server answered');
+  P.completeMission('M-02');
+  sync.onLocalChange();
+  check(S.syncMeta().pending && states.at(-1) === 'pending', 'SY3 a change is saved locally first and marked pending');
+  server.fail = Object.assign(new Error('TypeError: Failed to fetch'), { code: '' });
+  await timers.run();
+  check(states.at(-1) === 'offline' && S.syncMeta().pending && timers.q[0]?.ms === S.RETRY_MS[0], 'SY3 network failure: still pending, retry scheduled with back-off');
+  await timers.run();
+  check(states.at(-1) === 'saved' && server.row.doc.missions['M-02'] && server.row.revision === 2, 'SY3 the retry saves the change');
+  server.lose = true;
+  P.completeGame('conflict');
+  sync.onLocalChange();
+  await timers.run();
+  const revAfterLost = server.row.revision;
+  check(states.at(-1) === 'offline' && S.syncMeta().pending, 'SY3 lost response: not reported as saved');
+  await timers.run();
+  check(states.at(-1) === 'saved' && server.row.revision === revAfterLost && server.row.doc.xp === 75 * 2 + 50, 'SY3 the retry after a lost response is harmless: same revision, XP not doubled');
+  server.fail = Object.assign(new Error('Please accept the current consent before saving online.'), { code: '42501' });
+  P.recordQuiz(1, 90, 60);
+  sync.onLocalChange();
+  await timers.run();
+  check(states.at(-1) === 'consent' && timers.q.length === 0, 'SY3 consent required: shown to the student, no automatic retry');
+  check(S.classify({ code: '42501', message: 'permission denied for function save_progress' }) === 'auth' && S.classify({ code: '22023', message: 'x' }) === 'invalid',
+    'SY3 expired sign-in and rejected data are told apart');
+
+  // Another account on the same PC: asked, kept separate, restored at sign-out
+  check(S.deviceSituation('user-b') === 'other-account', 'SY3 progress synced to another account is never merged silently');
+  const before = P.load();
+  check(S.linkDevice('user-b', { addLocal: false }) && !P.hasProgress(P.load()) && S.hasStash(), 'SY3 "Keep separate" sets the progress aside');
+  P.completeMission('M-05');
+  check(S.leaveDevice({ removeLocal: true }) === 'restored' && P.sameProgress(P.load(), before) && S.syncMeta()?.account === 'user-a' && !S.hasStash(),
+    'SY3 sign-out restores the set-aside progress unchanged');
+  check(S.leaveDevice({ removeLocal: true }) === 'removed' && !P.hasProgress(P.load()) && S.syncMeta() === null, 'SY3 "Remove my progress from this PC" clears the device copy');
+
+  // SY4 — course constants in the database match the site
+  const sql = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20261027000002_m11_progress.sql'), 'utf8');
+  const C = JSON.parse(/-- course-constants:start\n'(.*)'\n-- course-constants:end/.exec(sql)[1]);
+  const progressSrc = fs.readFileSync(path.join(ROOT, 'src/scripts/lib/progress.js'), 'utf8');
+  const missionBadges = Function(`return ${/const MISSION_BADGES = (\{[^}]*\});/.exec(progressSrc)[1]}`)();
+  const games = Function(`return ${/const GAMES = (\[[^\]]*\]);/.exec(progressSrc)[1]}`)();
+  const gameXp = Number(/const GAME_XP = (\d+);/.exec(progressSrc)[1]);
+  check(C.base === BASE && JSON.stringify(C.unit_missions) === JSON.stringify(Object.fromEntries(UNITS.map((u) => [String(u.n), u.missions.filter((m) => m.startsWith('M-'))])))
+    && JSON.stringify(C.mission_ids) === JSON.stringify(UNITS.flatMap((u) => u.missions).filter((m) => m.startsWith('M-')))
+    && JSON.stringify(C.badge_ids) === JSON.stringify(P.BADGES.map((x) => x.id)) && JSON.stringify(C.mission_badges) === JSON.stringify(missionBadges)
+    && JSON.stringify(C.games) === JSON.stringify(games) && C.xp.mission === P.XP.mission && C.xp.quizPass === P.XP.quizPass
+    && C.xp.unitComplete === P.XP.unitComplete && C.xp.game === gameXp,
+    'SY4 database course constants (units, missions, badges, games, XP) match site.js and progress.js');
+
+  // SY5 — the service worker never stores sign-in return pages
+  const vm = await import('node:vm');
+  const handlers = {};
+  const puts = [];
+  const sw = fs.readFileSync(path.join(ROOT, 'build/sw-template.js'), 'utf8')
+    .replace("'__VERSION__'", "'t'").replace("'__BASE__'", "'/git-github-fundamentals/'").replace('__PRECACHE__', '[]');
+  vm.runInNewContext(sw, {
+    URL, self: { addEventListener: (t, fn) => { handlers[t] = fn; }, location: { origin: 'https://site.test' } },
+    caches: { open: async () => ({ put: (req) => puts.push(req.url) }), match: async () => undefined },
+    fetch: async () => ({ ok: true, type: 'basic', clone() { return this; } }),
+  });
+  const nav = async (url) => { let p; handlers.fetch({ request: { url, method: 'GET', mode: 'navigate' }, respondWith: (x) => { p = x; } }); await p; };
+  await nav('https://site.test/git-github-fundamentals/account/?code=abc123');
+  await nav('https://site.test/git-github-fundamentals/account/?error=access_denied&error_description=x');
+  check(puts.length === 0, 'SY5 sign-in return pages (?code=, ?error=) are not stored by the service worker');
+  await nav('https://site.test/git-github-fundamentals/unit-1/');
+  check(puts.length === 1, 'SY5 ordinary pages are still stored for offline use');
+
+  // SY6 — production switch (the built output is checked by npm run check:dist)
+  const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
+  const mainJs = fs.readFileSync(path.join(ROOT, 'src/scripts/main.js'), 'utf8');
+  check(/accounts && mode === 'production'\) \{\s*throw/.test(config) && config.includes("define: { __ACCOUNTS__: JSON.stringify(accounts) }")
+    && config.includes("name === 'account' && dir === ROOT && !accounts") && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
+    'SY6 accounts are compiled in only when enabled, never in a production build, and /account/ is left out when off');
+
+  // SY7 — no secrets in the repository (K1)
+  const { execSync } = await import('node:child_process');
+  let files = [];
+  try {
+    files = execSync('git ls-files -z --cached --others --exclude-standard', { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(Boolean);
+  } catch { /* not a git checkout */ }
+  const binary = /\.(pdf|png|jpe?g|webp|gif|ico|woff2?|ttf|zip)$/i;
+  const hits = [];
+  for (const f of files) {
+    if (/^\.env(\.|$)/.test(path.basename(f))) { hits.push(`${f} (env file must not be committed)`); continue; }
+    if (binary.test(f) || !fs.existsSync(path.join(ROOT, f))) continue;
+    const text = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    if (/sb_secret_[A-Za-z0-9_-]{8,}/.test(text)) hits.push(`${f} (Supabase secret key)`);
+    if (/postgres(?:ql)?:\/\/[^\s:@/]+:[^\s@/]+@/.test(text)) hits.push(`${f} (database URL with password)`);
+    for (const [jwt] of text.matchAll(/eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g)) {
+      try { if (JSON.parse(Buffer.from(jwt.split('.')[1], 'base64url').toString()).role === 'service_role') hits.push(`${f} (service-role key)`); } catch { /* not a JWT */ }
+    }
+  }
+  check(files.length > 0 && hits.length === 0, `SY7 no secret keys, database passwords or env files in ${files.length} repository files${hits.length ? `: ${hits.join(', ')}` : ''}`);
 }
 
 fs.rmSync(TMP, { recursive: true, force: true });

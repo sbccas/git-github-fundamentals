@@ -177,7 +177,7 @@
 
 | IDs | Status |
 |---|---|
-| S-01 – S-12 (Supabase) | 🔧 Phase 2 [plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 approved as the baseline (2026-10-26). Milestones 10 + 11: plans approved ([M10](plans/MILESTONE-10-FOUNDATION-PLAN.md), [M11](plans/MILESTONE-11-SYNC-PLAN.md)); test project set up by the owner 2026-10-26; no code or migration yet, no test run. Production needs `gg-prod` (D-5) and the college sign-off (D-9 – D-12) before real student data. |
+| S-01 – S-12 (Supabase) | 🔧 Phase 2 [plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 approved as the baseline (2026-10-26). Milestones 10 + 11: plans approved ([M10](plans/MILESTONE-10-FOUNDATION-PLAN.md), [M11](plans/MILESTONE-11-SYNC-PLAN.md)); test project set up by the owner 2026-10-26. **27 Oct 2026: built and tested on the test project only** — migrations applied to `gg-test`, SQL suite 69/69 PASS, 15 manual tests PASS with GitHub test accounts ([evidence](evidence/m10/)); accounts compiled out of the live build (`npm run check:dist`). Open: P-6 completion time, phone/offline checks, production gates. Production needs `gg-prod` (D-5) and the college sign-off (D-9 – D-12) before real student data. |
 | A-01 – A-08 (AI) | ⏳ Not started (Phase 3). Needs a Claude API key and a monthly budget (PRD D-8). |
 
 ## 4. Open decisions (from PRD §14)

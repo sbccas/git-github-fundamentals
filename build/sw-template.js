@@ -6,6 +6,8 @@ const VERSION = '__VERSION__';
 const BASE = '__BASE__';
 const PRECACHE = __PRECACHE__;
 const CACHE = `gg-${VERSION}`;
+// Sign-in return addresses carry one-time codes (?code=…, ?error=…): fetched, never stored (Milestone 11 plan §5).
+const AUTH_PARAMS = ['code', 'error', 'error_description', 'state'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -23,9 +25,9 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-async function fromNetwork(request) {
+async function fromNetwork(request, store = true) {
   const response = await fetch(request);
-  if (response.ok && response.type === 'basic') {
+  if (store && response.ok && response.type === 'basic') {
     const cache = await caches.open(CACHE);
     cache.put(request, response.clone());
   }
@@ -39,8 +41,9 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     // ?cmd=, ?presenter etc. do not change the page itself.
+    const authReturn = AUTH_PARAMS.some((p) => url.searchParams.has(p));
     event.respondWith(
-      fromNetwork(request).catch(async () =>
+      fromNetwork(request, !authReturn).catch(async () =>
         (await caches.match(request, { ignoreSearch: true }))
         ?? (await caches.match(url.origin + url.pathname.replace(/\/?$/, '/'), { ignoreSearch: true }))
         ?? caches.match(BASE)),
