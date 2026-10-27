@@ -147,14 +147,17 @@ function sessionObjectives() {
   };
 }
 
+/**
+ * Phase 2 accounts on the live site. Turned on by the owner's go-live approval of 27 Oct 2026 (Milestone 12 plan §6,
+ * G-4 recorded there). Setting this to false removes sign-in, sync and the faculty dashboard from the live build
+ * again (rollback, Milestone 10 plan §4.7); npm run check:dist checks the build matches this switch.
+ */
+export const ACCOUNTS_IN_PRODUCTION = true;
+
 export default defineConfig(({ mode }) => {
-  // Phase 2 accounts (Milestone 11 plan §5): off unless VITE_ACCOUNTS_ENABLED=true in a git-ignored env file.
+  // Development and other modes: off unless VITE_ACCOUNTS_ENABLED=true in a git-ignored env file.
   const env = loadEnv(mode, PROJECT, 'VITE_');
-  const accounts = env.VITE_ACCOUNTS_ENABLED === 'true';
-  if (accounts && mode === 'production') {
-    throw new Error('VITE_ACCOUNTS_ENABLED=true is not allowed in a production build: accounts stay off on the live '
-      + 'site until the college sign-off (G-4) and a separately approved release.');
-  }
+  const accounts = mode === 'production' ? ACCOUNTS_IN_PRODUCTION : env.VITE_ACCOUNTS_ENABLED === 'true';
   return {
     root: ROOT,
     base: BASE,

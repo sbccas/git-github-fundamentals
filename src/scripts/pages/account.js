@@ -60,16 +60,13 @@ const rollField = (value = '') => `
 /* ---------------- Screens ---------------- */
 
 function consentHtml({ signedIn, reconsent }) {
-  const items = CONSENT.points.map(([h, t]) => `<li><strong>${esc(h)}.</strong> ${esc(t)}</li>`).join('');
-  const lead = reconsent
-    ? 'The wording below has changed since you agreed. Please read it and agree again to keep saving online.'
-    : 'Signing in is optional. If you agree, your progress is also saved online so you can continue on another device.';
+  const lines = CONSENT.lines.map((t) => `<p>${esc(t)}</p>`).join('');
   return `
     <section class="card acct-card" aria-labelledby="acct-consent-h">
       ${CONSENT.draft ? '<p class="acct-draft"><strong>Test version.</strong> Draft wording, not yet approved by the college. Use test accounts only.</p>' : ''}
       <h2 id="acct-consent-h">${esc(CONSENT.title)}</h2>
-      <p>${lead}</p>
-      <ul class="acct-points">${items}</ul>
+      ${reconsent ? '<p class="acct-draft">The wording has changed since you agreed. Please read it and agree again to keep saving online.</p>' : ''}
+      ${lines}
       <p class="muted acct-small">Consent version ${esc(CONSENT.version)}.</p>
       <div class="acct-actions">
         <button class="btn btn-primary" type="button" data-agree>${signedIn ? 'I agree' : 'I agree — continue with GitHub'}</button>
@@ -378,7 +375,7 @@ function confirmDelete({ hasProfile }) {
   render(`
     <section class="card acct-card" aria-labelledby="acct-del-h">
       <h2 id="acct-del-h">${hasProfile ? 'Delete my account' : 'Remove my sign-in record'}</h2>
-      <p>This deletes ${what} straight away. The college then removes your sign-in record from Supabase. Supabase's security logs and your GitHub authorisation of this app (GitHub → Settings → Applications) are not removed by us.</p>
+      <p>This deletes ${what} straight away. Your sign-in record (kept by Supabase) is removed by the college on request. Supabase's security logs and your GitHub authorisation of this app (GitHub → Settings → Applications) are not removed by us.</p>
       <p>Progress saved on this device is not changed.</p>
       <div class="acct-actions">
         <button class="btn btn-primary acct-danger-solid" type="button" data-yes>Yes, ${hasProfile ? 'delete my account' : 'ask for removal'}</button>
@@ -400,7 +397,7 @@ function confirmDelete({ hasProfile }) {
     try { await signOutHere(); } catch { /* ignore */ }
     if (hasStash()) leaveDevice({ removeLocal: false }); // the device's earlier progress comes back
     else forgetDeviceLink(); // this device's progress stays, no longer linked to the deleted account
-    signedOutDone('Your online data was deleted and removal of your sign-in record was requested from the college. You are signed out on this device.');
+    signedOutDone('Your online data was deleted. Your sign-in record is removed by the college on request. You are signed out on this device.');
   });
 }
 
@@ -408,7 +405,7 @@ function showDeletionPending(profileName) {
   render(`
     <section class="card acct-card">
       <h2>Removal requested</h2>
-      <p>Your online data was deleted. The college will remove your sign-in record.</p>
+      <p>Your online data was deleted. Your sign-in record stays with Supabase until the college removes it on request.</p>
       <div class="acct-actions acct-actions-col">
         <button class="btn btn-primary" type="button" data-signout-plain>Sign out</button>
         <button class="btn btn-ghost" type="button" data-reuse>Use my account again instead</button>

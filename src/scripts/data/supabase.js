@@ -1,14 +1,20 @@
 /**
- * Phase 2 account settings (Milestone 10 plan §4.2, Milestone 11 plan §5).
- * Values come from git-ignored env files (.env.development.local) and are PUBLIC by design: the project URL and the
- * publishable (anon) key. A secret or service-role key must never appear here or anywhere in the site (K1).
- * Accounts are compiled in only when VITE_ACCOUNTS_ENABLED=true, and vite.config.js refuses that for production
- * builds until the college sign-off (G-4).
+ * Phase 2 account settings (Milestone 10 plan §4.2, Milestone 11 plan §5, Milestone 12 plan §6).
+ * The project URL and the publishable key are PUBLIC by design — every visitor's browser receives them — so the live
+ * values are kept here (owner approval 27 Oct 2026, go-live point 8). A git-ignored .env.development.local may
+ * override them for local work. A secret or service-role key must never appear here or anywhere in the site (K1).
+ * Whether accounts are compiled in at all is decided in vite.config.js (__ACCOUNTS__).
  */
 const env = import.meta.env ?? {};
 
-export const SUPABASE_URL = env.VITE_SUPABASE_URL ?? '';
-export const SUPABASE_KEY = env.VITE_SUPABASE_ANON_KEY ?? '';
+/** The one Supabase project, used for testing and for live use (M12-D8). */
+const LIVE = {
+  url: 'https://mkdvftgovsznnivvuwrn.supabase.co',
+  key: 'sb_publishable_pa11gvz9lpo9iazwZyYyhw_8JA9QWyZ',
+};
+
+export const SUPABASE_URL = env.VITE_SUPABASE_URL || LIVE.url;
+export const SUPABASE_KEY = env.VITE_SUPABASE_ANON_KEY || LIVE.key;
 export const configured = /^https:\/\/[a-z0-9]+\.supabase\.co$/.test(SUPABASE_URL) && SUPABASE_KEY.length > 20;
 
 /** localStorage key used by the Supabase client for the session (gg- prefix like every other key). */
@@ -24,19 +30,15 @@ export const PROGRAMMES = [
 
 /**
  * Consent wording shown before sign-in. The version must be the `current` one in the database
- * (private.consent_versions); the database rejects any other. "draft-1" exists only on the test project.
+ * (private.consent_versions); the database rejects any other. "v1" approved by the owner on 27 Oct 2026.
  */
 export const CONSENT = {
-  version: 'draft-3',
-  draft: true,
+  version: 'v1',
+  draft: false,
   title: 'Save your progress online',
-  points: [
-    ['What is saved', 'Your GitHub user id and username, the display name, programme and roll number / SID you enter, the batch you join with your teacher\'s code, the date you agreed, and your course progress (lessons read, quiz scores, missions, mini-games, badges, XP, self-check result, passport name, last page).'],
-    ['The sign-in record', 'When you sign in with GitHub, our database service (Supabase) also keeps a sign-in record: the email address GitHub shares, sign-in dates and security logs. It is created as soon as GitHub sends you back here — even if you stop before saving your profile.'],
-    ['Who can see it', 'You, and the course faculty of the batch you join: your display name, roll number, GitHub username, programme and progress — never your email address. Faculty cannot change your progress. Other students cannot see it.'],
-    ['Where', 'Supabase, on servers in Mumbai, India.'],
-    ['How long', 'Until you delete your account. Nothing is deleted automatically.'],
-    ['Deleting', '"Delete my account" removes your profile and online progress at once; the college then removes your sign-in record. Supabase\'s security logs and your GitHub authorisation of this app (GitHub → Settings → Applications) are not removed by us.'],
-    ['Optional', 'Signing in is optional. Without it everything works as before, saved only on this device.'],
+  lines: [
+    'Signing in with GitHub is optional. If you sign in, your name, roll number, programme, batch and course progress are saved online (Supabase, Mumbai) so you can continue on any device; GitHub also shares your email with our sign-in service.',
+    'Your course faculty can see your progress, never your email.',
+    'You can download or delete your data at any time from your account page.',
   ],
 };

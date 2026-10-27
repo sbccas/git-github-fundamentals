@@ -480,10 +480,15 @@ console.log('\nAccounts and sync');
   // SY6 — production switch (the built output is checked by npm run check:dist)
   const config = fs.readFileSync(path.join(ROOT, 'vite.config.js'), 'utf8');
   const mainJs = fs.readFileSync(path.join(ROOT, 'src/scripts/main.js'), 'utf8');
-  check(/accounts && mode === 'production'\) \{\s*throw/.test(config) && config.includes("define: { __ACCOUNTS__: JSON.stringify(accounts) }")
+  check(/export const ACCOUNTS_IN_PRODUCTION = (true|false);/.test(config)
+    && config.includes("const accounts = mode === 'production' ? ACCOUNTS_IN_PRODUCTION : env.VITE_ACCOUNTS_ENABLED === 'true';")
+    && config.includes("define: { __ACCOUNTS__: JSON.stringify(accounts) }")
     && config.includes("(name === 'account' && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach'))")
     && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
-    'SY6 accounts are compiled in only when enabled, never in a production build; /account/ and /teach/dashboard/ left out when off');
+    'SY6 one explicit switch decides accounts in the live build; development needs the env flag; account pages left out when off');
+  const consentSrc = fs.readFileSync(path.join(ROOT, 'src/scripts/data/supabase.js'), 'utf8');
+  check(/version: 'v1',\s*draft: false,/.test(consentSrc) && !/sb_secret_|service_role/.test(consentSrc),
+    'SY6 live consent wording is the approved v1; only public values in the account settings');
 
   // DB — faculty dashboard helpers (Milestone 12)
   const D = await imp('src/scripts/lib/dashboard.js');

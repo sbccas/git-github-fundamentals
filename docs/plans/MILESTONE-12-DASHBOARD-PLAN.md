@@ -113,5 +113,27 @@ Nothing reaches students until all of these are done and the owner approves the 
 4. **Release:** a separately approved change that allows accounts in the production build with the `gg-prod` URL and
    key, then `npm test`, `npm run check:dist` (adapted), push to `main`.
 
+### 6.1 Go-live decisions (owner, 27 Oct 2026 — "approve all")
+
+Recorded as the owner's decisions; they replace the open items above for this release. **G-4 is closed by these
+owner decisions** (the owner is the course's Department Coordinator); nothing here is a legal conclusion.
+
+| # | Item | Decision |
+|---|---|---|
+| 1 | Consent wording (D-11) | Approved `v1`, three lines (now in `src/scripts/data/supabase.js`) |
+| 2 | Faculty with access (D-10) | `contact2hitech` (course instructor) and `sbccas` (SYBCA AI coordinator, to be replaced later) |
+| 3 | Account deletion (P-6, K-9) | "Delete my account" stays: profile and online progress deleted at once; the sign-in record is removed **by the college on request — no time limit decided yet** (kept aside by the owner) |
+| 4 | Sign-ins without a profile (P-3) · consent evidence (P-8) | Kept for now, no clean-up routine · latest version and date only, removed with the profile |
+| 5 | Certificate records (D-9) | Not applicable until certificates are built (Milestone 14) |
+| — | Students under 18 (D-12) | Not applicable: all students are 19 or older (owner, 27 Oct 2026) |
+| 6 | Test data | Test accounts deleted before go-live; the batch "BCA 2026 – SY AI" and both faculty accounts kept; a new join code made on Day 3 |
+| 7 | Local address | `localhost` removed from the allowed sign-in addresses after go-live; re-added only temporarily for development |
+| 8 | Live settings | Project URL and publishable key in `src/scripts/data/supabase.js` (public by design); `ACCOUNTS_IN_PRODUCTION = true` in `vite.config.js` (set `false` to roll back); deploy workflow unchanged |
+| 9 | GitHub OAuth app | Renamed to "Git & GitHub Fundamentals" |
+| 10 | Backups | Free plan has no downloadable backups: faculty download the dashboard CSV after each class |
+| 11 | Order | Delete test accounts → `supabase/live/switch_to_live.sql` → Supabase sign-in addresses → merge to `main` and push (owner's final "push") → owner signs in on the live site |
+
+After the switch, `private.environment` is `production` and every script in `supabase/tests/` refuses to run.
+
 **No progress is lost meanwhile:** students who use the site as guests now keep their progress on their device; on
 their first sign-in after go-live the site offers "Add this device's progress to your account" (tested on 27 Oct 2026).
