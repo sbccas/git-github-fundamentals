@@ -11,10 +11,12 @@
     "test": "node tests/run-tests.mjs",
     "ebooks": "node scripts/ebooks.mjs",
     "share-images": "node scripts/share-images.mjs",
-    "check:dist": "node scripts/check-dist.mjs"
+    "check:dist": "node scripts/check-dist.mjs",
+    "sql-check": "node scripts/sql-check.mjs"
   },
   "license": "MIT",
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.9",
     "marked": "^18.1.1",
     "vite": "^6.4.5"
   },

@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| **Report date** | 2026-10-24 |
+| **Report date** | 2026-10-27 |
 | **Repository** | [github.com/sbccas/git-github-fundamentals](https://github.com/sbccas/git-github-fundamentals) · local copy `D:\Future Projects\git-github-fundamentals` |
 | **Live site** | https://sbccas.github.io/git-github-fundamentals/ |
-| **PRD version** | v1.15 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) |
-| **Phase** | Phase 1 (core platform) **live**: Milestones 1–9 done; real-device and projector checks remain |
+| **PRD version** | v1.17 ([PRD.md](PRD.md)) · plans in [`docs/plans/`](plans/) · Phase 2 operations: [PHASE-2-OPERATIONS.md](PHASE-2-OPERATIONS.md) |
+| **Phase** | Phase 1 (core platform) **live**: Milestones 1–9 done; real-device and projector checks remain. Phase 2 **live from 27 Oct 2026**: Milestones 10–12 (sign-in, online progress, faculty dashboard) |
 
 > This report is the cross-check against the PRD. Every requirement ID appears below with its status.
 > **Update it at the end of every milestone** (and whenever a requirement changes) in the same commit as the work.
@@ -33,7 +33,10 @@
 | 7 | Git Passport: `/passport/`, next-activity rules, A4 print + PNG card, self-entered name, validated import ([plan](plans/MILESTONE-7-GIT-PASSPORT-PLAN.md), approved 2026-10-23) | ✅ | plan `6ce6ded` · implementation `69a17e0` | 2026-10-23 |
 | 8 | Course ebooks: Student Edition and Faculty Edition, web + PDF with cover, course and faculty details, clickable contents with page numbers ([plan](plans/MILESTONE-8-EBOOKS-PLAN.md), approved 2026-10-24) | ✅ | plan `961e13b` · approval `0694a40` · implementation `9a8e51c` | 2026-10-24 |
 | 9 | Share previews: Open Graph / Twitter tags on every page + 1200 × 630 preview images ([plan](plans/MILESTONE-9-SHARE-PREVIEWS-PLAN.md), approved 2026-10-24) | ✅ | plan `366dc3e` · implementation `9b008d4` | 2026-10-24 |
-| Phase 2 | Supabase: GitHub sign-in, sync, leaderboard, live quiz, teacher dashboard, certificate verification | ⏳ not started | — | — |
+| 10 + 11 | Supabase sign-in with GitHub, consent, profile, online progress and sync, download/delete ([M10 plan](plans/MILESTONE-10-FOUNDATION-PLAN.md), [M11 plan](plans/MILESTONE-11-SYNC-PLAN.md)); SQL 69/69, manual 15/15 ([evidence](evidence/m10/)) | ✅ live | plans `0afc274` · implementation `1d6830e` | 2026-10-27 |
+| 12 | Faculty dashboard, batches, join codes, CSV, roll number, faculty menu link ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); SQL 41/41, manual 16/16 ([evidence](evidence/m12/)); leaderboard (S-04) later | ✅ live (leaderboard ⏳) | `16b3221` · `408fb5f` | 2026-10-27 |
+| Go-live | Accounts on for the live site; consent v1; one Supabase project switched to live use; go-live decisions in the [Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md) | ✅ | `e9fbabe` · `f1e0090` · docs and `npm run sql-check` in the release commit | 2026-10-27 |
+| 13 – 14 | Live classroom quiz; certificates and `/verify/` | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 
 ## 2. What exists (inventory)
@@ -177,7 +180,7 @@
 
 | IDs | Status |
 |---|---|
-| S-01 – S-12 (Supabase) | 🔧 Phase 2 [plan](plans/PHASE-2-SUPABASE-PLAN.md) revision 4 approved as the baseline (2026-10-26). Milestones 10 + 11: plans approved ([M10](plans/MILESTONE-10-FOUNDATION-PLAN.md), [M11](plans/MILESTONE-11-SYNC-PLAN.md)); test project set up by the owner 2026-10-26. **27 Oct 2026: built and tested on the test project only** — migrations applied to `gg-test`, SQL suite 69/69 PASS, 15 manual tests PASS with GitHub test accounts ([evidence](evidence/m10/)); accounts compiled out of the live build (`npm run check:dist`). Milestone 12 faculty dashboard (batches, join codes, CSV) also built and tested on the test project the same day ([evidence](evidence/m12/)). Open: P-6 completion time, phone/offline checks, production gates. Production needs `gg-prod` (D-5) and the college sign-off (D-9 – D-12) before real student data. |
+| S-01 – S-12 (Supabase) | ✅ live 2026-10-27 for S-01, S-02, S-03 (with roll number), S-06, S-08, S-09 (F, R, J, P, X, K criteria), S-10, S-12 (consent v1, download, delete — sign-in record removed by the college on request); S-11 changed to one project (M12-D8). ⏳ S-04 leaderboard, S-05 live quiz, S-07 certificates. Operations: [PHASE-2-OPERATIONS.md](PHASE-2-OPERATIONS.md) |
 | A-01 – A-08 (AI) | ⏳ Not started (Phase 3). Needs a Claude API key and a monthly budget (PRD D-8). |
 
 ## 4. Open decisions (from PRD §14)
@@ -294,3 +297,4 @@
 | 2026-10-24 | Milestone 9 — share previews (U-07) delivered in `9b008d4` |
 | 2026-10-24 | College Instagram changed to @amrolicollege.official (footer, About, PRD, both ebooks) |
 | 2026-10-24 | Phase 2 plan revisions 2 – 4 (documentation only); decisions D-8 – D-12 added |
+| 2026-10-27 | Phase 2 Milestones 10–12 built, tested and put live; one Supabase project (M12-D8); roll number (M12-D9); go-live decisions recorded; [operations and troubleshooting guide](PHASE-2-OPERATIONS.md) and `npm run sql-check` added |

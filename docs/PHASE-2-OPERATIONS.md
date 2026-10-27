@@ -1,0 +1,185 @@
+# Phase 2 — operations and troubleshooting guide
+
+How student sign-in, online progress and the faculty dashboard work, how to run them day to day, how to change them
+safely, and what to check when something goes wrong. Keep this file up to date with every Phase 2 change (same
+commit as the change). Requirements: [PRD](PRD.md) §7 S-01 – S-12 · decisions: [Milestone 10](plans/MILESTONE-10-FOUNDATION-PLAN.md),
+[Milestone 11](plans/MILESTONE-11-SYNC-PLAN.md), [Milestone 12](plans/MILESTONE-12-DASHBOARD-PLAN.md) (go-live record §6.1) ·
+test evidence: [`docs/evidence/`](evidence/).
+
+## 1. What is live (since 27 Oct 2026)
+
+| Feature | Where | Who |
+|---|---|---|
+| Optional sign-in with GitHub, consent `v1`, profile (name, programme, roll no / SID) | `/account/` | Students and faculty |
+| Progress saved online and restored on any device (units, quizzes, missions, mini-games, badges, XP, self-check) | Every page (background), status on the Git Passport and the account page | Signed-in students |
+| Join a batch with the code shown in class | `/account/` → "Your batch" | Students (roll number required) |
+| Faculty dashboard: batches, join code (projector view), student table, CSV | `/teach/dashboard/` (also More menu, faculty only) | Faculty on the allowlist |
+| Download my data · Delete my account | `/account/` | Everyone signed in |
+
+Students who never sign in use the site exactly as in Phase 1 — no Supabase code is downloaded and no request is made.
+
+## 2. How it fits together
+
+```
+GitHub Pages (static site, built by GitHub Actions on every push to main)
+  └─ browser: progress saved on the device first (localStorage gg-progress, unchanged v1 format)
+       └─ signed in: lib/sync.js sends it to Supabase → save_progress() validates, merges, recalculates XP
+Supabase project "git-github-fundamentals" (ref mkdvftgovsznnivvuwrn, Mumbai, free plan) — the ONLY project
+  ├─ Auth: GitHub OAuth app "Git & GitHub Fundamentals" (owned by the sbccas GitHub account); email/anonymous off
+  ├─ public schema: profiles, progress, batches (RLS on, default deny) + functions the site calls
+  └─ private schema (never reachable from the site): consent_versions, environment, faculty_allowlist,
+     batch_faculty, batch_join_codes, join_attempts, deletion_requests, helper functions
+```
+
+| Fact | Value |
+|---|---|
+| Environment | `private.environment` = `production` (test scripts refuse to run) |
+| Consent | `v1` current (`private.consent_versions`); wording in `src/scripts/data/supabase.js` — both must match |
+| Sign-in return address | Site URL and the only redirect: `https://sbccas.github.io/git-github-fundamentals/account/` |
+| Faculty allowlist | `contact2hitech` (course instructor, GitHub id 115479871) · `sbccas` (SYBCA AI coordinator, 49284143 — to be replaced) |
+| First batch | "BCA 2026 – SY AI" (BCA – AI, 2026) |
+| Public values in the site | Project URL + publishable key (`sb_publishable_…`) only. **Never** a secret key, service-role key or database password |
+| Rate limits (Auth → Rate Limits) | Sign-ups and sign-ins 300 / 5 min per IP · token refreshes 600 · token verifications 300 (raised for class sign-ins) |
+
+## 3. Where things are
+
+| Area | Files |
+|---|---|
+| Database (applied to the live project in order) | `supabase/migrations/20261027000001…` – `…000004…` |
+| One-time go-live switch (already run) | `supabase/live/switch_to_live.sql` |
+| Database tests (local only now) | `supabase/tests/*.sql`, run by `npm run sql-check` |
+| Account settings, consent wording, programmes | `src/scripts/data/supabase.js` |
+| Supabase client and calls | `src/scripts/lib/account.js` |
+| Sync engine (pending, retries, merge, device choices) | `src/scripts/lib/sync.js`; merge rules also in `lib/progress.js` (`mergeProgress`) |
+| Header button, Passport line, faculty menu link | `src/scripts/lib/account-boot.js`, `src/styles/account.css` |
+| Account page | `src/account/index.html`, `src/scripts/pages/account.js` |
+| Faculty dashboard | `src/teach/dashboard/index.html`, `src/scripts/pages/dashboard.js`, `src/scripts/lib/dashboard.js`, `src/styles/dashboard.css` |
+| Live on/off switch | `ACCOUNTS_IN_PRODUCTION` in `vite.config.js` |
+| Service worker (never stores sign-in return pages) | `build/sw-template.js` |
+| Checks | `npm test` (site, sync, CSV, secret scan) · `npm run sql-check` (database) · `npm run check:dist` (after `npm run build`) |
+
+## 4. Everyday tasks
+
+All SQL runs in Supabase → **SQL Editor** → New query. Never paste a secret into chat, email or the repository.
+
+**Add a faculty member** — they sign in once on `/account/` (consent and profile), then:
+
+```sql
+insert into private.faculty_allowlist (github_id, note)
+select github_id, 'Faculty — <name / role>' from public.profiles where lower(github_username) = lower('<github-username>')
+returning github_id, note;
+```
+
+Then, on the dashboard, an existing faculty member opens **Faculty with access** and adds the username.
+
+**Replace the coordinator (sbccas → new account)** — add the new account as above and give it access on the dashboard;
+then remove the old one (access ends at once):
+
+```sql
+delete from private.faculty_allowlist where github_id = 49284143 returning github_id;
+delete from private.batch_faculty where github_id = 49284143 returning batch_id;
+```
+
+**New batch for another class** — faculty dashboard → **Create a batch** (name with year and division, e.g.
+"TYBSc IT 2026 – A") → show the code in class. **New code** makes the old one stop working; **Disable code** stops new
+joins. Students who already joined stay.
+
+**Add a programme (e.g. B.Sc. IT)** — needs a small change: a new migration that widens the programme checks on
+`profiles` and `batches`, the same value in `PROGRAMMES` (`src/scripts/data/supabase.js`) and in the functions that
+validate it (`accept_consent`, `faculty_create_batch`), then `npm run sql-check`, apply the migration, push.
+
+**Keep a record after each class** — dashboard → **Download CSV** (the free plan has no downloadable backups).
+CSV files contain names, roll numbers and progress: store them under the college's data policy.
+
+**Deletion requests** (a student used "Delete my account"; their profile and progress are already gone):
+
+```sql
+select left(user_id::text, 8) as user_id, requested_at from private.deletion_requests order by requested_at;
+```
+
+Remove the sign-in record when the college decides to: Authentication → Users → the user with that id → Delete.
+(No time limit has been decided yet — Milestone 12 plan §6.1.)
+
+**Sign-ins without a profile** (signed in, never saved the profile) — kept for now (P-3):
+
+```sql
+select left(u.id::text, 8) as id, u.created_at from auth.users u
+where not exists (select 1 from public.profiles p where p.id = u.id) order by u.created_at;
+```
+
+**Change the consent wording** — new version id (e.g. `v2`): change `CONSENT` in `src/scripts/data/supabase.js`, push,
+then immediately:
+
+```sql
+update private.consent_versions set status = 'retired' where status = 'current';
+insert into private.consent_versions (version, status, environment, approved_by, approved_at)
+values ('v2', 'current', 'production', '<who approved, date>', now());
+```
+
+Everyone signed in is asked to agree again before anything new is saved online (download, delete and sign-out keep
+working). Between the push and the SQL, sign-in shows "Please reload" — do both together.
+
+## 5. Making a change safely
+
+1. Plan → owner approval → a branch (not `main`) — the project's normal workflow.
+2. Code change → `npm test`. Database change → a **new** file in `supabase/migrations/` (never edit an applied one) and
+   new tests in `supabase/tests/` → `npm run sql-check` until it passes.
+3. Owner applies the **new migration only** in the SQL Editor of the live project. **Never run anything from
+   `supabase/tests/` on the live project** (they stop themselves, but do not try).
+4. `npm run build` → `npm run check:dist` → review → merge to `main` → push. GitHub Actions runs `npm test` and deploys
+   in about 2 minutes; a failing test stops the deploy and the old site stays up.
+5. Record evidence in `docs/evidence/`, update this guide, PROGRESS and the PRD in the same commit.
+
+**Local development:** `.env.development.local` (git-ignored) keeps accounts **off**, because the only Supabase project
+holds real student data and `localhost` is no longer an allowed sign-in address. To try account features locally,
+temporarily add `http://localhost:5173/git-github-fundamentals/account/` under Authentication → URL Configuration, set
+`VITE_ACCOUNTS_ENABLED=true`, use only your own accounts, and remove the address again afterwards.
+
+## 6. Rollback
+
+- **Switch accounts off on the live site:** set `ACCOUNTS_IN_PRODUCTION = false` in `vite.config.js`, push. The site is
+  back to Phase 1 for everyone; all data stays in Supabase; device progress is untouched.
+- **A bad database change:** write a new migration that reverses it (migrations are append-only), check with
+  `npm run sql-check`, apply.
+
+## 7. Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| GitHub sign-in ends on an error page or the Supabase site | Return address not allowed | Authentication → URL Configuration: Site URL and redirect exactly `https://sbccas.github.io/git-github-fundamentals/account/` |
+| "Sign-in could not be completed in this browser" | Started in one browser or app, finished in another (e.g. GitHub app opened the link) | Start again and finish in the same browser |
+| "This consent version is not accepted. Please reload" / "Please reload" page | Site and database consent versions differ | `CONSENT.version` in `supabase.js` must equal the `current` row in `private.consent_versions` |
+| Many students in one room cannot sign in for a few minutes | Rate limit per internet address | Authentication → Rate Limits (see §2); wait 5 minutes |
+| Header dot amber, "Offline — will be saved online later" | No internet or Supabase unreachable | Nothing to do; it retries and saves when online. Progress is safe on the device |
+| Header dot red, "Please sign in again" | Session ended | Sign in again on `/account/`; pending progress is then sent |
+| "Please review the updated consent" | New consent version | Agree on `/account/` |
+| "Sync problem — open your account page" | The server rejected the progress document (very rare: damaged browser data) | Account page → Save now; if it persists, export progress (About page) and inspect |
+| Student: "Please add your roll number / SID first" | Roll number missing | Account page → Edit profile → Roll no |
+| Student: "This code is not valid" | Wrong, old (regenerated) or disabled code | Check the code on the dashboard; enable it or make a new one |
+| Student: "Too many attempts" | 10 wrong codes within an hour | Wait an hour |
+| Faculty: "This page is for course faculty" | Not on the allowlist, or signed in with a different GitHub account | §4 Add a faculty member; check the signed-in account on `/account/` |
+| Faculty: batch missing on the dashboard | Not linked to that batch | Another faculty member adds the username under **Faculty with access** |
+| A student's XP looks lower than expected | Progress made on a device that never signed in, or "Keep separate" chosen | Sign in on that device and choose **Add**; XP is always recalculated from the work done |
+| A badge earned through two devices is not shown yet | Badges are awarded on the device when the next mission or quiz is completed | Complete any mission or quiz |
+| Supabase project paused | Free projects pause after a long time without use | Supabase dashboard → Restore project |
+
+## 8. Limits and known limitations
+
+- Quizzes are marked in the browser: saved progress is a learning record, not a tamper-proof score; certificates
+  depend on the faculty-run final practical (S-07).
+- Free plan: no downloadable backups (keep CSVs), projects pause when unused for a long time; capacity is ample for
+  several hundred students.
+- One Supabase project for everything (M12-D8): no separate test project, so database changes are checked locally
+  with `npm run sql-check` only.
+- Not yet tested on real phones for the account pages; offline sync was tested by automated tests only.
+
+## 9. Remaining features and open decisions
+
+| Item | Status |
+|---|---|
+| Participant counter on the home page (totals only) and "Request to join" for students of other classes | Proposed by the owner 27 Oct 2026 — plan to be written |
+| More programmes (B.Sc. IT, TY classes, …) | Needs the programme list from the owner (§4) |
+| Opt-in batch leaderboard (S-04) | Later (M12-D1) |
+| Live classroom quiz (S-05, Milestone 13) · certificates and `/verify/` (S-07, Milestone 14) | Not started |
+| Time limit for removing deleted students' sign-in records (P-6) · clean-up of sign-ins without a profile (P-3) | Not decided (kept aside) |
+| Phase 3 AI tutor (D-8) | Not started |
