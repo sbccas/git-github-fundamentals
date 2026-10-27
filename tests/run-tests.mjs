@@ -487,7 +487,7 @@ console.log('\nAccounts and sync');
     && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
     'SY6 one explicit switch decides accounts in the live build; development needs the env flag; account pages left out when off');
   const consentSrc = fs.readFileSync(path.join(ROOT, 'src/scripts/data/supabase.js'), 'utf8');
-  check(/version: 'v1',\s*draft: false,/.test(consentSrc) && !/sb_secret_|service_role/.test(consentSrc),
+  check(/version: 'v1',/.test(consentSrc) && !/draft/i.test(consentSrc) && !/sb_secret_|service_role/.test(consentSrc),
     'SY6 live consent wording is the approved v1; only public values in the account settings');
 
   // DB — faculty dashboard helpers (Milestone 12)

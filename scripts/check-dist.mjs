@@ -43,6 +43,7 @@ if (accountsOn) {
   if (urls.size !== 1) problems.push(`expected exactly one Supabase project URL, found ${[...urls].join(', ') || 'none'}`);
   if (!/version:\s*"v1"|version:"v1"/.test(all)) problems.push('the approved consent version "v1" is not in the build');
   if (/draft-[0-9]/.test(all)) problems.push('a draft consent version is in the build');
+  for (const m of [/\bTest version\b/, /gg-test/, /\btest project\b/i, /Use test accounts/i, /example\.invalid/]) if (m.test(all)) problems.push(`test wording in the build: ${m}`);
 } else {
   const markers = [/supabase/i, /__ACCOUNTS__/, /account-boot/, /sb_publishable_/, /\.supabase\.co/, /faculty_batch/];
   for (const f of texty) {

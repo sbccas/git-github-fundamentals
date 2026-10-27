@@ -34,7 +34,6 @@ export const PROGRAMMES = [
  */
 export const CONSENT = {
   version: 'v1',
-  draft: false,
   title: 'Save your progress online',
   lines: [
     'Signing in with GitHub is optional. If you sign in, your name, roll number, programme, batch and course progress are saved online (Supabase, Mumbai) so you can continue on any device; GitHub also shares your email with our sign-in service.',

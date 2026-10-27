@@ -63,9 +63,8 @@ function consentHtml({ signedIn, reconsent }) {
   const lines = CONSENT.lines.map((t) => `<p>${esc(t)}</p>`).join('');
   return `
     <section class="card acct-card" aria-labelledby="acct-consent-h">
-      ${CONSENT.draft ? '<p class="acct-draft"><strong>Test version.</strong> Draft wording, not yet approved by the college. Use test accounts only.</p>' : ''}
       <h2 id="acct-consent-h">${esc(CONSENT.title)}</h2>
-      ${reconsent ? '<p class="acct-draft">The wording has changed since you agreed. Please read it and agree again to keep saving online.</p>' : ''}
+      ${reconsent ? '<p class="acct-note">The wording has changed since you agreed. Please read it and agree again to keep saving online.</p>' : ''}
       ${lines}
       <p class="muted acct-small">Consent version ${esc(CONSENT.version)}.</p>
       <div class="acct-actions">
