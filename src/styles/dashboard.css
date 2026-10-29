@@ -57,3 +57,12 @@
 .dash-when { display: flex; align-items: center; gap: 6px; font-size: var(--fs-sm); font-weight: 600; }
 .dash-when input { min-height: 40px; padding: 0 8px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
 .dash-table tr.dash-enough td:nth-child(3) { color: var(--green); }
+
+/* Collapsible sections */
+.dash-fold > .dash-fold-head { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.dash-fold > .dash-fold-head::-webkit-details-marker { display: none; }
+.dash-fold > .dash-fold-head::before { content: "▸"; color: var(--muted); transition: transform var(--dur) var(--ease); }
+.dash-fold[open] > .dash-fold-head::before { transform: rotate(90deg); }
+.dash-fold > .dash-fold-head h2 { margin: 0; }
+.dash-fold-meta { font-size: var(--fs-sm); font-weight: 500; }
+.dash-fold-body { margin-top: 12px; }

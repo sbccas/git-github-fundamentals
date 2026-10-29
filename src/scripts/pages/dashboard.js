@@ -121,10 +121,27 @@ function createFormHtml(open) {
     </details>`;
 }
 
-function codeCardHtml(b) {
+/* Collapsible sections (owner request, 29 Oct 2026): open/closed state remembered on this device. */
+const FOLD_KEY = 'gg-dash-fold';
+const foldState = () => { try { return JSON.parse(localStorage.getItem(FOLD_KEY)) ?? {}; } catch { return {}; } };
+const isOpen = (name) => foldState()[name] !== false;
+function fold(name, cls, titleHtml, bodyHtml) {
   return `
-    <section class="card acct-card dash-code" aria-labelledby="dash-code-h">
-      <h2 id="dash-code-h">${esc(b.name)}</h2>
+    <details class="card acct-card dash-fold ${cls}" data-fold="${name}"${isOpen(name) ? ' open' : ''}>
+      <summary class="dash-fold-head">${titleHtml}</summary>
+      <div class="dash-fold-body">${bodyHtml}</div>
+    </details>`;
+}
+function wireFolds() {
+  view.querySelectorAll('details[data-fold]').forEach((d) => d.addEventListener('toggle', () => {
+    const st = foldState();
+    st[d.dataset.fold] = d.open;
+    try { localStorage.setItem(FOLD_KEY, JSON.stringify(st)); } catch { /* ignore */ }
+  }));
+}
+
+function codeCardHtml(b) {
+  return fold('code', 'dash-code', `<h2 id="dash-code-h">${esc(b.name)} <span class="muted dash-fold-meta">· join code ${esc(b.code ?? '')}</span></h2>`, `
       <p class="muted">${esc(programmeLabel(b.programme))} · ${esc(b.year)} · ${b.students} student${b.students === 1 ? '' : 's'}</p>
       <div class="dash-code-row">
         <div>
@@ -147,15 +164,12 @@ function codeCardHtml(b) {
           </div>
           <p class="muted acct-small">They must be on the faculty list and have signed in once.</p>
         </form>
-      </details>
-    </section>`;
+      </details>`);
 }
 
 function studentsShellHtml() {
-  return `
-    <section class="card acct-card dash-students" aria-labelledby="dash-st-h">
+  return fold('students', 'dash-students', `<h2 id="dash-st-h">Students <span class="muted dash-fold-meta">· ${current?.students ?? 0}</span></h2>`, `
       <div class="dash-toolbar">
-        <h2 id="dash-st-h">Students</h2>
         <input type="search" data-filter placeholder="Find name or roll no" aria-label="Find a student by name, roll number or GitHub username" value="${esc(filter)}">
         <select data-sort aria-label="Sort students">
           <option value="name"${sortBy === 'name' ? ' selected' : ''}>Name A–Z</option>
@@ -168,8 +182,7 @@ function studentsShellHtml() {
       </div>
       <p class="muted acct-small" data-summary></p>
       <div class="dash-table-wrap" data-table><p class="muted">Loading students…</p></div>
-      <p class="muted acct-small">Units: ✓ complete · % best quiz score (green = passed) · n/m lessons read · — not started. Read-only: faculty cannot change progress.</p>
-    </section>`;
+      <p class="muted acct-small">Units: ✓ complete · % best quiz score (green = passed) · n/m lessons read · — not started. Read-only: faculty cannot change progress.</p>`);
 }
 
 const YEAR = { 1: '1st year', 2: '2nd year', 3: '3rd year' };
@@ -177,9 +190,7 @@ const YEAR = { 1: '1st year', 2: '2nd year', 3: '3rd year' };
 function requestsHtml() {
   if (!requests.length) return '';
   const options = batches.map((b) => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');
-  return `
-    <section class="card acct-card dash-requests" aria-labelledby="dash-req-h">
-      <h2 id="dash-req-h">Requests to join <span class="dash-badge">${requests.length}</span></h2>
+  return fold('requests', 'dash-requests', `<h2 id="dash-req-h">Requests to join <span class="dash-badge">${requests.length}</span></h2>`, `
       <p class="muted acct-small">Students whose class is not in the course yet. Accept adds them to one of your batches at once.</p>
       <div class="dash-table-wrap"><table class="dash-table">
         <thead><tr><th scope="col">Roll no</th><th scope="col">Student</th><th scope="col">Programme · year</th><th scope="col">Requested</th><th scope="col">Action</th></tr></thead>
@@ -196,8 +207,7 @@ function requestsHtml() {
             </td>
           </tr>`).join('')}
         </tbody>
-      </table></div>
-    </section>`;
+      </table></div>`);
 }
 
 async function handleRequest(id, action) {
@@ -223,18 +233,15 @@ const localInput = (iso) => {
 const hm = (iso) => (iso ? new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—');
 
 function sessionShellHtml() {
-  return `
-    <section class="card acct-card dash-session" aria-labelledby="dash-ses-h">
+  return fold('session', 'dash-session', '<h2 id="dash-ses-h">Remote session report</h2>', `
       <div class="dash-toolbar">
-        <h2 id="dash-ses-h">Remote session report</h2>
         <label class="dash-when">From <input type="datetime-local" data-ses-from value="${localInput(report?.from ?? REMOTE_SESSION.from)}"></label>
         <label class="dash-when">To <input type="datetime-local" data-ses-to value="${localInput(report?.to ?? REMOTE_SESSION.to)}"></label>
         <button class="btn btn-primary" type="button" data-ses-run>Show report</button>
         <button class="btn btn-ghost" type="button" data-ses-csv>Download CSV</button>
       </div>
       <p class="muted acct-small">Active time = 5-minute periods in which the student's progress changed on the course site. Highlighted: at least ${REMOTE_SESSION.minMinutes} minutes. Project checklist as read from GitHub when the student submitted.</p>
-      <div class="dash-table-wrap" data-ses-table>${report && report.batchId === current?.id ? sessionTableHtml(report.rows) : '<p class="muted">Choose the time window and tap Show report.</p>'}</div>
-    </section>`;
+      <div class="dash-table-wrap" data-ses-table>${report && report.batchId === current?.id ? sessionTableHtml(report.rows) : '<p class="muted">Choose the time window (up to 24 hours) and tap Show report.</p>'}</div>`);
 }
 
 function sessionTableHtml(rows) {
@@ -269,8 +276,12 @@ function sessionTableHtml(rows) {
 async function runSessionReport() {
   const from = $('[data-ses-from]', view)?.value;
   const to = $('[data-ses-to]', view)?.value;
-  if (!from || !to) { message('Choose both times.', 'bad'); return; }
   const box = $('[data-ses-table]', view);
+  const problem = (text) => { box.innerHTML = `<p class="acct-warn">${esc(text)}</p>`; };
+  if (!from || !to) { problem('Choose both times.'); return; }
+  const hours = (new Date(to) - new Date(from)) / 36e5;
+  if (!(hours > 0)) { problem('"To" must be later than "From".'); return; }
+  if (hours > 24) { problem(`The window is ${Math.round(hours)} hours — choose up to 24 hours (for Saturday: 31 Oct, 11:00 to 15:00).`); return; }
   box.innerHTML = '<p class="muted">Loading…</p>';
   try {
     const fromIso = new Date(from).toISOString();
@@ -279,8 +290,7 @@ async function runSessionReport() {
     report = { rows, from: fromIso, to: toIso, batchId: current.id };
     box.innerHTML = sessionTableHtml(rows);
   } catch (err) {
-    box.innerHTML = '';
-    message(explain(err), 'bad');
+    problem(explain(err));
   }
 }
 
@@ -303,6 +313,7 @@ function render() {
 }
 
 function wire() {
+  wireFolds();
   view.querySelectorAll('[data-req-accept]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqAccept, 'accept')));
   view.querySelectorAll('[data-req-decline]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqDecline, 'decline')));
   $('[data-pick]', view)?.addEventListener('change', (e) => {

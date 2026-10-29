@@ -16,6 +16,8 @@ test evidence: [`docs/evidence/`](evidence/).
 | Request the course when the class has no batch yet; faculty accept or decline | `/account/` → "Your batch"; dashboard → "Requests to join" | Students · faculty |
 | Participant counter (totals only; hidden below 20 students) | Home page, under "Course at a glance" | Everyone |
 | "Open this page in Chrome first" note inside WhatsApp / Instagram / Facebook browsers | `/account/` (signed out) | Students on phones |
+| Remote session card (Part A status, Part B project link with GitHub checklist, Part C class-wall PR) | `/account/` → Remote session | Students |
+| Remote session report (active minutes, missions, project, PR; CSV) and collapsible sections | Dashboard → Remote session report | Faculty |
 | Faculty dashboard: batches, join code (projector view), student table, CSV | `/teach/dashboard/` (also More menu, faculty only) | Faculty on the allowlist |
 | Download my data · Delete my account | `/account/` | Everyone signed in |
 
@@ -50,6 +52,7 @@ Supabase project "git-github-fundamentals" (ref mkdvftgovsznnivvuwrn, Mumbai, fr
 |---|---|
 | Database (applied to the live project in order) | `supabase/migrations/20261027000001…` – `20261028000005…` (5: counter and requests) |
 | Counter · in-app browser note | `src/scripts/lib/counter.js`, `src/styles/counter.css` · `src/scripts/lib/inapp.js` |
+| Remote session (dates, class-wall repository) · GitHub checklist and report CSV | `src/scripts/data/session.js` · `src/scripts/lib/session.js`; database: migration 6 |
 | One-time go-live switch (already run) | `supabase/live/switch_to_live.sql` |
 | Database tests (local only now) | `supabase/tests/*.sql`, run by `npm run sql-check` |
 | Account settings, consent wording, programmes | `src/scripts/data/supabase.js` |
@@ -167,6 +170,8 @@ temporarily add `http://localhost:5173/git-github-fundamentals/account/` under A
 | A badge earned through two devices is not shown yet | Badges are awarded on the device when the next mission or quiz is completed | Complete any mission or quiz |
 | Supabase project paused | Free projects pause after a long time without use | Supabase dashboard → Restore project |
 | Counter not on the home page | Fewer than 20 students signed in (by design), or the request failed | Nothing to fix; it appears from 20 students. Locally, `?counter-preview` shows sample numbers |
+| Session report shows nothing / an error | Window longer than 24 hours, or "To" before "From" | Use 31 Oct 11:00 → 15:00 (or any window up to 24 h) |
+| Project checklist says "GitHub is busy" | GitHub allows about 7 checks per hour per internet address | The link is saved; tap Check again later, or open the repository from the report |
 | A student's request does not appear | Student not signed in fully (no profile / roll number), already in a batch, or request withdrawn | Account page → Your batch; dashboard → Refresh |
 
 ## 8. Limits and known limitations
