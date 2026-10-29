@@ -13,6 +13,9 @@ test evidence: [`docs/evidence/`](evidence/).
 | Optional sign-in with GitHub, consent `v1`, profile (name, programme, roll no / SID) | `/account/` | Students and faculty |
 | Progress saved online and restored on any device (units, quizzes, missions, mini-games, badges, XP, self-check) | Every page (background), status on the Git Passport and the account page | Signed-in students |
 | Join a batch with the code shown in class | `/account/` → "Your batch" | Students (roll number required) |
+| Request the course when the class has no batch yet; faculty accept or decline | `/account/` → "Your batch"; dashboard → "Requests to join" | Students · faculty |
+| Participant counter (totals only; hidden below 20 students) | Home page, under "Course at a glance" | Everyone |
+| "Open this page in Chrome first" note inside WhatsApp / Instagram / Facebook browsers | `/account/` (signed out) | Students on phones |
 | Faculty dashboard: batches, join code (projector view), student table, CSV | `/teach/dashboard/` (also More menu, faculty only) | Faculty on the allowlist |
 | Download my data · Delete my account | `/account/` | Everyone signed in |
 
@@ -36,7 +39,7 @@ Supabase project "git-github-fundamentals" (ref mkdvftgovsznnivvuwrn, Mumbai, fr
 | Environment | `private.environment` = `production` (test scripts refuse to run) |
 | Consent | `v1` current (`private.consent_versions`); wording in `src/scripts/data/supabase.js` — both must match |
 | Sign-in return address | Site URL and the only redirect: `https://sbccas.github.io/git-github-fundamentals/account/` |
-| Faculty allowlist | `contact2hitech` (course instructor, GitHub id 115479871) · `sbccas` (SYBCA AI coordinator, 49284143 — to be replaced) |
+| Faculty allowlist | `contact2hitech` (course instructor, GitHub id 115479871) · `dr-hiralpatel` (SYBCA AI coordinator, added 29 Oct 2026) · `sbccas` (temporary coordinator, 49284143 — remove when no longer needed, §4) |
 | First batch | "BCA 2026 – SY AI" (BCA – AI, 2026) |
 | Public values in the site | Project URL + publishable key (`sb_publishable_…`) only. **Never** a secret key, service-role key or database password |
 | Rate limits (Auth → Rate Limits) | Sign-ups and sign-ins 300 / 5 min per IP · token refreshes 600 · token verifications 300 (raised for class sign-ins) |
@@ -45,7 +48,8 @@ Supabase project "git-github-fundamentals" (ref mkdvftgovsznnivvuwrn, Mumbai, fr
 
 | Area | Files |
 |---|---|
-| Database (applied to the live project in order) | `supabase/migrations/20261027000001…` – `…000004…` |
+| Database (applied to the live project in order) | `supabase/migrations/20261027000001…` – `20261028000005…` (5: counter and requests) |
+| Counter · in-app browser note | `src/scripts/lib/counter.js`, `src/styles/counter.css` · `src/scripts/lib/inapp.js` |
 | One-time go-live switch (already run) | `supabase/live/switch_to_live.sql` |
 | Database tests (local only now) | `supabase/tests/*.sql`, run by `npm run sql-check` |
 | Account settings, consent wording, programmes | `src/scripts/data/supabase.js` |
@@ -162,6 +166,8 @@ temporarily add `http://localhost:5173/git-github-fundamentals/account/` under A
 | A student's XP looks lower than expected | Progress made on a device that never signed in, or "Keep separate" chosen | Sign in on that device and choose **Add**; XP is always recalculated from the work done |
 | A badge earned through two devices is not shown yet | Badges are awarded on the device when the next mission or quiz is completed | Complete any mission or quiz |
 | Supabase project paused | Free projects pause after a long time without use | Supabase dashboard → Restore project |
+| Counter not on the home page | Fewer than 20 students signed in (by design), or the request failed | Nothing to fix; it appears from 20 students. Locally, `?counter-preview` shows sample numbers |
+| A student's request does not appear | Student not signed in fully (no profile / roll number), already in a batch, or request withdrawn | Account page → Your batch; dashboard → Refresh |
 
 ## 8. Limits and known limitations
 
@@ -177,7 +183,8 @@ temporarily add `http://localhost:5173/git-github-fundamentals/account/` under A
 
 | Item | Status |
 |---|---|
-| Participant counter on the home page (totals only) and "Request to join" for students of other classes | Proposed by the owner 27 Oct 2026 — plan to be written |
+| Participant counter and "Request to join" | ✅ Live 29 Oct 2026 (Milestone 12b) |
+| Remote session tracking (31 Oct) and server-marked final exam (2 Nov) | Approved 29 Oct 2026 — [Milestone 12c plan](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md) |
 | More programmes (B.Sc. IT, TY classes, …) | Needs the programme list from the owner (§4) |
 | Opt-in batch leaderboard (S-04) | Later (M12-D1) |
 | Live classroom quiz (S-05, Milestone 13) · certificates and `/verify/` (S-07, Milestone 14) | Not started |

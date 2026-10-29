@@ -8,6 +8,7 @@ import { CONSENT, PROGRAMMES, configured } from '../data/supabase.js';
 import { BASE } from '../data/site.js';
 import { showStatus, STATUS_TEXT } from '../lib/account-boot.js';
 import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberAccount } from '../lib/account.js';
+import { inAppBrowser, isAndroid, chromeIntent } from '../lib/inapp.js';
 import { createSync, deviceSituation, linkDevice, leaveDevice, forgetDeviceLink, hasStash, syncMeta, classify } from '../lib/sync.js';
 
 const $ = (s, root = document) => root.querySelector(s);
@@ -74,8 +75,29 @@ function consentHtml({ signedIn, reconsent }) {
     </section>`;
 }
 
+/** Shown above the consent when the page is inside an app's built-in browser (lib/inapp.js). */
+function inAppNoteHtml() {
+  const ua = navigator.userAgent;
+  if (!inAppBrowser(ua)) return '';
+  const url = location.origin + location.pathname;
+  return `
+    <section class="card acct-card acct-inapp" role="note" aria-labelledby="acct-inapp-h">
+      <h2 id="acct-inapp-h">Open this page in ${isAndroid(ua) ? 'Chrome' : 'Safari'} first</h2>
+      <p>You opened the link inside an app (such as WhatsApp). GitHub sign-in may not finish here. Open the page in your phone's browser, then sign in.</p>
+      <div class="acct-actions">
+        ${isAndroid(ua) ? `<a class="btn btn-primary" href="${esc(chromeIntent(url))}">Open in Chrome</a>` : ''}
+        <button class="btn btn-ghost" type="button" data-copy-link="${esc(url)}">Copy link</button>
+      </div>
+      <p class="muted acct-small">${isAndroid(ua) ? 'Or tap ⋮ (top right) → Open in Chrome.' : 'Or tap ⋯ or the compass icon → Open in Safari.'}</p>
+    </section>`;
+}
+
 function showConsent({ signedIn = false, reconsent = false, profile = null } = {}) {
-  render(consentHtml({ signedIn, reconsent }));
+  render((signedIn ? '' : inAppNoteHtml()) + consentHtml({ signedIn, reconsent }));
+  $('[data-copy-link]', view)?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    try { await navigator.clipboard.writeText(btn.dataset.copyLink); btn.textContent = 'Link copied ✓'; } catch { btn.textContent = btn.dataset.copyLink; }
+  });
   $('[data-agree]', view).addEventListener('click', async (e) => {
     e.currentTarget.disabled = true;
     if (!signedIn) {
@@ -256,7 +278,9 @@ function showSignedIn(profile) {
     }
   });
   wireBatchSection();
+  wireRequest();
   wireDataSection({ hasProfile: true });
+  if (location.hash === '#request') $('#request', view)?.scrollIntoView({ block: 'center' });
 }
 
 /** "Your batch" (Milestone 12): join with the code shown in class; faculty get a link to the dashboard. */
@@ -274,8 +298,54 @@ function batchSectionHtml(profile) {
           <button class="btn btn-primary" type="submit">Join</button>
         </div>
       </form>
+      ${batch || accountState?.is_faculty ? '' : `<div class="acct-request" id="request" data-request>${requestHtml()}</div>`}
       ${accountState?.is_faculty ? `<p class="acct-faculty"><a class="btn btn-ghost" href="${BASE}teach/dashboard/">Open the faculty dashboard →</a></p>` : ''}
     </section>`;
+}
+
+/** "Request to join" (Milestone 12b): for students whose class has no batch yet. */
+const YEARS = [[1, '1st year'], [2, '2nd year'], [3, '3rd year']];
+function requestHtml() {
+  const req = accountState?.request;
+  if (req?.status === 'pending') {
+    return `<p><strong>Request sent</strong> — ${esc(YEARS.find(([y]) => y === req.year)?.[1] ?? '')}${req.division ? `, division ${esc(req.division)}` : ''}. Waiting for the course faculty; you will be added to your class's batch.</p>
+      <button class="btn btn-ghost" type="button" data-withdraw>Withdraw request</button>`;
+  }
+  return `
+    <h3>Your class is not in the course yet?</h3>
+    ${req?.status === 'declined' ? '<p class="muted acct-small">Your last request was not accepted. Ask your teacher, or request again.</p>' : ''}
+    <form class="acct-form" data-request-form novalidate>
+      <div class="acct-row">
+        <label class="acct-grow"><span>Year</span>
+          <select name="year" required>${YEARS.map(([y, l]) => `<option value="${y}">${l}</option>`).join('')}</select></label>
+        <label class="acct-grow"><span>Division <span class="muted">(optional)</span></span>
+          <input name="division" type="text" maxlength="10" autocomplete="off" autocapitalize="characters" placeholder="e.g. A"></label>
+      </div>
+      <div class="acct-actions"><button class="btn btn-ghost" type="submit">Request this course</button></div>
+      <p class="muted acct-small">Faculty see your name, roll number, GitHub username, programme, year and division.</p>
+    </form>`;
+}
+
+function wireRequest() {
+  const box = $('[data-request]', view);
+  if (!box) return;
+  const refresh = (req) => { accountState = { ...accountState, request: req }; box.innerHTML = requestHtml(); wireRequest(); };
+  $('[data-withdraw]', box)?.addEventListener('click', async () => {
+    try { refresh(await api.withdrawRequest()); message('Request withdrawn.', 'ok'); } catch (err) { message(explain(err), 'bad'); }
+  });
+  $('[data-request-form]', box)?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.currentTarget;
+    const division = f.division.value.replace(/\s+/g, ' ').trim().toUpperCase();
+    if (division && !/^[A-Z0-9 -]{1,10}$/.test(division)) { message('Division: up to 10 letters, digits, spaces or -.', 'bad'); return; }
+    try {
+      refresh(await api.requestToJoin(Number(f.year.value), division || null));
+      message('Request sent. The course faculty will add you to your class.', 'ok');
+    } catch (err) {
+      message(explain(err), 'bad');
+      if (/roll number/i.test(err?.message ?? '')) $('#acct-roll', view)?.focus();
+    }
+  });
 }
 
 function wireBatchSection() {
@@ -294,6 +364,7 @@ function wireBatchSection() {
         return;
       }
       accountState = { ...accountState, batch_name: res.batch_name };
+      $('[data-request]', view)?.remove();
       $('[data-batch-now]', view).innerHTML = `You are in <strong>${esc(res.batch_name)}</strong>. Your teachers for this batch can see your progress.`;
       form.reset();
       message(`You joined ${res.batch_name}.`, 'ok');
@@ -489,7 +560,7 @@ async function main() {
   if (!session$.current) {
     showStatus('signed-out');
     if (oauthError) message(`Sign-in was not completed (${oauthError}). You can try again.`, 'bad');
-    else if (returning) message('Sign-in could not be completed in this browser. Please start again here.', 'bad');
+    else if (returning) message('Sign-in could not be completed in this browser. Please start again here — in Chrome or Safari, not inside WhatsApp or another app.', 'bad');
     showConsent();
     return;
   }

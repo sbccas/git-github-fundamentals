@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ **Approved by the owner on 27 Oct 2026** ("approve all": M12B-D1 – M12B-D9 as recommended), with a local trial first (§5.1). Nothing built yet. |
+| **Status** | ✅ **Approved by the owner on 27 Oct 2026** ("approve all": M12B-D1 – M12B-D9 as recommended), with a local trial first (§5.1). **Built, tried locally against the live project and released on 29 Oct 2026** ([evidence](../evidence/m12b/2026-10-28-local-trial.md)); WhatsApp / in-app browser note added at the owner's request (28 Oct). |
 | **Owner request (27 Oct 2026)** | Show how many students take part, so students of other classes are encouraged to join; let them request the course (a waitlist) |
 | **Builds on** | Milestones 10–12 as live since 27 Oct 2026 ([operations guide](../PHASE-2-OPERATIONS.md)) · [Milestone 12 plan](MILESTONE-12-DASHBOARD-PLAN.md) §6.1 go-live decisions · [PRD](../PRD.md) S-03, S-06, S-08, S-12 |
 | **Programmes** | Owner: the course is for BCA, B.Sc. Data Science and M.Sc. IT students. The site already offers BCA, BCA – AI, B.Sc. Data Science and M.Sc. IT, so **no programme change is needed** (M12B-D9) |

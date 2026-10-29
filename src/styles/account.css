@@ -41,3 +41,8 @@
 .acct-row { display: flex; gap: 8px; }
 .acct-row input { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .08em; font-family: var(--font-mono); }
 .acct-faculty { margin: 16px 0 0; }
+.acct-request { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.acct-request h3 { margin: 0 0 8px; font-size: var(--fs-md); }
+.acct-grow { flex: 1; min-width: 0; display: grid; gap: 4px; font-weight: 600; font-size: var(--fs-sm); }
+.acct-grow select, .acct-grow input { min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; width: 100%; }
+.acct-inapp { border-color: color-mix(in srgb, var(--amber) 60%, transparent); background: color-mix(in srgb, var(--amber) 8%, var(--surface)); }

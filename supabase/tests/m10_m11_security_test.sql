@@ -156,9 +156,9 @@ from pg_proc p join pg_namespace n on n.oid = p.pronamespace
 where n.nspname = 'private';
 
 select pg_temp.check('X3a', not bool_or(has_function_privilege('anon', p.oid, 'EXECUTE')),
-  'signed-out visitors cannot execute any public or private function')
+  'signed-out visitors cannot execute any public or private function (except the public totals, course_stats)')
 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-where n.nspname in ('public', 'private');
+where n.nspname in ('public', 'private') and p.proname <> 'course_stats';
 
 select pg_temp.check('X3b', bool_and(has_function_privilege('authenticated', p.oid, 'EXECUTE')),
   'students can execute the five public functions')

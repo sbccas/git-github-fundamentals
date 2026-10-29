@@ -513,6 +513,34 @@ console.log('\nAccounts and sync');
   check(csv.startsWith('﻿') && csvLines.length === 2 && csvLines[1].startsWith("BCA 2026 – SY AI,23BCA-AI-045,'=cmd|calc,asha-gh,BCA-AI,325,2,3,9,80,yes,yes")
     && csvLines[0].split(',').length === csvLines[1].split(',').length && !/email/i.test(csv), 'DB2 CSV: one row per student with the roll number, no email, aligned columns');
 
+  // CT — participant counter helpers (Milestone 12b)
+  const CT = await imp('src/scripts/lib/counter.js');
+  const stats = { visible: true, students: 312, classes: 9, quizzes_passed: 1450, missions_completed: 2980 };
+  check(CT.statItems(stats).map((i) => i.n).join() === '312,9,1450,2980' && CT.statItems({ visible: false }).length === 0
+    && CT.statItems({ ...stats, students: 'x' }).length === 0 && CT.statItems(null).length === 0
+    && CT.statItems({ ...stats, classes: 1 })[1].label === 'Class', 'CT counter: four totals when visible; nothing when hidden or malformed');
+  const now = Date.now();
+  check(CT.freshCache({ at: now - 60e3, data: stats }, now) && !CT.freshCache({ at: now - CT.CACHE_MS - 1 }, now)
+    && !CT.freshCache({ at: now + 60e3 }, now) && !CT.freshCache(null, now), 'CT counter: cached for 10 minutes, never from the future');
+  check(CT.formatCount(1450) === (1450).toLocaleString('en-IN'), 'CT counter: numbers in Indian format');
+
+  // IA — in-app browser detection (WhatsApp fix, 28 Oct 2026)
+  const IA = await imp('src/scripts/lib/inapp.js');
+  const UA = {
+    androidWhatsApp: 'Mozilla/5.0 (Linux; Android 13; SM-A146B Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/129.0.6668.100 Mobile Safari/537.36',
+    instagram: 'Mozilla/5.0 (Linux; Android 12; RMX3263) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 Instagram 350.0.0.0 Android',
+    iosWhatsApp: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    androidChrome: 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36',
+    iosSafari: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+    iosChrome: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/129.0.6668.69 Mobile/15E148 Safari/604.1',
+    desktop: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+  };
+  check(IA.inAppBrowser(UA.androidWhatsApp) && IA.inAppBrowser(UA.instagram) && IA.inAppBrowser(UA.iosWhatsApp)
+    && !IA.inAppBrowser(UA.androidChrome) && !IA.inAppBrowser(UA.iosSafari) && !IA.inAppBrowser(UA.iosChrome) && !IA.inAppBrowser(UA.desktop),
+    'IA app built-in browsers detected (WhatsApp, Instagram, iOS web view); Chrome, Safari and desktop not');
+  check(IA.chromeIntent('https://sbccas.github.io/git-github-fundamentals/account/') === 'intent://sbccas.github.io/git-github-fundamentals/account/#Intent;scheme=https;package=com.android.chrome;end',
+    'IA "Open in Chrome" link for Android');
+
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');
   let files = [];

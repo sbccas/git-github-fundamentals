@@ -212,3 +212,9 @@ renderCollege();
 renderContinue();
 observeReveal();
 initDemo();
+
+// Participant counter (Milestone 12b): only in builds with accounts; one cached request, hidden on failure.
+if (__ACCOUNTS__) {
+  import('../../styles/counter.css');
+  import('../lib/counter.js').then((m) => m.mountCounter()).catch(() => {});
+}

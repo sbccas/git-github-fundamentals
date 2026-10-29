@@ -105,6 +105,11 @@ export const api = {
   exportData: () => rpc('export_my_data'),
   deleteAccount: () => rpc('delete_my_account'),
   joinBatch: (code) => rpc('join_batch', { p_code: code }),
+  // Request to join (Milestone 12b)
+  requestToJoin: (year, division) => rpc('request_to_join', { p_year: year, p_division: division }),
+  withdrawRequest: () => rpc('withdraw_request'),
+  facultyRequests: () => rpc('faculty_join_requests'),
+  handleRequest: (id, action, batch = null) => rpc('faculty_handle_request', { p_request: id, p_action: action, p_batch: batch }),
   // Faculty (Milestone 12): the database checks the allowlist and batch links on every call.
   facultyBatches: () => rpc('faculty_batches'),
   createBatch: (name, programme, year) => rpc('faculty_create_batch', { p_name: name, p_programme: programme, p_year: year }),

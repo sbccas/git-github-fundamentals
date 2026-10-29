@@ -1,0 +1,18 @@
+/* ================= Participant counter (Milestone 12b) — home page, builds with accounts only ================= */
+/* Reuses the .stats strip from home.css; four totals instead of five. */
+
+.counter-card { margin-top: 20px; padding: 18px; border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent); border-radius: var(--radius-lg);
+  background: radial-gradient(420px 200px at 0 0, color-mix(in srgb, var(--primary) 16%, transparent), transparent 70%), color-mix(in srgb, var(--surface) 70%, transparent); }
+.counter-card .eyebrow { margin: 0 0 10px; text-align: center; }
+.counter .stats.counter-stats { margin-top: 0; grid-template-columns: repeat(4, 1fr); }
+.counter .counter-stats .stat:nth-child(n) { border-top: 0; border-left: 1px solid var(--border); }
+.counter .counter-stats .stat:first-child { border-left: 0; }
+.counter-cta { margin: 16px 0 0; text-align: center; }
+.counter-cta .btn { max-width: 100%; white-space: normal; text-align: center; }
+
+@media (max-width: 640px) {
+  .counter .stats.counter-stats { grid-template-columns: repeat(2, 1fr); }
+  .counter .counter-stats .stat:nth-child(odd) { border-left: 0; }
+  .counter .counter-stats .stat:nth-child(n + 3) { border-top: 1px solid var(--border); }
+  .counter .counter-stats .stat:last-child { grid-column: auto; }  /* home.css spans the 5th course stat; four here */
+}

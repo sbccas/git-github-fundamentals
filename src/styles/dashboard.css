@@ -45,3 +45,10 @@
 .dash-projector-label { margin: 0; font-size: var(--fs-md); color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
 .dash-projector-code { margin: 0; font: 700 clamp(3rem, 2rem + 9vw, 10rem)/1.1 var(--font-mono); letter-spacing: .14em; color: var(--primary-strong); }
 .dash-projector-how { margin: 0; font-size: var(--fs-lg); color: var(--text-2); }
+
+/* Requests to join (Milestone 12b) */
+.dash-requests { border-color: color-mix(in srgb, var(--amber) 55%, transparent); }
+.dash-badge { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 8px; margin-left: 6px; border-radius: 999px; background: var(--amber); color: #1a1300; font-size: var(--fs-sm); vertical-align: middle; }
+.dash-req-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.dash-req-actions select { min-height: 40px; max-width: 220px; padding: 0 8px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
+.dash-req-actions .btn { min-height: 40px; padding: 0 14px; }

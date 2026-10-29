@@ -24,6 +24,7 @@ let students = [];
 let sortBy = 'name';
 let filter = '';
 let refreshTimer = null;
+let requests = []; // pending "Request to join" (Milestone 12b)
 
 function message(text, tone = 'info') {
   msgBox.textContent = text ?? '';
@@ -79,7 +80,7 @@ async function main() {
 
 async function loadBatches(selectId) {
   try {
-    batches = await api.facultyBatches();
+    [batches, requests] = await Promise.all([api.facultyBatches(), api.facultyRequests().catch(() => [])]);
   } catch (err) {
     message(explain(err), 'bad');
     return;
@@ -168,12 +169,54 @@ function studentsShellHtml() {
     </section>`;
 }
 
+const YEAR = { 1: '1st year', 2: '2nd year', 3: '3rd year' };
+
+function requestsHtml() {
+  if (!requests.length) return '';
+  const options = batches.map((b) => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');
+  return `
+    <section class="card acct-card dash-requests" aria-labelledby="dash-req-h">
+      <h2 id="dash-req-h">Requests to join <span class="dash-badge">${requests.length}</span></h2>
+      <p class="muted acct-small">Students whose class is not in the course yet. Accept adds them to one of your batches at once.</p>
+      <div class="dash-table-wrap"><table class="dash-table">
+        <thead><tr><th scope="col">Roll no</th><th scope="col">Student</th><th scope="col">Programme · year</th><th scope="col">Requested</th><th scope="col">Action</th></tr></thead>
+        <tbody>${requests.map((r) => `
+          <tr>
+            <td class="dash-roll">${esc(r.roll_no ?? '')}</td>
+            <th scope="row"><span class="dash-name">${esc(r.display_name)}</span><span class="dash-sub">@${esc(r.github_username)}</span></th>
+            <td>${esc(programmeLabel(r.programme))} · ${esc(YEAR[r.year] ?? '')}${r.division ? ` · Div ${esc(r.division)}` : ''}</td>
+            <td>${esc(timeAgo(r.created_at))}</td>
+            <td class="dash-req-actions">
+              ${batches.length ? `<select data-req-batch="${esc(r.id)}" aria-label="Batch for ${esc(r.display_name)}">${options}</select>
+              <button class="btn btn-primary" type="button" data-req-accept="${esc(r.id)}">Accept</button>` : '<span class="muted">Create a batch first</span>'}
+              <button class="btn btn-ghost" type="button" data-req-decline="${esc(r.id)}">Decline</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </section>`;
+}
+
+async function handleRequest(id, action) {
+  const batch = action === 'accept' ? $(`[data-req-batch="${id}"]`, view)?.value : null;
+  const req = requests.find((r) => String(r.id) === String(id));
+  try {
+    await api.handleRequest(Number(id), action, batch);
+    message(action === 'accept'
+      ? `${req?.display_name ?? 'Student'} added to ${batches.find((b) => b.id === batch)?.name ?? 'the batch'}.`
+      : `Request from ${req?.display_name ?? 'the student'} declined.`, 'ok');
+    await loadBatches(action === 'accept' ? batch : current?.id);
+  } catch (err) { message(explain(err), 'bad'); }
+}
+
 function render() {
-  view.innerHTML = `${batchPickerHtml()}${current ? codeCardHtml(current) + studentsShellHtml() : ''}${createFormHtml(!batches.length)}`;
+  view.innerHTML = `${requestsHtml()}${batchPickerHtml()}${current ? codeCardHtml(current) + studentsShellHtml() : ''}${createFormHtml(!batches.length)}`;
   wire();
 }
 
 function wire() {
+  view.querySelectorAll('[data-req-accept]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqAccept, 'accept')));
+  view.querySelectorAll('[data-req-decline]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqDecline, 'decline')));
   $('[data-pick]', view)?.addEventListener('change', (e) => {
     try { localStorage.setItem(PICK_KEY, e.target.value); } catch { /* ignore */ }
     current = batches.find((b) => b.id === e.target.value);
@@ -238,6 +281,9 @@ async function loadStudents() {
   } catch (err) {
     message(explain(err), 'bad');
   }
+  api.facultyRequests().then((list) => {
+    if (list.length !== requests.length || list.some((r, i) => r.id !== requests[i]?.id)) { requests = list; render(); renderTable(); }
+  }).catch(() => {});
   refreshTimer = setTimeout(() => { if (document.visibilityState === 'visible') loadStudents(); else refreshTimer = setTimeout(loadStudents, REFRESH_MS); }, REFRESH_MS);
 }
 

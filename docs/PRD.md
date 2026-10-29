@@ -6,8 +6,8 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.17 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
-| **Last updated** | 2026-10-27 |
+| **Status** | v1.18 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Last updated** | 2026-10-29 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
 > Any new idea goes into **§15 Backlog** first and is built only after it is approved and moved into a phase.
@@ -225,6 +225,8 @@ A book-style companion for staff: what to *know* before teaching (the faculty gu
 | S-10 | **Sync rules** — local-first; revision check with merge on simultaneous changes; stale copies cannot remove progress; pending changes retried after network failures; idempotent retries; never merge another account's progress without asking (shared PCs, account switching). Plan §5.2. |
 | S-11 | **Test-project gate** — *changed by the owner on 2026-10-27 (M12-D8): one Supabase project, tested before go-live and then switched to live use; after go-live the test scripts must not run on it.* Original rule: separate test and production Supabase projects; migrations and the security suite run on the test project first; production only after the suite passes and the owner approves; data export before every production migration. Plan §5.3. |
 | S-12 | **Data protection** — consent screen before the first online save; "Download my data" exports everything stored online about the student (profile, consent record, batch, progress, live-quiz answers, certificates) and says what is not included; self-service account deletion — the student deletes their online data at once, and the college removes the remaining sign-in record on request (owner decisions 2026-10-26 and 2026-10-27: P-6 (c), no time limit decided yet); certificate records on deletion follow the college's D-9 policy (`keep` or `anonymise`, both tested); no automatic deletion after a fixed period (owner decision 2026-10-24); faculty see only their own batches and cannot edit progress. **Production sign-off:** before any real student data, the college confirms the consent wording, certificate-record retention and who may access student progress (D-9 – D-12). Plan §5.4 – §5.6. |
+| S-13 | **Participant counter** on the home page: students learning, classes, quizzes passed, missions completed — totals only, faculty not counted, hidden below 20 students; one cached request per visitor (owner 2026-10-28, [Milestone 12b plan](plans/MILESTONE-12B-COUNTER-REQUESTS-PLAN.md)). |
+| S-14 | **Request to join**: a signed-in student whose class has no batch requests the course (programme, year, division); any faculty member accepts into one of their batches or declines (owner 2026-10-28, Milestone 12b plan). |
 
 Data (plan §4): `profiles`, `faculty_allowlist`, `batches`, `batch_join_codes`, `join_attempts`, `progress` (one validated document per student — replaces the earlier indicative `quiz_attempts` and `mission_runs`), `live_sessions`, `live_answers`, `certificates`.
 
@@ -325,7 +327,7 @@ git-github-fundamentals/
 |---|---|---|---|
 | 10 | Foundation: test + production projects, schema and RLS, security suite, sign-in, consent, profile, download/delete | S-01, S-03, S-08, S-09, S-11, S-12 | 🔧 Built and tested on the test project 2026-10-27 (accounts off on the live site); deletion completion time and production gates open |
 | 11 | Sync | S-01, S-02, S-10 | 🔧 Built and tested on the test project 2026-10-27, with Milestone 10 (accounts off on the live site) |
-| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06 | 🔧 Dashboard, batches and join codes built and tested on the test project 2026-10-27 ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); leaderboard (S-04) later (M12-D1) |
+| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06, S-13, S-14 | ✅ Live 2026-10-27/29: dashboard, batches, join codes, roll numbers ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); counter and requests ([12b](plans/MILESTONE-12B-COUNTER-REQUESTS-PLAN.md)). ⏳ Leaderboard (S-04) later; remote session and exam ([12c](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md)) approved 2026-10-29 |
 | 13 | Live classroom quiz | S-05, S-09 L1–L6 | ⏳ Not started |
 | 14 | Certificates and verification | S-07, S-09 C1–C4 | ⏳ Not started |
 
@@ -368,6 +370,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-29 | 1.18 | Milestone 12b live: S-13 participant counter, S-14 request to join, in-app (WhatsApp) browser note; faculty dr-hiralpatel added; Milestone 12c (remote session 31 Oct, server-marked exam 2 Nov) approved |
 | 2026-10-27 | 1.17 | Phase 2 Milestones 10–12 built and tested on the one Supabase project (M12-D8 replaces the separate test/production projects of S-11); roll number in S-03 (M12-D9); faculty menu link (M12-D10); go-live decisions recorded in the Milestone 12 plan §6.1: consent v1, faculty contact2hitech and sbccas, deletion record removed on request, D-9 not applicable until certificates, D-12 not applicable (all students 19+) |
 | 2026-10-26 | 1.16 | Owner decisions (documentation only): Phase 2 plan revision 4 approved as the baseline; Milestone 10 plan (rev 3) and Milestone 11 plan approved with all recommended options (Q-1: GitHub test accounts only) for a combined build on the test project; S-12 deletion clarified (two-step, P-6 (c)); faculty allowlist moved to Milestone 12; D-5 test part done; `sbccas` is a personal GitHub account |
 | 2026-10-24 | 1.15 | Phase 2 plan revision 4 (documentation only): C4 follows the D-9 policy with both paths tested; privileged-function rules X1–X6 (S-09); complete "Download my data" export (S-12); OAuth/Supabase setup steps verified against current documentation (D-5); Realtime-layer live-quiz tests |
