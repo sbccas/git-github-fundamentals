@@ -9,6 +9,8 @@ import { BASE } from '../data/site.js';
 import { getSession, api, rememberAccount } from '../lib/account.js';
 import { classify } from '../lib/sync.js';
 import { summarize, unitCell, sortStudents, toCsv, MISSION_TOTAL, BADGE_TOTAL } from '../lib/dashboard.js';
+import { REMOTE_SESSION } from '../data/session.js';
+import { checklist, sessionCsv } from '../lib/session.js';
 
 const $ = (s, root = document) => root.querySelector(s);
 const view = $('[data-dash-view]');
@@ -25,6 +27,7 @@ let sortBy = 'name';
 let filter = '';
 let refreshTimer = null;
 let requests = []; // pending "Request to join" (Milestone 12b)
+let report = null; // last session report (Milestone 12c): { rows, from, to, batchId }
 
 function message(text, tone = 'info') {
   msgBox.textContent = text ?? '';
@@ -209,8 +212,93 @@ async function handleRequest(id, action) {
   } catch (err) { message(explain(err), 'bad'); }
 }
 
+/* ---------------- Remote session report (Milestone 12c) ---------------- */
+
+/** "2026-10-31T11:00:00+05:30" → "2026-10-31T11:00" in this computer's time zone, for <input type="datetime-local">. */
+const localInput = (iso) => {
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+const hm = (iso) => (iso ? new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—');
+
+function sessionShellHtml() {
+  return `
+    <section class="card acct-card dash-session" aria-labelledby="dash-ses-h">
+      <div class="dash-toolbar">
+        <h2 id="dash-ses-h">Remote session report</h2>
+        <label class="dash-when">From <input type="datetime-local" data-ses-from value="${localInput(report?.from ?? REMOTE_SESSION.from)}"></label>
+        <label class="dash-when">To <input type="datetime-local" data-ses-to value="${localInput(report?.to ?? REMOTE_SESSION.to)}"></label>
+        <button class="btn btn-primary" type="button" data-ses-run>Show report</button>
+        <button class="btn btn-ghost" type="button" data-ses-csv>Download CSV</button>
+      </div>
+      <p class="muted acct-small">Active time = 5-minute periods in which the student's progress changed on the course site. Highlighted: at least ${REMOTE_SESSION.minMinutes} minutes. Project checklist as read from GitHub when the student submitted.</p>
+      <div class="dash-table-wrap" data-ses-table>${report && report.batchId === current?.id ? sessionTableHtml(report.rows) : '<p class="muted">Choose the time window and tap Show report.</p>'}</div>
+    </section>`;
+}
+
+function sessionTableHtml(rows) {
+  if (!rows.length) return '<p>No students in this batch yet.</p>';
+  const min = REMOTE_SESSION.minMinutes;
+  const enough = rows.filter((r) => (r.active_periods ?? 0) * 5 >= min).length;
+  const projects = rows.filter((r) => r.project_url).length;
+  return `
+    <p class="acct-small"><strong>${enough}</strong> of ${rows.length} students active for at least ${min} minutes · <strong>${projects}</strong> project links · <strong>${rows.filter((r) => r.wall_pr_url).length}</strong> class wall PRs</p>
+    <table class="dash-table">
+      <thead><tr><th scope="col">Roll no</th><th scope="col">Student</th><th scope="col" class="num">Active</th><th scope="col">First – last</th>
+        <th scope="col">Missions</th><th scope="col">Self-check</th><th scope="col">Project</th><th scope="col">Class wall</th></tr></thead>
+      <tbody>${rows.map((r) => {
+        const mins = (r.active_periods ?? 0) * 5;
+        const c = checklist(r.project_check);
+        return `
+        <tr${mins >= min ? ' class="dash-enough"' : ''}>
+          <td class="dash-roll">${esc(r.roll_no ?? '')}</td>
+          <th scope="row"><span class="dash-name">${esc(r.display_name)}</span><span class="dash-sub">@${esc(r.github_username)}</span></th>
+          <td class="num"><strong>${mins}</strong> min</td>
+          <td>${hm(r.first_activity)} – ${hm(r.last_activity)}</td>
+          <td>${(r.missions_in_window ?? []).length ? esc(r.missions_in_window.join(' ')) : '—'}</td>
+          <td>${r.self_check_in_window ? `✓ ${esc(r.self_check_best ?? '')}%` : '—'}</td>
+          <td>${r.project_url ? `<a href="${esc(r.project_url)}" target="_blank" rel="noopener">repo</a> · ${r.project_check?.public === false ? '<span class="dash-missing">not public</span>' : `${c.score}/${c.total}`}${c.envWarning ? ' <span class="dash-missing">.env!</span>' : ''}` : '—'}</td>
+          <td>${r.wall_pr_url ? `<a href="${esc(r.wall_pr_url)}" target="_blank" rel="noopener">PR</a>` : '—'}</td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function runSessionReport() {
+  const from = $('[data-ses-from]', view)?.value;
+  const to = $('[data-ses-to]', view)?.value;
+  if (!from || !to) { message('Choose both times.', 'bad'); return; }
+  const box = $('[data-ses-table]', view);
+  box.innerHTML = '<p class="muted">Loading…</p>';
+  try {
+    const fromIso = new Date(from).toISOString();
+    const toIso = new Date(to).toISOString();
+    const rows = await api.sessionReport(current.id, fromIso, toIso);
+    report = { rows, from: fromIso, to: toIso, batchId: current.id };
+    box.innerHTML = sessionTableHtml(rows);
+  } catch (err) {
+    box.innerHTML = '';
+    message(explain(err), 'bad');
+  }
+}
+
+function downloadSessionCsv() {
+  if (!report || report.batchId !== current?.id) { message('Tap Show report first.', 'bad'); return; }
+  const span = `${new Date(report.from).toLocaleString()} – ${new Date(report.to).toLocaleString()}`;
+  const blob = new Blob([sessionCsv(report.rows, current.name, span)], { type: 'text/csv;charset=utf-8' });
+  const safe = current.name.replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '') || 'batch';
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `${safe}-remote-session-${report.from.slice(0, 10)}.csv` });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  message('Session report downloaded — keep it under the college\'s data policy.', 'ok');
+}
+
 function render() {
-  view.innerHTML = `${requestsHtml()}${batchPickerHtml()}${current ? codeCardHtml(current) + studentsShellHtml() : ''}${createFormHtml(!batches.length)}`;
+  view.innerHTML = `${requestsHtml()}${batchPickerHtml()}${current ? codeCardHtml(current) + studentsShellHtml() + sessionShellHtml() : ''}${createFormHtml(!batches.length)}`;
   wire();
 }
 
@@ -255,6 +343,8 @@ function wire() {
   $('[data-sort]', view)?.addEventListener('change', (e) => { sortBy = e.target.value; renderTable(); });
   $('[data-refresh]', view)?.addEventListener('click', () => loadStudents());
   $('[data-csv]', view)?.addEventListener('click', downloadCsv);
+  $('[data-ses-run]', view)?.addEventListener('click', runSessionReport);
+  $('[data-ses-csv]', view)?.addEventListener('click', downloadSessionCsv);
 }
 
 async function changeCode(regenerate, enabled) {

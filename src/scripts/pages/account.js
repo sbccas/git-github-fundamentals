@@ -9,6 +9,9 @@ import { BASE } from '../data/site.js';
 import { showStatus, STATUS_TEXT } from '../lib/account-boot.js';
 import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberAccount } from '../lib/account.js';
 import { inAppBrowser, isAndroid, chromeIntent } from '../lib/inapp.js';
+import { REMOTE_SESSION } from '../data/session.js';
+import { parseRepoUrl, parseWallPr, partAItems, checkRepo, checklist } from '../lib/session.js';
+import { load } from '../lib/progress.js';
 import { createSync, deviceSituation, linkDevice, leaveDevice, forgetDeviceLink, hasStash, syncMeta, classify } from '../lib/sync.js';
 
 const $ = (s, root = document) => root.querySelector(s);
@@ -254,6 +257,8 @@ function showSignedIn(profile) {
 
     ${batchSectionHtml(profile)}
 
+    ${accountState?.is_faculty ? '' : sessionSectionHtml()}
+
     ${dataSectionHtml()}`);
 
   $('[data-sync-now]', view).addEventListener('click', () => sync?.push());
@@ -279,6 +284,7 @@ function showSignedIn(profile) {
   });
   wireBatchSection();
   wireRequest();
+  wireSession();
   wireDataSection({ hasProfile: true });
   if (location.hash === '#request') $('#request', view)?.scrollIntoView({ block: 'center' });
 }
@@ -301,6 +307,104 @@ function batchSectionHtml(profile) {
       ${batch || accountState?.is_faculty ? '' : `<div class="acct-request" id="request" data-request>${requestHtml()}</div>`}
       ${accountState?.is_faculty ? `<p class="acct-faculty"><a class="btn btn-ghost" href="${BASE}teach/dashboard/">Open the faculty dashboard →</a></p>` : ''}
     </section>`;
+}
+
+/* ---------------- Remote session (Milestone 12c) ---------------- */
+
+const tick = (ok) => `<span class="acct-tick" data-ok="${ok}">${ok ? '✓' : '○'}</span>`;
+
+function partAHtml() {
+  return partAItems(load()).map((i) => `<li>${tick(i.ok)} ${esc(i.label)}</li>`).join('');
+}
+
+function projectResultHtml(check) {
+  if (!check) return '';
+  if (check.error === 'rate_limited') return '<p class="muted acct-small">GitHub is busy right now, so the checklist could not be read. Your link is saved — tap <strong>Check again</strong> later.</p>';
+  if (check.error) return '<p class="muted acct-small">The checklist could not be read just now. Your link is saved — tap <strong>Check again</strong> later.</p>';
+  if (check.public === false) return '<p class="acct-warn">Repository not found or private. Make it <strong>public</strong> (GitHub → Settings → General → Change visibility), then check again.</p>';
+  const c = checklist(check);
+  return `
+    ${c.envWarning ? '<p class="acct-warn"><strong>Remove your .env file from GitHub now</strong> and change any API keys it contained — anyone can read a public repository. Add .env to .gitignore.</p>' : ''}
+    <p><strong>Checklist: ${c.score} of ${c.total}</strong> · ${check.commits_in_session ?? 0} commit${check.commits_in_session === 1 ? '' : 's'} during the session</p>
+    <ul class="acct-checks">${c.items.map((i) => `<li>${tick(i.ok)} ${esc(i.label)}${i.ok ? '' : ` <span class="muted acct-small">— ${esc(i.hint)}</span>`}</li>`).join('')}</ul>`;
+}
+
+function sessionSectionHtml() {
+  const s = REMOTE_SESSION;
+  const links = accountState?.session ?? {};
+  return `
+    <section class="card acct-card acct-session" id="session" aria-labelledby="acct-session-h">
+      <h2 id="acct-session-h">${esc(s.title)} — ${esc(s.date)}, 11:00 – 15:00</h2>
+      <p class="muted acct-small">Work for at least 2 hours. Your faculty see your activity, the missions you finish and the links you submit here.</p>
+
+      <h3>Part A — on this site</h3>
+      <ul class="acct-checks" data-part-a>${partAHtml()}</ul>
+      <p class="acct-small"><a href="${BASE}missions/">Missions →</a> · <a href="${BASE}unit-4/#quiz">Unit 4 quiz →</a> · <a href="${BASE}unit-5/#quiz">Unit 5 quiz →</a> · <a href="${BASE}self-check/">Self-check →</a></p>
+
+      <h3>Part B — your AI project on GitHub</h3>
+      <p class="acct-small">Push the AI project you built to a <strong>public</strong> GitHub repository with a README, a .gitignore, at least 5 commits, a branch merged through a pull request and a tag <code>v1.0</code>. <strong>Never upload API keys</strong> — keep them in <code>.env</code> and list <code>.env</code> in .gitignore.</p>
+      <form class="acct-form" data-project-form novalidate>
+        <label for="acct-project">Repository link</label>
+        <div class="acct-row">
+          <input id="acct-project" name="url" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://github.com/your-name/your-project" value="${esc(links.project_url ?? '')}">
+          <button class="btn btn-primary" type="submit">${links.project_url ? 'Check again' : 'Check and submit'}</button>
+        </div>
+      </form>
+      <div data-project-result>${projectResultHtml(links.project_check)}</div>
+
+      <h3>Part C — class wall <span class="muted">(optional)</span></h3>
+      <p class="acct-small">Fork <a href="https://github.com/${s.wallRepo}" target="_blank" rel="noopener">${s.wallRepo}</a>, add a file named with your roll number (for example <code>541.md</code>) with your name and one line about your project, open a pull request and paste its link.</p>
+      <form class="acct-form" data-wall-form novalidate>
+        <label for="acct-wall">Pull request link</label>
+        <div class="acct-row">
+          <input id="acct-wall" name="url" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://github.com/${s.wallRepo}/pull/…" value="${esc(links.wall_pr_url ?? '')}">
+          <button class="btn btn-ghost" type="submit">Submit</button>
+        </div>
+      </form>
+    </section>`;
+}
+
+function wireSession() {
+  const box = $('[data-part-a]', view);
+  if (!box) return;
+  if (!wireSession.listening) {
+    wireSession.listening = true; // one listener for the page, whatever is re-rendered
+    window.addEventListener('gg:progress', () => { const b = $('[data-part-a]', view); if (b) b.innerHTML = partAHtml(); });
+  }
+  const project = $('[data-project-form]', view);
+  project.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const parsed = parseRepoUrl(project.url.value);
+    if (!parsed) { message('Paste your repository link, like https://github.com/your-name/your-project', 'bad'); project.url.focus(); return; }
+    const btn = project.querySelector('[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Checking on GitHub…';
+    const check = await checkRepo(parsed);
+    try {
+      const saved = await api.submitSessionLinks(parsed.url, check, null);
+      accountState = { ...accountState, session: saved };
+      project.url.value = saved.project_url;
+      $('[data-project-result]', view).innerHTML = projectResultHtml(saved.project_check);
+      message('Project link saved. Your faculty can see it.', 'ok');
+    } catch (err) {
+      message(explain(err), 'bad');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Check again';
+    }
+  });
+  const wall = $('[data-wall-form]', view);
+  wall.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = parseWallPr(wall.url.value);
+    if (!url) { message(`Paste the link of your pull request on ${REMOTE_SESSION.wallRepo}`, 'bad'); wall.url.focus(); return; }
+    try {
+      const saved = await api.submitSessionLinks(null, null, url);
+      accountState = { ...accountState, session: saved };
+      wall.url.value = saved.wall_pr_url;
+      message('Class wall link saved.', 'ok');
+    } catch (err) { message(explain(err), 'bad'); }
+  });
 }
 
 /** "Request to join" (Milestone 12b): for students whose class has no batch yet. */

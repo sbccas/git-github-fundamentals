@@ -52,3 +52,8 @@
 .dash-req-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .dash-req-actions select { min-height: 40px; max-width: 220px; padding: 0 8px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
 .dash-req-actions .btn { min-height: 40px; padding: 0 14px; }
+
+/* Remote session report (Milestone 12c) */
+.dash-when { display: flex; align-items: center; gap: 6px; font-size: var(--fs-sm); font-weight: 600; }
+.dash-when input { min-height: 40px; padding: 0 8px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
+.dash-table tr.dash-enough td:nth-child(3) { color: var(--green); }

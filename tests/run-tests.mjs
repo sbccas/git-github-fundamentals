@@ -541,6 +541,40 @@ console.log('\nAccounts and sync');
   check(IA.chromeIntent('https://sbccas.github.io/git-github-fundamentals/account/') === 'intent://sbccas.github.io/git-github-fundamentals/account/#Intent;scheme=https;package=com.android.chrome;end',
     'IA "Open in Chrome" link for Android');
 
+  // RS — remote session helpers (Milestone 12c)
+  const RS = await imp('src/scripts/lib/session.js');
+  check(RS.parseRepoUrl('https://github.com/Hit-G/ai-app.git/')?.url === 'https://github.com/Hit-G/ai-app'
+    && RS.parseRepoUrl('github.com/a/b/tree/main/src')?.repo === 'b' && RS.parseRepoUrl('https://github.com/a/my.app')?.repo === 'my.app'
+    && RS.parseRepoUrl('https://gitlab.com/a/b') === null && RS.parseRepoUrl('https://github.com/onlyowner') === null,
+    'RS repository links: .git and extra paths removed; other sites and incomplete links refused');
+  check(RS.parseWallPr('https://github.com/sbccas/sy-ai-2026-wall/pull/12/files') === 'https://github.com/sbccas/sy-ai-2026-wall/pull/12'
+    && RS.parseWallPr('https://github.com/other/repo/pull/1') === null, 'RS class wall: only pull requests on the class repository');
+  check(RS.partAItems({ version: 1, missions: { 'M-12': { done: true } }, units: { 4: { quiz: { passed: true } } }, selfCheck: { best: 70 } })
+    .map((i) => (i.ok ? 1 : 0)).join('') === '1000101', 'RS Part A: missions M-12 – M-15, Unit 4 and 5 quizzes, self-check from local progress');
+  check(RS.countFromLink('<https://api.github.com/repositories/1/commits?per_page=1&page=2>; rel="next", <https://api.github.com/repositories/1/commits?per_page=1&page=37>; rel="last"', 1) === 37
+    && RS.countFromLink(null, 1) === 1, 'RS commit count read from GitHub\'s paging header');
+  const fake = (routes) => async (url) => {
+    const path = url.replace('https://api.github.com/repos/a/b', '').split('?')[0] || '/';
+    const r = routes[path] ?? { status: 404 };
+    return { status: r.status ?? 200, ok: (r.status ?? 200) < 300, headers: { get: (h) => r.headers?.[h] ?? null }, json: async () => r.body };
+  };
+  const good = await RS.checkRepo({ owner: 'a', repo: 'b' }, { fetchFn: fake({
+    '/': { body: { private: false, pushed_at: '2026-10-31T07:00:00Z' } }, '/readme': {}, '/contents/.gitignore': {}, '/contents/.env': { status: 404 },
+    '/commits': { body: [{}], headers: { link: '<x?per_page=1&page=12>; rel="last"' } }, '/pulls': { body: [{ merged_at: '2026-10-31T08:00:00Z' }, { merged_at: null }] },
+    '/tags': { body: [{ name: 'v1.0' }] } }) });
+  const gc = RS.checklist(good);
+  check(good.public && good.commits === 12 && good.merged_prs === 1 && good.tag_v1 && gc.score === 6 && !gc.envWarning,
+    'RS project checklist: a complete public repository scores 6 of 6');
+  const bad = await RS.checkRepo({ owner: 'a', repo: 'b' }, { fetchFn: fake({ '/': { body: { private: false } }, '/contents/.env': {}, '/commits': { status: 409 } }) });
+  check(RS.checklist(bad).envWarning && bad.commits === 0 && RS.checklist(bad).score === 1,
+    'RS project checklist: a .env file is flagged; an empty repository counts 0 commits');
+  check((await RS.checkRepo({ owner: 'a', repo: 'b' }, { fetchFn: fake({}) })).public === false
+    && (await RS.checkRepo({ owner: 'a', repo: 'b' }, { fetchFn: fake({ '/': { status: 403 } }) })).error === 'rate_limited',
+    'RS project checklist: private or missing repository, and GitHub\'s rate limit, are reported');
+  const sesCsv = RS.sessionCsv([{ roll_no: '541', display_name: '=x', github_username: 'g', active_periods: 25, missions_in_window: ['M-12'],
+    self_check_in_window: true, project_url: 'https://github.com/a/b', project_check: good, xp: 900 }], 'BCA 2026 – SY AI', 'Sat');
+  check(sesCsv.split('\r\n')[1].startsWith("BCA 2026 – SY AI,Sat,541,'=x,g,125,") && sesCsv.includes(',6,'), 'RS session CSV: active minutes, checklist score, formula-safe');
+
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');
   let files = [];

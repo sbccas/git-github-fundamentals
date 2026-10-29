@@ -44,8 +44,8 @@ async function fetchStats() {
 
 function countUp(section) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  // The real numbers stay visible until the strip scrolls into view; only then they count up from 0.
   const nums = [...section.querySelectorAll('[data-count]')];
-  nums.forEach((el) => { el.textContent = '0'; });
   const io = new IntersectionObserver((entries) => {
     if (!entries.some((e) => e.isIntersecting)) return;
     io.disconnect();

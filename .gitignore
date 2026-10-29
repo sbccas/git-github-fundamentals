@@ -6,3 +6,6 @@ dist/
 Thumbs.db
 .env
 .env.*
+
+# Local reports with student names (never commit)
+local-reports/

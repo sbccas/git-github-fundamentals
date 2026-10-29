@@ -46,3 +46,8 @@
 .acct-grow { flex: 1; min-width: 0; display: grid; gap: 4px; font-weight: 600; font-size: var(--fs-sm); }
 .acct-grow select, .acct-grow input { min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; width: 100%; }
 .acct-inapp { border-color: color-mix(in srgb, var(--amber) 60%, transparent); background: color-mix(in srgb, var(--amber) 8%, var(--surface)); }
+.acct-session h3 { margin: 18px 0 6px; font-size: var(--fs-md); }
+.acct-checks { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.acct-tick { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; margin-right: 6px; font-weight: 700; font-size: var(--fs-xs); border: 1px solid var(--border-strong); color: var(--muted); }
+.acct-tick[data-ok="true"] { background: var(--green); border-color: var(--green); color: var(--on-green); }
+.acct-warn { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--red) 60%, transparent); background: color-mix(in srgb, var(--red) 10%, transparent); font-size: var(--fs-sm); }

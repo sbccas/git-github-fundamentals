@@ -63,7 +63,7 @@ for (const f of fs.readdirSync(path.join(SUPA, 'migrations')).filter((n) => n.en
 for (const f of ['seed_gg_test.sql', 'seed_gg_test_m12.sql', 'seed_gg_test_draft3.sql']) await step(`seed ${f}`, read('tests', f));
 
 for (const run of [1, 2]) {
-  for (const f of ['m10_m11_security_test.sql', 'm12_dashboard_test.sql', 'm12b_counter_requests_test.sql']) {
+  for (const f of ['m10_m11_security_test.sql', 'm12_dashboard_test.sql', 'm12b_counter_requests_test.sql', 'm12c_remote_session_test.sql']) {
     const res = await step(`${f} (run ${run})`, read('tests', f));
     const rows = res.at(-1).rows;
     const bad = rows.filter((r) => r.result !== 'PASS');
