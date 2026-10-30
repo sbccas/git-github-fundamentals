@@ -6,8 +6,8 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.18 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
-| **Last updated** | 2026-10-29 |
+| **Status** | v1.19 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Last updated** | 2026-10-30 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
 > Any new idea goes into **§15 Backlog** first and is built only after it is approved and moved into a phase.
@@ -370,6 +370,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-30 | 1.19 | Milestone 12c: remote session 31 Oct (task card, GitHub project checklist, class wall, session report, student timer, task sheet page and PDF) and the server-marked final exam for 2 Nov (bank of 75 approved by the owner, kept out of the repository) |
 | 2026-10-29 | 1.18 | Milestone 12b live: S-13 participant counter, S-14 request to join, in-app (WhatsApp) browser note; faculty dr-hiralpatel added; Milestone 12c (remote session 31 Oct, server-marked exam 2 Nov) approved |
 | 2026-10-27 | 1.17 | Phase 2 Milestones 10–12 built and tested on the one Supabase project (M12-D8 replaces the separate test/production projects of S-11); roll number in S-03 (M12-D9); faculty menu link (M12-D10); go-live decisions recorded in the Milestone 12 plan §6.1: consent v1, faculty contact2hitech and sbccas, deletion record removed on request, D-9 not applicable until certificates, D-12 not applicable (all students 19+) |
 | 2026-10-26 | 1.16 | Owner decisions (documentation only): Phase 2 plan revision 4 approved as the baseline; Milestone 10 plan (rev 3) and Milestone 11 plan approved with all recommended options (Q-1: GitHub test accounts only) for a combined build on the test project; S-12 deletion clarified (two-step, P-6 (c)); faculty allowlist moved to Milestone 12; D-5 test part done; `sbccas` is a personal GitHub account |

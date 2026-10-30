@@ -37,7 +37,7 @@
 | 12 | Faculty dashboard, batches, join codes, CSV, roll number, faculty menu link ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); SQL 41/41, manual 16/16 ([evidence](evidence/m12/)); leaderboard (S-04) later | ✅ live (leaderboard ⏳) | `16b3221` · `408fb5f` | 2026-10-27 |
 | Go-live | Accounts on for the live site; consent v1; one Supabase project switched to live use; go-live decisions in the [Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md) | ✅ | `e9fbabe` · `f1e0090` · docs and `npm run sql-check` in the release commit | 2026-10-27 |
 | 12b | Participant counter (S-13), request to join (S-14), WhatsApp / in-app browser note ([plan](plans/MILESTONE-12B-COUNTER-REQUESTS-PLAN.md)); SQL 24/24, local trial 6/6 ([evidence](evidence/m12b/2026-10-28-local-trial.md)) | ✅ live | this release | 2026-10-29 |
-| 12c | Remote session 31 Oct (tasks, project upload, session report) and server-marked MCQ exam 2 Nov ([plan](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md), approved 2026-10-29) | 🔧 part 1 (remote session) built and tried ([evidence](evidence/m12c/2026-10-29-remote-session-trial.md)); exam ⏳ | `1a3868b` | 2026-10-29 |
+| 12c | Remote session 31 Oct (tasks, project upload, session report) and server-marked MCQ exam 2 Nov ([plan](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md), approved 2026-10-29) | ✅ remote session (live 29–30 Oct, timer included) and final exam (tried 30 Oct, bank of 75 approved) — [evidence](evidence/m12c/2026-10-29-remote-session-trial.md) | `1a3868b` · `5b42353` · `eafc95e` | 2026-10-30 |
 | 13 – 14 | Live classroom quiz; certificates and `/verify/` | ⏳ not started | — | — |
 | Phase 3 | AI tutor via Supabase Edge Function + Claude | ⏳ not started | — | — |
 

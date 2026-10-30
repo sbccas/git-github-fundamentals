@@ -18,6 +18,8 @@ test evidence: [`docs/evidence/`](evidence/).
 | "Open this page in Chrome first" note inside WhatsApp / Instagram / Facebook browsers | `/account/` (signed out) | Students on phones |
 | Remote session card (Part A status, Part B project link with GitHub checklist, Part C class-wall PR) | `/account/` → Remote session | Students |
 | Remote session report (active minutes, missions, project, PR; CSV) and collapsible sections | Dashboard → Remote session report | Faculty |
+| Remote session timer (countdown, own active minutes) during 31 Oct 11:00 – 15:00 | Header bar on every page; account page | Students |
+| Final exam marked on the server (25 questions, 30 min, pass 40%; result at once; review after close) | `/exam/`; dashboard → Final exam | Students · faculty |
 | Faculty dashboard: batches, join code (projector view), student table, CSV | `/teach/dashboard/` (also More menu, faculty only) | Faculty on the allowlist |
 | Download my data · Delete my account | `/account/` | Everyone signed in |
 
@@ -126,6 +128,25 @@ values ('v2', 'current', 'production', '<who approved, date>', now());
 Everyone signed in is asked to agree again before anything new is saved online (download, delete and sign-out keep
 working). Between the push and the SQL, sign-in shows "Please reload" — do both together.
 
+### Exam day (final exam, Milestone 12c part 2)
+
+The question bank (75 questions with answers) lives only in the git-ignored folder `exam-bank/` on the owner's
+computer and in the database — **never in the repository or a chat**. To change questions: edit
+`exam-bank/questions.json` → `node scripts/exam-bank.mjs` (checks it and writes `question-bank-review.html` and
+`load-questions.sql`) → run `load-questions.sql` in the SQL Editor (older questions are retired; papers already started
+keep working).
+
+1. **Before class:** dashboard → select **BCA 2026 – SY AI** → Final exam → check "Question bank … ✓" →
+   **Create an exam for BCA 2026 – SY AI** → confirm the batch name. It stays closed.
+2. **In class:** students open **More → Final exam** (or `/exam/`) and wait on "No exam is open right now".
+   Tap **Open the exam** → their pages show the rules within 15 seconds → they tap **Start**.
+3. **During:** the Final exam section refreshes every 20 seconds (started · submitted · passed). **Show results** lists
+   every student: not started / in progress / submitted, answers, score, minutes, how often they left the page.
+4. **After 30 minutes** papers submit themselves; then tap **Close the exam** — unfinished papers are marked with the
+   answers saved so far, and students can now see the correct answers. **Download CSV** for the records.
+5. A student whose phone died: they open `/exam/` again on any device, signed in — the paper resumes with the same
+   questions, answers and deadline.
+
 ## 5. Making a change safely
 
 1. Plan → owner approval → a branch (not `main`) — the project's normal workflow.
@@ -168,6 +189,9 @@ temporarily add `http://localhost:5173/git-github-fundamentals/account/` under A
 | Faculty: batch missing on the dashboard | Not linked to that batch | Another faculty member adds the username under **Faculty with access** |
 | A student's XP looks lower than expected | Progress made on a device that never signed in, or "Keep separate" chosen | Sign in on that device and choose **Add**; XP is always recalculated from the work done |
 | A badge earned through two devices is not shown yet | Badges are awarded on the device when the next mission or quiz is completed | Complete any mission or quiz |
+| Student: "This exam is not for your batch" | Student not in the exam's batch | Account page → Your batch (join with the class code); then start |
+| Student: "The question bank is not ready" | Fewer than 5 active questions in a unit | Load `exam-bank/load-questions.sql` |
+| An exam was created in the wrong batch | It stays a draft (invisible) until opened | Delete it: `delete from private.exams where status = 'draft' and title = '…' returning title;` |
 | Supabase project paused | Free projects pause after a long time without use | Supabase dashboard → Restore project |
 | Counter not on the home page | Fewer than 20 students signed in (by design), or the request failed | Nothing to fix; it appears from 20 students. Locally, `?counter-preview` shows sample numbers |
 | Session report shows nothing / an error | Window longer than 24 hours, or "To" before "From" | Use 31 Oct 11:00 → 15:00 (or any window up to 24 h) |

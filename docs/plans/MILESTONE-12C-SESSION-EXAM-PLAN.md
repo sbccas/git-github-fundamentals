@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | ✅ **Approved by the owner on 29 Oct 2026** ("approve all": M12C-D1 – M12C-D12 as recommended). Nothing built yet. |
+| **Status** | ✅ **Approved by the owner on 29 Oct 2026** ("approve all": M12C-D1 – M12C-D12 as recommended). **Built and tried 29–30 Oct 2026**: remote session live (with the student timer, owner approval 30 Oct); final exam tried locally, question bank of 75 approved by the owner 30 Oct ([evidence](../evidence/m12c/2026-10-29-remote-session-trial.md)). |
 | **Owner request (29 Oct 2026)** | A remote task session at home, monitored on the dashboard and counted as attendance, including uploading the students' AI project to GitHub; a server-marked MCQ exam on the course site |
 | **Builds on** | Milestones 10–12 (live) and 12b (counter, requests — tested locally, push pending) · [operations guide](../PHASE-2-OPERATIONS.md) |
 

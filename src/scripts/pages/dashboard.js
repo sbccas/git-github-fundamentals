@@ -356,8 +356,8 @@ function examShellHtml() {
   return fold('exam', 'dash-exams', `<h2 id="dash-exam-h">Final exam${exams.some((e) => e.status === 'open') ? ' <span class="dash-exam-badge" data-status="open">OPEN</span>' : ''}</h2>`, `
       ${bankLine()}
       <div data-exam-list>${exams.map(examCardHtml).join('') || '<p class="muted">No exam for this batch yet.</p>'}</div>
-      <details class="dash-colleagues"${exams.length ? '' : ' open'}>
-        <summary>Create an exam</summary>
+      <details class="dash-colleagues">
+        <summary>Create an exam for <strong>${esc(current?.name ?? '')}</strong></summary>
         <form class="acct-form" data-exam-create novalidate>
           <label for="dash-exam-title">Title</label>
           <input id="dash-exam-title" name="title" type="text" maxlength="120" value="${esc(title)}">
@@ -393,8 +393,13 @@ function wireExam() {
   $('[data-exam-create]', view)?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const f = e.currentTarget;
+    const title = f.title.value.trim();
+    // Owner trial, 30 Oct 2026: an exam was created in the wrong batch by mistake — always name the batch first.
+    if (!confirm(`Create the exam "${title}" for the batch "${current.name}"?
+
+It stays closed until you tap Open the exam.`)) return;
     try {
-      await api.facultyExamCreate(current.id, f.title.value.trim(), Number(f.perUnit.value), Number(f.minutes.value), Number(f.pass.value));
+      await api.facultyExamCreate(current.id, title, Number(f.perUnit.value), Number(f.minutes.value), Number(f.pass.value));
       message('Exam created. Open it in class when students are ready.', 'ok');
       loadExams();
     } catch (err) { message(explain(err), 'bad'); }
