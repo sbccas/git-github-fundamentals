@@ -575,6 +575,16 @@ console.log('\nAccounts and sync');
     self_check_in_window: true, project_url: 'https://github.com/a/b', project_check: good, xp: 900 }], 'BCA 2026 – SY AI', 'Sat');
   check(sesCsv.split('\r\n')[1].startsWith("BCA 2026 – SY AI,Sat,541,'=x,g,125,") && sesCsv.includes(',6,'), 'RS session CSV: active minutes, checklist score, formula-safe');
 
+  // TM — student timer helpers (owner approval 30 Oct 2026)
+  const win = RS.sessionWindow(0, { from: '2026-10-31T11:00:00+05:30', to: '2026-10-31T15:00:00+05:30' });
+  check(win.to - win.from === 4 * 3600e3 && RS.sessionPhase(win.from - 1, win) === 'before' && RS.sessionPhase(win.from, win) === 'live'
+    && RS.sessionPhase(win.to, win) === 'after', 'TM session window 11:00 – 15:00 IST and its phases');
+  check(RS.formatClock(2 * 3600e3 + 15 * 60e3 + 5e3) === '2:15:05' && RS.formatClock(-5) === '0:00:00', 'TM countdown format h:mm:ss, never negative');
+  const a9 = RS.activeSummary(9, 120);
+  const a30 = RS.activeSummary(30, 120);
+  check(a9.minutes === 45 && a9.remaining === 75 && !a9.done && a9.percent === 38 && a30.done && a30.remaining === 0 && a30.percent === 100,
+    'TM active time: 5 minutes per period, minutes still needed for 2 hours, done at 120');
+
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');
   let files = [];

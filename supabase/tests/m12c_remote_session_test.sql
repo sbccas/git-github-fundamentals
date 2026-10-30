@@ -73,7 +73,7 @@ insert into private.faculty_allowlist (github_id, note) values (990000051, 'test
 select pg_temp.check('X1-X2', bool_and(p.prosecdef and p.proconfig @> array['search_path=""']),
   'new functions: SECURITY DEFINER, search_path = '''': ' || string_agg(p.proname, ', '))
 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-where (n.nspname = 'public' and p.proname in ('submit_session_links', 'faculty_session_report'))
+where (n.nspname = 'public' and p.proname in ('submit_session_links', 'faculty_session_report', 'my_session_activity'))
    or (n.nspname = 'private' and p.proname = 'log_progress_activity');
 select pg_temp.check('X3', not has_function_privilege('anon', 'public.submit_session_links(text,jsonb,text)', 'EXECUTE')
   and not has_function_privilege('anon', 'public.faculty_session_report(uuid,timestamptz,timestamptz)', 'EXECUTE')
@@ -158,6 +158,18 @@ begin
   perform pg_temp.check('SR6', r like 'ERROR 42501%', 'students cannot see the report: ' || r);
   r := pg_temp.as_user(pg_temp.uid('X'), format('select public.faculty_session_report(%L, %L, %L)::text', bx, now() - interval '2 days', now()));
   perform pg_temp.check('SR7', r like 'ERROR 22023%', 'windows over 24 hours are refused: ' || r);
+
+  -- Student timer: own active time only (my_session_activity)
+  r := pg_temp.as_user(pg_temp.uid('S1'), format('select public.my_session_activity(%L, %L)::text', now() - interval '1 hour', now() + interval '1 hour'));
+  j := pg_temp.js(r);
+  perform pg_temp.check('TM1', (j ->> 'active_periods')::int >= 1 and (j ->> 'saves')::int = 2,
+    'a student sees their own active time (same definition as the faculty report): ' || r);
+  r := pg_temp.as_user(pg_temp.uid('S2'), format('select public.my_session_activity(%L, %L)::text', now() - interval '1 hour', now() + interval '1 hour'));
+  perform pg_temp.check('TM2', (pg_temp.js(r) ->> 'active_periods')::int = 0, 'another student sees only their own (zero) activity: ' || r);
+  r := pg_temp.as_user(null, format('select public.my_session_activity(%L, %L)::text', now() - interval '1 hour', now()));
+  perform pg_temp.check('TM3', r like 'ERROR 42501%', 'signed out: no timer data: ' || r);
+  r := pg_temp.as_user(pg_temp.uid('S1'), format('select public.my_session_activity(%L, %L)::text', now() - interval '3 days', now()));
+  perform pg_temp.check('TM4', r like 'ERROR 22023%', 'windows over 24 hours are refused: ' || r);
 
   -- Export and deletion
   r := pg_temp.as_user(pg_temp.uid('S1'), 'select public.export_my_data()::text');

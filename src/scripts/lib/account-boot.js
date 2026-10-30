@@ -111,6 +111,13 @@ if (!hasSession) {
 } else if (document.body.dataset.page !== 'account') {
   showStatus('checking');
   import('./account.js')
-    .then((m) => m.startBackgroundSync(showStatus))
+    .then(async (m) => {
+      const sync = await m.startBackgroundSync(showStatus);
+      // Remote session timer bar (students only, only while the session runs).
+      if (sync && !read('account', null)?.faculty) {
+        const t = await import('./session-timer.js');
+        if (t.isSessionLiveNow()) t.mountSessionBar(`${pageUrl('account/')}#session`);
+      }
+    })
     .catch(() => showStatus('error'));
 }

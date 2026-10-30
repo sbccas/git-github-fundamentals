@@ -95,3 +95,28 @@ export function sessionCsv(rows, batchName, window) {
   });
   return `﻿${[header.map(csvCell).join(','), ...lines].join('\r\n')}\r\n`;
 }
+
+/* ---------------- Student timer (owner approval 30 Oct 2026) ---------------- */
+
+/** The session window in milliseconds. preview (local trial only): a window around now. */
+export function sessionWindow(now = Date.now(), s = REMOTE_SESSION, preview = false) {
+  if (preview) return { from: now - 60 * 60e3, to: now + 60 * 60e3 };
+  return { from: Date.parse(s.from), to: Date.parse(s.to) };
+}
+
+export const sessionPhase = (now, win) => (now < win.from ? 'before' : now < win.to ? 'live' : 'after');
+
+/** 8105000 ms → "2:15:05". */
+export function formatClock(ms) {
+  const t = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const sec = t % 60;
+  return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+
+/** Active 5-minute periods → minutes, minutes still needed for the target, percent. */
+export function activeSummary(periods, target = REMOTE_SESSION.targetMinutes) {
+  const minutes = Math.max(0, Number(periods) || 0) * 5;
+  return { minutes, target, remaining: Math.max(0, target - minutes), done: minutes >= target, percent: Math.min(100, Math.round((minutes / target) * 100)) };
+}

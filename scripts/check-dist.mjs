@@ -44,6 +44,7 @@ if (accountsOn) {
   if (!/version:\s*"v1"|version:"v1"/.test(all)) problems.push('the approved consent version "v1" is not in the build');
   if (/draft-[0-9]/.test(all)) problems.push('a draft consent version is in the build');
   if (/counter-preview/.test(all)) problems.push('the local counter preview switch is in the build');
+  if (/session-preview/.test(all)) problems.push('the local session preview switch is in the build');
   if (!/course_stats/.test(all)) problems.push('the participant counter is missing from the build');
   for (const m of [/\bTest version\b/, /gg-test/, /\btest project\b/i, /Use test accounts/i, /example\.invalid/]) if (m.test(all)) problems.push(`test wording in the build: ${m}`);
 } else {

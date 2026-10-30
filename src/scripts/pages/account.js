@@ -11,6 +11,7 @@ import { getClient, getSession, signInWithGitHub, signOutHere, api, rememberAcco
 import { inAppBrowser, isAndroid, chromeIntent } from '../lib/inapp.js';
 import { REMOTE_SESSION } from '../data/session.js';
 import { parseRepoUrl, parseWallPr, partAItems, checkRepo, checklist } from '../lib/session.js';
+import { startSessionTimer, timerHtml } from '../lib/session-timer.js';
 import { load } from '../lib/progress.js';
 import { createSync, deviceSituation, linkDevice, leaveDevice, forgetDeviceLink, hasStash, syncMeta, classify } from '../lib/sync.js';
 
@@ -336,6 +337,7 @@ function sessionSectionHtml() {
     <section class="card acct-card acct-session" id="session" aria-labelledby="acct-session-h">
       <h2 id="acct-session-h">${esc(s.title)} — ${esc(s.date)}, 11:00 – 15:00</h2>
       <p class="muted acct-small">Work for at least 2 hours. Your faculty see your activity, the missions you finish and the links you submit here.</p>
+      <div data-session-timer></div>
       <p><a class="btn btn-ghost" href="${BASE}remote-session/">📄 Step-by-step task sheet</a></p>
 
       <h3>Part A — on this site</h3>
@@ -365,9 +367,17 @@ function sessionSectionHtml() {
     </section>`;
 }
 
+let stopTimer = null;
+
 function wireSession() {
   const box = $('[data-part-a]', view);
   if (!box) return;
+  stopTimer?.();
+  stopTimer = startSessionTimer((st) => {
+    const el = $('[data-session-timer]', view);
+    if (el) el.innerHTML = timerHtml(st);
+    else { stopTimer?.(); stopTimer = null; }
+  });
   if (!wireSession.listening) {
     wireSession.listening = true; // one listener for the page, whatever is re-rendered
     window.addEventListener('gg:progress', () => { const b = $('[data-part-a]', view); if (b) b.innerHTML = partAHtml(); });

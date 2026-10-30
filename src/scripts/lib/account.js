@@ -113,6 +113,7 @@ export const api = {
   // Remote session (Milestone 12c)
   submitSessionLinks: (project, check, wall) => rpc('submit_session_links', { p_project_url: project, p_project_check: check, p_wall_pr_url: wall }),
   sessionReport: (batch, from, to) => rpc('faculty_session_report', { p_batch: batch, p_from: from, p_to: to }),
+  sessionActivity: (from, to) => rpc('my_session_activity', { p_from: from, p_to: to }),
   // Faculty (Milestone 12): the database checks the allowlist and batch links on every call.
   facultyBatches: () => rpc('faculty_batches'),
   createBatch: (name, programme, year) => rpc('faculty_create_batch', { p_name: name, p_programme: programme, p_year: year }),
