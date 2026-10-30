@@ -351,3 +351,9 @@
   .stat:last-child { grid-column: 1 / -1; }
 }
 .book-link { margin: 14px 0 0; font-size: var(--fs-sm); color: var(--text-2); }
+
+/* Remote session banner (31 Oct 2026; hidden automatically after the session) */
+.session-banner-wrap { padding-top: 16px; }
+.session-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--amber) 55%, transparent); background: color-mix(in srgb, var(--amber) 12%, var(--surface)); color: var(--text); text-decoration: none; font-size: var(--fs-sm); }
+.session-banner:hover { border-color: var(--amber); color: var(--text); }
+.session-banner-tag { padding: 2px 10px; border-radius: 999px; background: var(--amber); color: #1a1300; font-weight: 700; font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .06em; }

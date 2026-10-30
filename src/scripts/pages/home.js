@@ -218,3 +218,18 @@ if (__ACCOUNTS__) {
   import('../../styles/counter.css');
   import('../lib/counter.js').then((m) => m.mountCounter()).catch(() => {});
 }
+
+// Remote session banner (31 Oct 2026): shown until the session ends, then it disappears by itself.
+import('../data/session.js').then(({ REMOTE_SESSION: s }) => {
+  const now = Date.now();
+  if (now >= Date.parse(s.to)) return;
+  const live = now >= Date.parse(s.from);
+  const main = document.getElementById('main');
+  if (!main) return;
+  const bar = document.createElement('div');
+  bar.className = 'container session-banner-wrap';
+  bar.innerHTML = `<a class="session-banner" href="${pageUrl('remote-session/')}">
+    <span class="session-banner-tag">${live ? 'Live now' : 'Remote session'}</span>
+    <span>🏠 <strong>${s.date}, 11 AM – 3 PM</strong> · work from home · open the step-by-step task sheet →</span></a>`;
+  main.prepend(bar);
+}).catch(() => {});
