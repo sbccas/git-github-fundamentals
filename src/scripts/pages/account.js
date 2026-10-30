@@ -336,6 +336,7 @@ function sessionSectionHtml() {
     <section class="card acct-card acct-session" id="session" aria-labelledby="acct-session-h">
       <h2 id="acct-session-h">${esc(s.title)} — ${esc(s.date)}, 11:00 – 15:00</h2>
       <p class="muted acct-small">Work for at least 2 hours. Your faculty see your activity, the missions you finish and the links you submit here.</p>
+      <p><a class="btn btn-ghost" href="${BASE}remote-session/">📄 Step-by-step task sheet</a></p>
 
       <h3>Part A — on this site</h3>
       <ul class="acct-checks" data-part-a>${partAHtml()}</ul>

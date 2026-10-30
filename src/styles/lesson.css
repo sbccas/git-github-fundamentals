@@ -430,3 +430,18 @@ mark.hl { background: color-mix(in srgb, var(--u, var(--primary)) 22%, transpare
 }
 .gloss-pop b { display: block; margin-bottom: 2px; }
 .gloss-pop a { font-size: .78rem; }
+
+/* Plain text samples in documents wrap on phones and paper instead of widening the page */
+.doc pre { max-width: 100%; }
+@media (max-width: 560px), print { .doc pre code.lang-text { white-space: pre-wrap; overflow-wrap: anywhere; } }
+
+/* Task sheet download button (remote session page): screen only */
+.doc-download { margin: 0 0 18px; }
+@media print {
+  .doc-download { display: none; }
+  /* The task sheet is short: sections flow on instead of each starting a new page */
+  [data-page="remote-session"] .doc h2 { break-before: auto; margin-top: 22px; }
+  [data-page="remote-session"] .doc h2, [data-page="remote-session"] .doc h3 { break-after: avoid; }
+  [data-page="remote-session"] .doc pre, [data-page="remote-session"] .doc .callout, [data-page="remote-session"] .doc table,
+  [data-page="remote-session"] .doc .term, [data-page="remote-session"] .doc [class*="term-"] { break-inside: avoid; }
+}
