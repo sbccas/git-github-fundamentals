@@ -19,3 +19,17 @@
 
 **Not tested yet:** Part C (needs the class-wall repository `sbccas/sy-ai-2026-wall` on GitHub); a full 2-hour session.
 **Clean-up:** test account deleted again; port-5174 redirect removed; local accounts off.
+
+## Student timer (owner approval 30 Oct 2026) — local trial, 30 Oct 2026
+
+| | |
+|---|---|
+| **Database** | `supabase/migrations/20261030000007_m12c_student_timer.sql` applied by the owner ("Success. No rows returned"); `npm run sql-check` TM1–TM4 pass (suite 27 / 27) |
+| **Site checks** | `npm test` TM (window and phases, countdown format, active minutes); `npm run check:dist` (no `session-preview` in the live build); bar design checked at desktop width and 360 px |
+
+| # | Manual test (localhost:5174, `?session-preview`, test account) | Observed result | Result |
+|---|---|---|---|
+| 7 | Remote session card while "live" | "0:59:42 left · Active 0 / 120 min" | PASS |
+| 8 | Activity reaches the timer | After reading Unit 1 lessons, the header bar showed "Active 5 / 120 min · 115 to go" within about 10 s | PASS |
+
+**Clean-up:** test account deleted; port-5174 redirect removed; local accounts off.
