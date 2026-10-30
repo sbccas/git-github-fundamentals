@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
-const ACCOUNT_PAGES = ['account', 'teach/dashboard'];
+const ACCOUNT_PAGES = ['account', 'exam', 'teach/dashboard'];
 const problems = [];
 
 if (!fs.existsSync(DIST)) {
@@ -67,5 +67,5 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(accountsOn
-  ? `✓ Production build, accounts ON: account page and faculty dashboard built; one project URL and one publishable key; consent v1; no secret keys; all ${srcPages.length} other pages built (${texty.length} files scanned).`
+  ? `✓ Production build, accounts ON: account page, exam page and faculty dashboard built; one project URL and one publishable key; consent v1; no secret keys; all ${srcPages.length} other pages built (${texty.length} files scanned).`
   : `✓ Production build, accounts OFF: no Supabase code, no account pages; all ${srcPages.length} pages built (${texty.length} files scanned).`);

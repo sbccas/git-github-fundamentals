@@ -483,7 +483,7 @@ console.log('\nAccounts and sync');
   check(/export const ACCOUNTS_IN_PRODUCTION = (true|false);/.test(config)
     && config.includes("const accounts = mode === 'production' ? ACCOUNTS_IN_PRODUCTION : env.VITE_ACCOUNTS_ENABLED === 'true';")
     && config.includes("define: { __ACCOUNTS__: JSON.stringify(accounts) }")
-    && config.includes("(name === 'account' && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach'))")
+    && config.includes("(['account', 'exam'].includes(name) && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach'))")
     && mainJs.includes("if (__ACCOUNTS__) import('./lib/account-boot.js')"),
     'SY6 one explicit switch decides accounts in the live build; development needs the env flag; account pages left out when off');
   const consentSrc = fs.readFileSync(path.join(ROOT, 'src/scripts/data/supabase.js'), 'utf8');
@@ -585,6 +585,27 @@ console.log('\nAccounts and sync');
   check(a9.minutes === 45 && a9.remaining === 75 && !a9.done && a9.percent === 38 && a30.done && a30.remaining === 0 && a30.percent === 100,
     'TM active time: 5 minutes per period, minutes still needed for 2 hours, done at 120');
 
+  // EXM — final exam helpers (Milestone 12c part 2)
+  const EX = await imp('src/scripts/lib/exam.js');
+  const dl = '2026-11-02T10:30:00.000Z';
+  check(EX.msLeft(dl, 60e3, Date.parse('2026-11-02T10:00:00.000Z')) === 29 * 60e3 && EX.msLeft(dl, 0, Date.parse('2026-11-02T11:00:00Z')) === 0
+    && EX.mmss(29 * 60e3 + 5e3) === '29:05' && EX.mmss(0) === '0:00', 'EXM countdown uses the server clock (device 1 minute slow) and never goes below 0:00');
+  let st = EX.choose({ answers: {}, pending: {} }, 12, 2);
+  st = EX.choose(st, 12, 3);
+  const afterOld = EX.confirmSaved(st, 12, 2);
+  const afterNew = EX.confirmSaved(st, 12, 3);
+  check(afterOld.pending['12'] === 3 && Object.keys(afterNew.pending).length === 0 && afterNew.answers['12'] === 3,
+    'EXM a late confirmation of an older choice does not drop the newer pending choice');
+  const merged = EX.mergeAnswers({ 5: 1, 7: 0 }, { answers: { 5: 1 }, pending: { 7: 3, 9: 2 } });
+  check(merged.answers['5'] === 1 && merged.answers['7'] === 3 && merged.answers['9'] === 2 && Object.keys(merged.pending).length === 2,
+    'EXM resume: server answers plus choices still waiting on this phone (the phone\'s newer choice wins)');
+  check(EX.palette([{ q: 5 }, { q: 7 }, { q: 9 }], { 7: 1 }, 2).map((c) => `${c.n}${c.answered ? 'a' : ''}${c.current ? 'c' : ''}`).join() === '1,2a,3c',
+    'EXM question grid marks answered and current questions');
+  const exCsv = EX.resultsCsv([{ roll_no: '541', display_name: 'Asha', github_username: 'a', state: 'submitted', answered: 25, score: 18, total: 25, percent: 72, passed: true, minutes: 21.5, leave_count: 1 },
+    { roll_no: '542', display_name: '+x', github_username: 'b', state: 'not_started', answered: 0 }], 'Final exam', 'BCA 2026 – SY AI').split('\r\n');
+  check(exCsv[1].includes(',541,Asha,a,Submitted,25,18,25,72,PASS,21.5,1,') && exCsv[2].includes(",'+x,b,Not started,0,") && !/email/i.test(exCsv.join()),
+    'EXM results CSV: PASS/FAIL, minutes, leaving the page; formula-safe; no email');
+
   // SY7 — no secrets in the repository (K1)
   const { execSync } = await import('node:child_process');
   let files = [];
@@ -595,6 +616,7 @@ console.log('\nAccounts and sync');
   const hits = [];
   for (const f of files) {
     if (/^\.env(\.|$)/.test(path.basename(f))) { hits.push(`${f} (env file must not be committed)`); continue; }
+    if (/^(exam-bank|local-reports)\//.test(f)) { hits.push(`${f} (exam answers / student lists must never be committed)`); continue; }
     if (binary.test(f) || !fs.existsSync(path.join(ROOT, f))) continue;
     const text = fs.readFileSync(path.join(ROOT, f), 'utf8');
     if (/sb_secret_[A-Za-z0-9_-]{8,}/.test(text)) hits.push(`${f} (Supabase secret key)`);

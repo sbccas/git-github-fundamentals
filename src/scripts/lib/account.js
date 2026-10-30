@@ -114,6 +114,18 @@ export const api = {
   submitSessionLinks: (project, check, wall) => rpc('submit_session_links', { p_project_url: project, p_project_check: check, p_wall_pr_url: wall }),
   sessionReport: (batch, from, to) => rpc('faculty_session_report', { p_batch: batch, p_from: from, p_to: to }),
   sessionActivity: (from, to) => rpc('my_session_activity', { p_from: from, p_to: to }),
+  // Final exam (Milestone 12c part 2): marked on the server; correct answers only after faculty close the exam.
+  examStatus: () => rpc('exam_status'),
+  startExam: (exam) => rpc('start_exam', { p_exam: exam }),
+  saveExamAnswer: (exam, question, choice) => rpc('save_exam_answer', { p_exam: exam, p_question: question, p_choice: choice }),
+  submitExam: (exam) => rpc('submit_exam', { p_exam: exam }),
+  noteExamLeave: (exam) => rpc('note_exam_leave', { p_exam: exam }),
+  examReview: (exam) => rpc('exam_review', { p_exam: exam }),
+  facultyExamBank: () => rpc('faculty_exam_bank'),
+  facultyExamCreate: (batch, title, perUnit, minutes, pass) => rpc('faculty_exam_create', { p_batch: batch, p_title: title, p_per_unit: perUnit, p_minutes: minutes, p_pass: pass }),
+  facultyExams: (batch) => rpc('faculty_exams', { p_batch: batch }),
+  facultyExamSetStatus: (exam, status) => rpc('faculty_exam_set_status', { p_exam: exam, p_status: status }),
+  facultyExamResults: (exam) => rpc('faculty_exam_results', { p_exam: exam }),
   // Faculty (Milestone 12): the database checks the allowlist and batch links on every call.
   facultyBatches: () => rpc('faculty_batches'),
   createBatch: (name, programme, year) => rpc('faculty_create_batch', { p_name: name, p_programme: programme, p_year: year }),

@@ -1,0 +1,42 @@
+/* ================= Final exam (Milestone 12c) — phones first; built only with accounts ================= */
+
+.exam { padding-top: 20px; padding-bottom: 48px; display: grid; gap: 14px; max-width: 760px; }
+.exam-view { display: grid; gap: 14px; outline: none; }
+.exam-card h1 { font-size: var(--fs-xl); margin: 4px 0 12px; }
+.exam-facts { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 0; margin: 0 0 14px; font-size: var(--fs-md); }
+.exam-rules { padding-left: 1.3em; display: grid; gap: 8px; margin: 0 0 18px; }
+.exam-start { width: 100%; }
+
+/* Sticky bar: timer, answered count, submit */
+.exam-bar { position: sticky; top: var(--header-h); z-index: 10; display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  border-radius: var(--radius); border: 1px solid var(--border-strong); background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); }
+.exam-timer { font: 700 1.5rem var(--font-mono); min-width: 5ch; }
+.exam-timer[data-low="true"] { color: var(--red); }
+.exam-count { flex: 1; font-size: var(--fs-sm); color: var(--text-2); }
+.exam-submit { min-height: 44px; padding: 0 18px; }
+
+.exam-q h2 { font-size: var(--fs-lg); line-height: 1.35; margin: 4px 0 14px; }
+.exam-qno { margin: 0; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.exam-options { display: grid; gap: 10px; }
+.exam-option { display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 52px; padding: 12px 14px; text-align: left;
+  border-radius: var(--radius-sm); border: 1.5px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; cursor: pointer; }
+.exam-option:hover { border-color: var(--primary); }
+.exam-option[aria-checked="true"] { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 14%, var(--bg)); }
+.exam-letter { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border-strong); font-weight: 700; font-size: var(--fs-sm); }
+.exam-option[aria-checked="true"] .exam-letter { background: var(--primary); border-color: var(--primary); color: #fff; }
+.exam-save { min-height: 1.4em; margin: 10px 0 0; }
+.exam-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; }
+
+.exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; }
+.exam-cell { min-height: 44px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: 600 var(--fs-sm) var(--font-body); cursor: pointer; }
+.exam-cell[data-answered="true"] { background: color-mix(in srgb, var(--green) 22%, var(--surface)); border-color: color-mix(in srgb, var(--green) 60%, transparent); }
+.exam-cell[aria-current="true"] { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+/* Result */
+.exam-score { font: 700 2rem var(--font-display); margin: 0; }
+.exam-verdict { display: inline-block; margin: 10px 0; padding: 6px 16px; border-radius: 999px; font-weight: 800; letter-spacing: .06em; background: var(--red); color: #fff; }
+.exam-verdict[data-pass="true"] { background: var(--green); color: var(--on-green); }
+.exam-review { padding-left: 1.3em; display: grid; gap: 14px; }
+.exam-review ul { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; }
+.exam-review li[data-correct="true"] { color: var(--green); font-weight: 700; }
+.exam-review li[data-chosen="true"][data-correct="false"] { color: var(--red); }

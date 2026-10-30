@@ -260,6 +260,13 @@ function showSignedIn(profile) {
 
     ${accountState?.is_faculty ? '' : sessionSectionHtml()}
 
+    ${accountState?.is_faculty || !accountState?.batch_name ? '' : `
+    <section class="card acct-card" aria-labelledby="acct-exam-h">
+      <h2 id="acct-exam-h">Final exam — Monday 2 November</h2>
+      <p class="acct-small">25 questions · 30 minutes · pass mark 40%. Your teacher opens the exam in class; then start it on the exam page. One attempt; your result appears straight away.</p>
+      <p><a class="btn btn-primary" href="${BASE}exam/">Go to the exam page →</a></p>
+    </section>`}
+
     ${dataSectionHtml()}`);
 
   $('[data-sync-now]', view).addEventListener('click', () => sync?.push());

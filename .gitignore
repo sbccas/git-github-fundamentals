@@ -9,3 +9,6 @@ Thumbs.db
 
 # Local reports with student names (never commit)
 local-reports/
+
+# Final exam question bank with answers (never commit: the repository is public)
+exam-bank/

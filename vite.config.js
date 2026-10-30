@@ -20,7 +20,7 @@ function findPages(dir, pages = {}, { accounts = false } = {}) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (['partials', 'scripts', 'styles'].includes(name)) continue;
-    if (!accounts && ((name === 'account' && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach')))) continue;
+    if (!accounts && ((['account', 'exam'].includes(name) && dir === ROOT) || (name === 'dashboard' && dir === join(ROOT, 'teach')))) continue;
     if (statSync(full).isDirectory()) findPages(full, pages, { accounts });
     else if (name === 'index.html') {
       const key = full.slice(ROOT.length + 1).replace(/\\/g, '/').replace(/\/?index\.html$/, '') || 'home';

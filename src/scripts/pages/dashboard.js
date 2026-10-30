@@ -11,6 +11,7 @@ import { classify } from '../lib/sync.js';
 import { summarize, unitCell, sortStudents, toCsv, MISSION_TOTAL, BADGE_TOTAL } from '../lib/dashboard.js';
 import { REMOTE_SESSION } from '../data/session.js';
 import { checklist, sessionCsv } from '../lib/session.js';
+import { resultsCsv } from '../lib/exam.js';
 
 const $ = (s, root = document) => root.querySelector(s);
 const view = $('[data-dash-view]');
@@ -28,6 +29,11 @@ let filter = '';
 let refreshTimer = null;
 let requests = []; // pending "Request to join" (Milestone 12b)
 let report = null; // last session report (Milestone 12c): { rows, from, to, batchId }
+let exams = []; // exams of the current batch (Milestone 12c part 2)
+let bank = null; // active questions per unit
+let examResults = null; // { examId, rows }
+let examTimer = null;
+let examsBatch = null; // batch the exams were loaded for
 
 function message(text, tone = 'info') {
   msgBox.textContent = text ?? '';
@@ -307,13 +313,130 @@ function downloadSessionCsv() {
   message('Session report downloaded — keep it under the college\'s data policy.', 'ok');
 }
 
+/* ---------------- Final exam (Milestone 12c part 2) ---------------- */
+
+const EXAM_STATE = { not_started: 'Not started', in_progress: 'In progress', submitted: 'Submitted' };
+
+function bankLine() {
+  if (!bank) return '<p class="muted acct-small">Checking the question bank…</p>';
+  const counts = [1, 2, 3, 4, 5].map((u) => bank[String(u)] ?? 0);
+  const ready = counts.every((c) => c >= 5);
+  return `<p class="acct-small ${ready ? '' : 'acct-warn'}">Question bank: ${counts.map((c, i) => `Unit ${i + 1}: ${c}`).join(' · ')}${ready ? ' ✓' : ' — load the bank before opening the exam (exam-bank/load-questions.sql)'}</p>`;
+}
+
+function examCardHtml(e) {
+  const badge = { draft: 'Not open yet', open: 'OPEN', closed: 'Closed' }[e.status];
+  const res = examResults?.examId === e.id ? examResults.rows : null;
+  return `
+    <div class="dash-exam" data-exam="${esc(e.id)}">
+      <p><strong>${esc(e.title)}</strong> <span class="dash-exam-badge" data-status="${e.status}">${badge}</span></p>
+      <p class="muted acct-small">${e.questions} questions · ${e.duration_minutes} min · pass ${e.pass_percent}% · ${e.students} students in the batch</p>
+      <p class="acct-small"><strong>${e.started}</strong> started · <strong>${e.submitted}</strong> submitted · <strong>${e.passed}</strong> passed${e.average_percent != null ? ` · average ${e.average_percent}%` : ''}</p>
+      <div class="acct-actions">
+        ${e.status === 'open' ? '<button class="btn btn-primary" type="button" data-exam-close>Close the exam</button>' : `<button class="btn btn-primary" type="button" data-exam-open>${e.status === 'closed' ? 'Open again' : 'Open the exam'}</button>`}
+        <button class="btn btn-ghost" type="button" data-exam-results>${res ? 'Refresh results' : 'Show results'}</button>
+        <button class="btn btn-ghost" type="button" data-exam-csv>Download CSV</button>
+      </div>
+      ${res ? `<div class="dash-table-wrap"><table class="dash-table">
+        <thead><tr><th scope="col">Roll no</th><th scope="col">Student</th><th scope="col">State</th><th scope="col" class="num">Answered</th>
+          <th scope="col" class="num">Score</th><th scope="col">Result</th><th scope="col" class="num">Minutes</th><th scope="col" class="num">Left page</th></tr></thead>
+        <tbody>${res.map((r) => `<tr>
+          <td class="dash-roll">${esc(r.roll_no ?? '')}</td>
+          <th scope="row"><span class="dash-name">${esc(r.display_name)}</span><span class="dash-sub">@${esc(r.github_username)}</span></th>
+          <td>${EXAM_STATE[r.state]}</td><td class="num">${r.answered}</td>
+          <td class="num">${r.score != null ? `${r.score}/${r.total} · ${r.percent}%` : '—'}</td>
+          <td>${r.state === 'submitted' ? (r.passed ? '<span class="dash-pass">PASS</span>' : '<span class="dash-missing">FAIL</span>') : '—'}</td>
+          <td class="num">${r.minutes ?? '—'}</td><td class="num">${r.leave_count || ''}</td></tr>`).join('')}
+        </tbody></table></div>` : ''}
+    </div>`;
+}
+
+function examShellHtml() {
+  const title = 'Final exam — Git & GitHub Fundamentals';
+  return fold('exam', 'dash-exams', `<h2 id="dash-exam-h">Final exam${exams.some((e) => e.status === 'open') ? ' <span class="dash-exam-badge" data-status="open">OPEN</span>' : ''}</h2>`, `
+      ${bankLine()}
+      <div data-exam-list>${exams.map(examCardHtml).join('') || '<p class="muted">No exam for this batch yet.</p>'}</div>
+      <details class="dash-colleagues"${exams.length ? '' : ' open'}>
+        <summary>Create an exam</summary>
+        <form class="acct-form" data-exam-create novalidate>
+          <label for="dash-exam-title">Title</label>
+          <input id="dash-exam-title" name="title" type="text" maxlength="120" value="${esc(title)}">
+          <div class="acct-row">
+            <label class="acct-grow"><span>Questions per unit (× 5 units)</span><input name="perUnit" type="number" min="1" max="10" value="5"></label>
+            <label class="acct-grow"><span>Minutes</span><input name="minutes" type="number" min="5" max="180" value="30"></label>
+            <label class="acct-grow"><span>Pass %</span><input name="pass" type="number" min="0" max="100" value="40"></label>
+          </div>
+          <div class="acct-actions"><button class="btn btn-ghost" type="submit">Create (not open yet)</button></div>
+        </form>
+      </details>`);
+}
+
+async function loadExams() {
+  clearTimeout(examTimer);
+  const id = current?.id;
+  if (!id) return;
+  if (examsBatch !== id) { exams = []; examResults = null; }
+  try {
+    [exams, bank] = await Promise.all([api.facultyExams(id), bank ? Promise.resolve(bank) : api.facultyExamBank()]);
+    if (current?.id !== id) return;
+    examsBatch = id;
+    const open = exams.find((e) => e.status === 'open');
+    if (open && examResults?.examId === open.id) examResults.rows = await api.facultyExamResults(open.id);
+    const box = $('[data-fold="exam"]', view);
+    if (box) { box.outerHTML = examShellHtml(); wireExam(); wireFolds(); }
+    // While an exam is open the numbers refresh every 20 seconds.
+    if (open) examTimer = setTimeout(() => { if (document.visibilityState === 'visible') loadExams(); else examTimer = setTimeout(loadExams, 20e3); }, 20e3);
+  } catch (err) { message(explain(err), 'bad'); }
+}
+
+function wireExam() {
+  $('[data-exam-create]', view)?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.currentTarget;
+    try {
+      await api.facultyExamCreate(current.id, f.title.value.trim(), Number(f.perUnit.value), Number(f.minutes.value), Number(f.pass.value));
+      message('Exam created. Open it in class when students are ready.', 'ok');
+      loadExams();
+    } catch (err) { message(explain(err), 'bad'); }
+  });
+  view.querySelectorAll('[data-exam]').forEach((card) => {
+    const id = card.dataset.exam;
+    const e = exams.find((x) => x.id === id);
+    card.querySelector('[data-exam-open]')?.addEventListener('click', async () => {
+      if (!confirm(`Open "${e.title}" now? Students of ${current.name} can start it at once.`)) return;
+      try { await api.facultyExamSetStatus(id, 'open'); message('The exam is open.', 'ok'); loadExams(); } catch (err) { message(explain(err), 'bad'); }
+    });
+    card.querySelector('[data-exam-close]')?.addEventListener('click', async () => {
+      if (!confirm('Close the exam now? Unfinished papers are submitted with the answers saved so far, and students can then see the correct answers.')) return;
+      try { await api.facultyExamSetStatus(id, 'closed'); message('The exam is closed and all papers are marked.', 'ok'); examResults = null; loadExams(); } catch (err) { message(explain(err), 'bad'); }
+    });
+    card.querySelector('[data-exam-results]')?.addEventListener('click', async () => {
+      try { examResults = { examId: id, rows: await api.facultyExamResults(id) }; loadExams(); } catch (err) { message(explain(err), 'bad'); }
+    });
+    card.querySelector('[data-exam-csv]')?.addEventListener('click', async () => {
+      try {
+        const rows = await api.facultyExamResults(id);
+        const blob = new Blob([resultsCsv(rows, e.title, current.name)], { type: 'text/csv;charset=utf-8' });
+        const safe = `${current.name}-${e.title}`.replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '') || 'exam';
+        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `${safe}-results.csv` });
+        document.body.append(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        message('Exam results downloaded — keep them under the college\'s data policy.', 'ok');
+      } catch (err) { message(explain(err), 'bad'); }
+    });
+  });
+}
+
 function render() {
-  view.innerHTML = `${requestsHtml()}${batchPickerHtml()}${current ? codeCardHtml(current) + studentsShellHtml() + sessionShellHtml() : ''}${createFormHtml(!batches.length)}`;
+  view.innerHTML = `${requestsHtml()}${batchPickerHtml()}${current ? codeCardHtml(current) + examShellHtml() + studentsShellHtml() + sessionShellHtml() : ''}${createFormHtml(!batches.length)}`;
   wire();
 }
 
 function wire() {
   wireFolds();
+  wireExam();
   view.querySelectorAll('[data-req-accept]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqAccept, 'accept')));
   view.querySelectorAll('[data-req-decline]').forEach((b) => b.addEventListener('click', () => handleRequest(b.dataset.reqDecline, 'decline')));
   $('[data-pick]', view)?.addEventListener('change', (e) => {
@@ -374,6 +497,7 @@ async function loadStudents() {
   clearTimeout(refreshTimer);
   const id = current?.id;
   if (!id) return;
+  if (examsBatch !== id) loadExams();
   try {
     const rows = await api.batchProgress(id);
     if (current?.id !== id) return; // batch changed meanwhile
