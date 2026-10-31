@@ -204,6 +204,11 @@ temporarily add `http://localhost:5173/git-github-fundamentals/account/` under A
   depend on the faculty-run final practical (S-07).
 - Free plan: no downloadable backups (keep CSVs), projects pause when unused for a long time; capacity is ample for
   several hundred students.
+- Keep-alive (31 Oct 2026): `.github/workflows/keep-alive.yml` asks the database for the public student counter once a
+  day (read-only, publishable key only) so the free project is not paused, and commits `.github/keep-alive.txt` once a
+  month so GitHub does not switch the schedule off after 60 quiet days. A failed run emails the repository owner.
+  If the project is paused anyway: Supabase dashboard → the project → **Resume project** (possible for up to a year).
+  The course pages keep working while it is paused; only sign-in, sync, the dashboard, the exam and the counter stop.
 - One Supabase project for everything (M12-D8): no separate test project, so database changes are checked locally
   with `npm run sql-check` only.
 - Not yet tested on real phones for the account pages; offline sync was tested by automated tests only.
