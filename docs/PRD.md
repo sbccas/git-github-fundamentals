@@ -6,7 +6,7 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.19 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Status** | v1.20 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
 | **Last updated** | 2026-10-30 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
@@ -88,6 +88,7 @@ Session-by-session teaching plans (15 × 2 hours) are in [`faculty-guide.md`](fa
 | P-10 | **About** (`/about`) | College details (§10), course details, hidden faculty section (§10) |
 | P-11 | **Teach** (`/teach/`, `/teach/session-NN/`, `/teach/handbook/`) | Lecture slide decks, presenter view and the Faculty Handbook — see §6.6 F-04 – F-18 |
 | P-12 | **Student Edition ebook** (`/book/student/` + PDF download) | Cover; inside cover with course, college and faculty details; clickable contents with page numbers; the five unit lessons as chapters; appendices (cheat sheet, glossary, missions and labs, course at a glance); licence. Printable on A4 and readable on phones. Milestone 8 |
+| P-13 | **GitHub World Records** (`/records/`, Bonus) | Optional bonus page, not part of any test: most-starred and most-forked top 10 (GitHub's own ranking), most pull requests (repositories and one developer), comment types and the most-discussed conversations, most commits, largest communities and "GitHub by the numbers" from Octoverse 2026, fact cards. Every figure shows **Live data** (retrieved from GitHub or a live source) or **Historical snapshot** (verified at a particular date) plus how strong the claim is (verified record, live ranking, highest verified example, popular example, official figure) and its source. Snapshot in `content/github-records.json`, refreshed by `node scripts/github-records.mjs` (no token); an optional browser refresh of the two top-10 lists uses GitHub's public search with no token, cached 6 hours, falling back to the snapshot. Annual and all-time figures are kept apart. Milestone 12d ([plan](plans/MILESTONE-12D-GITHUB-RECORDS-PLAN.md)) |
 
 ### 6.2 Practice terminal (real Git in the browser)
 
@@ -327,7 +328,7 @@ git-github-fundamentals/
 |---|---|---|---|
 | 10 | Foundation: test + production projects, schema and RLS, security suite, sign-in, consent, profile, download/delete | S-01, S-03, S-08, S-09, S-11, S-12 | 🔧 Built and tested on the test project 2026-10-27 (accounts off on the live site); deletion completion time and production gates open |
 | 11 | Sync | S-01, S-02, S-10 | 🔧 Built and tested on the test project 2026-10-27, with Milestone 10 (accounts off on the live site) |
-| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06, S-13, S-14 | ✅ Live 2026-10-27/29: dashboard, batches, join codes, roll numbers ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); counter and requests ([12b](plans/MILESTONE-12B-COUNTER-REQUESTS-PLAN.md)). ⏳ Leaderboard (S-04) later; remote session and exam ([12c](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md)) approved 2026-10-29 |
+| 12 | Batches, teacher dashboard, opt-in leaderboard | S-04, S-06, S-13, S-14 | ✅ Live 2026-10-27/29: dashboard, batches, join codes, roll numbers ([plan](plans/MILESTONE-12-DASHBOARD-PLAN.md)); counter and requests ([12b](plans/MILESTONE-12B-COUNTER-REQUESTS-PLAN.md)). ⏳ Leaderboard (S-04) later; remote session and exam ([12c](plans/MILESTONE-12C-SESSION-EXAM-PLAN.md)) approved 2026-10-29; GitHub World Records bonus page ([12d](plans/MILESTONE-12D-GITHUB-RECORDS-PLAN.md), P-13) built 2026-10-30 |
 | 13 | Live classroom quiz | S-05, S-09 L1–L6 | ⏳ Not started |
 | 14 | Certificates and verification | S-07, S-09 C1–C4 | ⏳ Not started |
 
@@ -370,6 +371,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-10-30 | 1.20 | Milestone 12d: GitHub World Records bonus page (P-13) with "Live data" / "Historical snapshot" labels on every figure, as requested by the owner; no change to course content, quizzes, exam or scheduled activities |
 | 2026-10-30 | 1.19 | Milestone 12c: remote session 31 Oct (task card, GitHub project checklist, class wall, session report, student timer, task sheet page and PDF) and the server-marked final exam for 2 Nov (bank of 75 approved by the owner, kept out of the repository) |
 | 2026-10-29 | 1.18 | Milestone 12b live: S-13 participant counter, S-14 request to join, in-app (WhatsApp) browser note; faculty dr-hiralpatel added; Milestone 12c (remote session 31 Oct, server-marked exam 2 Nov) approved |
 | 2026-10-27 | 1.17 | Phase 2 Milestones 10–12 built and tested on the one Supabase project (M12-D8 replaces the separate test/production projects of S-11); roll number in S-03 (M12-D9); faculty menu link (M12-D10); go-live decisions recorded in the Milestone 12 plan §6.1: consent v1, faculty contact2hitech and sbccas, deletion record removed on request, D-9 not applicable until certificates, D-12 not applicable (all students 19+) |

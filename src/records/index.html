@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GitHub World Records · Git & GitHub Fundamentals</title>
+  <meta name="description" content="Bonus: the most-starred, most-forked and busiest repositories on GitHub, the biggest discussions, communities and the latest Octoverse numbers, each with its source and date.">
+  <!-- @include head -->
+  <link rel="stylesheet" href="/styles/lesson.css">
+  <link rel="stylesheet" href="/styles/records.css">
+</head>
+<body data-page="records" data-section="more" class="page-lesson page-records" style="--u: var(--u4)">
+  <!-- @include header -->
+  <main id="main" class="container lesson-layout">
+    <aside class="lesson-aside" aria-label="Sections">
+      <div class="lesson-aside-inner">
+        <p class="aside-unit"><a href="{{base}}bonus/">← Bonus</a></p>
+        <nav aria-label="Sections">
+          <ol class="toc-list">
+            <li><a href="#how-to-read" data-toc="how-to-read">How to read this page</a></li>
+            <li><a href="#stars" data-toc="stars">Most-starred</a></li>
+            <li><a href="#forks" data-toc="forks">Most-forked</a></li>
+            <li><a href="#pull-requests" data-toc="pull-requests">Most pull requests</a></li>
+            <li><a href="#discussions" data-toc="discussions">Most comments</a></li>
+            <li><a href="#commits" data-toc="commits">Most commits</a></li>
+            <li><a href="#communities" data-toc="communities">Largest communities</a></li>
+            <li><a href="#numbers" data-toc="numbers">GitHub by the numbers</a></li>
+            <li><a href="#facts" data-toc="facts">Did you know?</a></li>
+            <li><a href="#sources" data-toc="sources">Sources and method</a></li>
+          </ol>
+        </nav>
+      </div>
+    </aside>
+    <article class="lesson">
+      <header class="lesson-hero">
+        <p class="eyebrow">Bonus · optional · not part of any test</p>
+        <h1>🏆 GitHub World Records</h1>
+        <p class="lead">The biggest repositories, discussions and communities on GitHub, and what they teach about stars, forks, pull requests and commits.</p>
+        <ul class="hero-meta">
+          <li data-snapshot-date>Snapshot checked —</li>
+          <li>Every number shows its source</li>
+        </ul>
+      </header>
+
+      <noscript><p class="callout callout-warning">This page needs JavaScript to draw its tables and charts.</p></noscript>
+
+      <div class="lesson-body rec-body">
+        <section id="how-to-read" class="rec-section">
+          <h2>How to read this page</h2>
+          <p>GitHub changes every minute, so each figure tells you how fresh it is and how strong the claim is.</p>
+          <div class="rec-legend">
+            <div class="rec-legend-card">
+              <span class="rec-pill rec-live">● Live data</span>
+              <p>Retrieved from GitHub or a live source, when you press <strong>Check live numbers</strong>.</p>
+            </div>
+            <div class="rec-legend-card">
+              <span class="rec-pill rec-snap">◷ Historical snapshot</span>
+              <p>Verified at a particular date, shown beside it. The page always has these, even offline.</p>
+            </div>
+          </div>
+          <dl class="rec-claims" data-claims></dl>
+          <div class="rec-live-box" data-live-box>
+            <button class="btn btn-primary" type="button" data-live-btn>Check live numbers</button>
+            <p class="rec-live-note" data-live-status aria-live="polite">Fetches GitHub’s current top 10 by stars and by forks (2 requests, no sign-in). Results are kept for 6 hours.</p>
+          </div>
+        </section>
+
+        <section id="stars" class="rec-section">
+          <h2>⭐ The most-starred repositories</h2>
+          <p>A <strong>star</strong> is GitHub’s bookmark: one click says “I like this” and saves the repository to your list. These are GitHub’s own top 10 out of every public repository.</p>
+          <div data-block="stars"></div>
+          <h3>Top 5 compared</h3>
+          <div data-chart="stars"></div>
+          <h3>What makes a repository popular?</h3>
+          <div class="rec-why">
+            <div><strong>📚 Useful to beginners.</strong> Lists, books, roadmaps and interview guides help millions of learners, so most of the top 10 are learning resources, not apps.</div>
+            <div><strong>📄 A clear README.</strong> People star what they understand in 30 seconds: what it is, why it matters and how to start.</div>
+            <div><strong>🔁 Shared widely.</strong> Links on social media, blogs and newsletters bring waves of new visitors and stars.</div>
+            <div><strong>🛠 Kept alive.</strong> Regular updates, answered issues and welcomed pull requests keep people coming back.</div>
+            <div><strong>⏳ Time.</strong> Older repositories have had years to collect stars; a new one with a huge count has grown unusually fast.</div>
+          </div>
+          <aside class="callout callout-warning">
+            <p class="callout-title">⚠️ Stars measure attention, not quality</p>
+            <p>Stars can be bought or faked. A 2024 study found about six million suspected fake stars on GitHub (<a href="https://arxiv.org/abs/2412.13459" target="_blank" rel="noopener">He et al., ICSE 2026</a>). Some repositories in this list are less than a year old. Before you trust a project, look at its code, recent commits, issues and contributors too.</p>
+          </aside>
+        </section>
+
+        <section id="forks" class="rec-section">
+          <h2>🍴 The most-forked repositories</h2>
+          <p>A <strong>fork</strong> is your own copy of someone else’s repository on GitHub. You can change your fork freely and later offer changes back with a pull request.</p>
+          <div data-block="forks"></div>
+          <figure class="diagram rec-diagram" aria-label="How a fork works">
+            <svg viewBox="0 0 720 230" role="img" aria-labelledby="fork-title">
+              <title id="fork-title">Fork, clone, change, push and send a pull request back to the original</title>
+              <defs><marker id="rec-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="rec-svg-head"/></marker></defs>
+              <rect x="20" y="20" width="200" height="66" rx="12" class="rec-svg-box rec-svg-a"/>
+              <text x="120" y="48" class="rec-svg-title">Original repository</text>
+              <text x="120" y="70" class="rec-svg-sub">octocat/Spoon-Knife</text>
+              <rect x="500" y="20" width="200" height="66" rx="12" class="rec-svg-box rec-svg-b"/>
+              <text x="600" y="48" class="rec-svg-title">Your fork on GitHub</text>
+              <text x="600" y="70" class="rec-svg-sub">you/Spoon-Knife</text>
+              <rect x="500" y="148" width="200" height="66" rx="12" class="rec-svg-box"/>
+              <text x="600" y="176" class="rec-svg-title">Your computer</text>
+              <text x="600" y="198" class="rec-svg-sub">edit · git commit</text>
+              <path d="M222 44H496" class="rec-svg-line" marker-end="url(#rec-arrow)"/>
+              <text x="360" y="36" class="rec-svg-step">① Fork</text>
+              <path d="M580 90v54" class="rec-svg-line" marker-end="url(#rec-arrow)"/>
+              <text x="574" y="122" class="rec-svg-step rec-svg-end">② git clone</text>
+              <path d="M620 144V90" class="rec-svg-line" marker-end="url(#rec-arrow)"/>
+              <text x="628" y="122" class="rec-svg-step rec-svg-start">③ git push</text>
+              <path d="M496 70C380 110 300 110 222 76" class="rec-svg-line rec-svg-pr" marker-end="url(#rec-arrow)"/>
+              <text x="360" y="124" class="rec-svg-step">④ Pull request</text>
+            </svg>
+            <ol class="rec-flow rec-fork-steps">
+              <li><span>1</span><strong>Fork</strong><small>octocat/Spoon-Knife → you/Spoon-Knife</small></li>
+              <li><span>2</span><strong>Clone</strong><small>git clone (your fork)</small></li>
+              <li><span>3</span><strong>Change &amp; push</strong><small>git commit · git push</small></li>
+              <li class="rec-flow-end"><span>4</span><strong>Pull request</strong><small>offer the change back to the original</small></li>
+            </ol>
+            <figcaption class="dg-caption">Every fork in the table above is one person (or team) doing step ①. Try it with <a href="https://github.com/octocat/Spoon-Knife" target="_blank" rel="noopener">Spoon-Knife</a>: it exists only for practice.</figcaption>
+          </figure>
+          <p><strong>Why these?</strong> Many top forks are <em>course assignments</em>: an online course tells every learner to fork its repository, so forks grow faster than stars. That is why some repositories here have far more forks than stars.</p>
+        </section>
+
+        <section id="pull-requests" class="rec-section">
+          <h2>🔀 The most pull requests</h2>
+          <p>A <strong>pull request</strong> (PR) asks a project to take your changes. GitHub has no official “most pull requests” ranking, so we counted the busiest public repositories ourselves.</p>
+          <div data-block="pullRequests"></div>
+          <h3>Opened, merged or closed?</h3>
+          <p>Every pull request is <strong>open</strong> (waiting for review), <strong>merged</strong> (accepted into the project) or <strong>closed without merging</strong> (declined, replaced or abandoned). The bars show the split for the six largest.</p>
+          <div data-chart="prSplit"></div>
+          <p class="rec-small">Projects such as <a href="https://github.com/odoo/odoo/pull/294756" target="_blank" rel="noopener">odoo/odoo</a> merge with their own bot, which adds the commits itself and then closes the pull request. GitHub then shows it as “closed”, even though the change was accepted.</p>
+          <h3>One person, many pull requests</h3>
+          <div data-block="person"></div>
+          <figure class="diagram rec-diagram" aria-label="Pull request workflow">
+            <ol class="rec-flow">
+              <li><span>1</span><strong>Branch</strong><small>git switch -c fix-typo</small></li>
+              <li><span>2</span><strong>Commit &amp; push</strong><small>git commit · git push</small></li>
+              <li><span>3</span><strong>Open the PR</strong><small>title, what and why</small></li>
+              <li><span>4</span><strong>Review &amp; checks</strong><small>comments · automated tests</small></li>
+              <li class="rec-flow-end"><span>5</span><strong>Merged</strong><small>or closed without merging</small></li>
+            </ol>
+            <figcaption class="dg-caption">The same five steps whether it is your first PR or someone’s 50,000th. You practised them in Unit 5.</figcaption>
+          </figure>
+        </section>
+
+        <section id="discussions" class="rec-section">
+          <h2>💬 The most comments</h2>
+          <p>GitHub has several kinds of comment. Counting them together would count the same conversation twice, so this section keeps them apart.</p>
+          <div class="table-wrap"><table class="rec-types">
+            <thead><tr><th scope="col">Kind</th><th scope="col">Where it appears</th><th scope="col">Counted here?</th></tr></thead>
+            <tbody>
+              <tr><td>Issue comment</td><td>The conversation under an issue</td><td>Yes, as “comments”</td></tr>
+              <tr><td>Pull-request comment</td><td>The conversation tab of a pull request</td><td>Yes, as “comments”</td></tr>
+              <tr><td>Review comment</td><td>On a line of code in “Files changed”</td><td>No: counted separately by GitHub</td></tr>
+              <tr><td>Commit comment</td><td>On a single commit</td><td>No</td></tr>
+              <tr><td>Discussion reply</td><td>The Discussions tab (a forum)</td><td>No</td></tr>
+              <tr><td>Reaction 👍 ❤️ 🎉</td><td>Under any comment</td><td>Shown apart: a reaction is not a comment</td></tr>
+            </tbody>
+          </table></div>
+          <h3>Repositories with the most conversations</h3>
+          <p>GitHub does not publish a comment total for a whole repository, and its free API stops listing after 30,000 pages. What we <em>can</em> count exactly is the number of conversations: issues and pull requests, each counted once.</p>
+          <div data-block="threads"></div>
+          <h3>Issues and pull requests with the most comments</h3>
+          <p>Well-known conversations, with their comment and reaction counts. The two at the bottom are filled mostly by bots: in our check, many such threads showed exactly 2,500 comments and none showed more, which suggests GitHub stops counting there.</p>
+          <div data-block="discussions"></div>
+        </section>
+
+        <section id="commits" class="rec-section">
+          <h2>📜 The most commits</h2>
+          <p>A <strong>commit</strong> is one saved snapshot. Repositories with the longest histories have been saving snapshots for decades, often from thousands of people.</p>
+          <div data-block="commits"></div>
+          <aside class="callout callout-note">
+            <p class="callout-title">💡 Why do some projects have so many commits?</p>
+            <ul>
+              <li><strong>Age:</strong> Linux has history back to 2005, when Git was created for it.</li>
+              <li><strong>Size:</strong> browsers and compilers (Chromium, Firefox, LLVM, GCC) are millions of lines of code worked on every day.</li>
+              <li><strong>Many small updates:</strong> package collections such as nixpkgs, Homebrew and winget get one commit for every new version of every app they list.</li>
+              <li><strong>Mirrors:</strong> some repositories here are copies of a project that lives on its own server; GitHub only shows the history.</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section id="communities" class="rec-section">
+          <h2>👥 The largest open-source communities</h2>
+          <p>GitHub’s yearly <strong>Octoverse</strong> report ranks communities by how many different people take part. It splits them into projects run by a community or an individual, and projects run by one company.</p>
+          <div data-block="communities"></div>
+        </section>
+
+        <section id="numbers" class="rec-section">
+          <h2>📊 GitHub by the numbers</h2>
+          <p>From GitHub’s <strong>Octoverse 2026</strong> report and <a href="https://github.com/about" target="_blank" rel="noopener">github.com/about</a>. Figures for <em>one year</em> and <em>all-time totals</em> are kept in separate boxes, because they measure different things.</p>
+          <div data-block="numbers"></div>
+        </section>
+
+        <section id="facts" class="rec-section">
+          <h2>💡 Did you know?</h2>
+          <div class="rec-facts" data-block="facts"></div>
+        </section>
+
+        <section id="sources" class="rec-section">
+          <h2>Sources and method</h2>
+          <ul>
+            <li><strong>Snapshot:</strong> collected from the public GitHub REST API on the date shown with each section, without a token, and checked by hand. Faculty can refresh it with <code>node scripts/github-records.mjs</code>.</li>
+            <li><strong>Live data:</strong> the “Check live numbers” button asks GitHub’s public search directly from your browser. Nothing is sent anywhere else and no account is needed. GitHub allows 10 searches a minute for each network, so in a computer lab where many press it at once, some will see the snapshot instead and can try again a minute later.</li>
+            <li><strong>Counts change:</strong> stars, forks and pull requests grow every minute. Small differences from what you see on GitHub are normal.</li>
+            <li><strong>Not a recommendation:</strong> repositories appear here because of their numbers. Being on this page does not mean we have checked or recommend their content.</li>
+          </ul>
+          <div data-block="sources"></div>
+        </section>
+      </div>
+    </article>
+  </main>
+  <!-- @include footer -->
+  <script type="module" src="/scripts/pages/records.js"></script>
+</body>
+</html>

@@ -628,6 +628,74 @@ console.log('\nAccounts and sync');
   check(files.length > 0 && hits.length === 0, `SY7 no secret keys, database passwords or env files in ${files.length} repository files${hits.length ? `: ${hits.join(', ')}` : ''}`);
 }
 
+/* ---------------- 8. GitHub World Records (Bonus page /records/) ---------------- */
+console.log('\nGitHub World Records');
+{
+  const check = (cond, msg) => (cond ? ok(msg) : fail(msg));
+  const R = await imp('src/scripts/lib/records.js');
+  const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/github-records.json'), 'utf8'));
+  const problems = R.validateRecords(DATA);
+  check(problems.length === 0, `RC1 snapshot is complete, sorted, sourced and dated${problems.length ? `: ${problems.join('; ')}` : ''}`);
+
+  const broken = structuredClone(DATA);
+  broken.numbers.annual.push({ kind: 'totals', value: '1', label: 'x' });
+  broken.stars.items.reverse();
+  delete broken.commits.source;
+  broken.facts.push({ title: 't', text: `ghp_${'a'.repeat(36)}`, source: 'https://example.org/' });
+  const caught = R.validateRecords(broken).join('\n');
+  check(/never mixed/.test(caught) && /stars: not in descending order/.test(caught) && /commits: needs an https source/.test(caught) && /token/.test(caught),
+    'RC2 the check rejects mixed annual/all-time figures, unsorted rankings, missing sources and token-like text');
+
+  const repo = (i, extra = {}) => ({ full_name: `owner${i}/repo${i}`, stargazers_count: 1000 - i, forks_count: 500 - i, open_issues_count: 3, language: 'Go',
+    description: `<img src=x onerror=alert(1)> ${'d'.repeat(400)}`, created_at: '2020-01-01T00:00:00Z', pushed_at: '2026-10-01T00:00:00Z', owner: { login: 'x' }, ...extra });
+  const reply = (status, body, headers = {}) => async () => ({ status, ok: status >= 200 && status < 300, headers: { get: (h) => headers[h] ?? null }, json: async () => { if (body === 'bad') throw new Error('bad json'); return body; } });
+  const now = () => new Date('2026-10-30T10:00:00Z');
+  const live = await R.fetchLive('stars', { fetchImpl: reply(200, { items: Array.from({ length: 10 }, (_, i) => repo(i)) }), now });
+  check(live.items.length === 10 && live.retrieved_at === '2026-10-30T10:00:00.000Z' && live.items[0].description.length === 300 && !('owner' in live.items[0]),
+    'RC3 a live answer is reduced to the shown fields, with long descriptions cut and the retrieval time recorded');
+  const errKind = async (fetchImpl) => { try { await R.fetchLive('forks', { fetchImpl, now }); return 'none'; } catch (e) { return `${e.kind}${e.resetAt ? '+reset' : ''}`; } };
+  check(await errKind(reply(403, {}, { 'x-ratelimit-reset': '1793380000' })) === 'rate+reset' && await errKind(reply(429, {})) === 'rate',
+    'RC4 GitHub\'s rate limit becomes a friendly "try again after" message, not a crash');
+  const bad = [
+    await errKind(async () => { throw new TypeError('Failed to fetch'); }),
+    await errKind(reply(500, {})),
+    await errKind(reply(200, 'bad')),
+    await errKind(reply(200, { items: Array.from({ length: 4 }, (_, i) => repo(i)) })),
+    await errKind(reply(200, { items: Array.from({ length: 10 }, (_, i) => repo(9 - i)) })),
+    await errKind(reply(200, { items: Array.from({ length: 10 }, (_, i) => repo(i, i === 3 ? { full_name: 'javascript:alert(1)//x' } : {})) })),
+  ];
+  check(bad.join() === 'offline,bad,bad,bad,bad,bad', `RC5 offline, server errors, unreadable, short, unsorted or strange answers keep the snapshot (${bad.join()})`);
+
+  const cached = { stars: { retrieved_at: '2026-10-30T08:00:00Z', items: live.items.map((x) => ({ ...x })) } };
+  const at = (iso) => R.freshFromCache(cached, 'stars', new Date(iso));
+  const tampered = structuredClone(cached);
+  tampered.stars.items[2].full_name = '"><script>';
+  check(at('2026-10-30T13:59:00Z') && !at('2026-10-30T14:01:00Z') && !at('2026-10-30T07:00:00Z') && !R.freshFromCache(tampered, 'stars', new Date('2026-10-30T09:00:00Z')) && !R.freshFromCache(null, 'forks'),
+    'RC6 a saved live list is reused for 6 hours only, and a damaged or future-dated one is ignored');
+
+  check(R.esc('<script>"x"&\'') === '&lt;script&gt;&quot;x&quot;&amp;&#39;' && R.repoUrl('torvalds/linux') === 'https://github.com/torvalds/linux'
+    && R.repoUrl('javascript:alert(1)') === null && R.repoUrl('a/b/c') === null && R.repoUrl('../x') === null,
+    'RC7 text from GitHub is escaped and only owner/name becomes a github.com link');
+  const snap = [{ full_name: 'a/a' }, { full_name: 'b/b' }, { full_name: 'c/c' }];
+  check(R.movement('c/c', 0, snap) === '▲2' && R.movement('a/a', 1, snap) === '▼1' && R.movement('b/b', 1, snap) === '' && R.movement('z/z', 0, snap) === 'new',
+    'RC8 live lists show moves since the snapshot (▲, ▼, new)');
+  check(R.formatNumber(1855711) === '1,855,711' && R.compact(557539) === '557.5K' && R.compact(1855711) === '1.86M' && R.formatDate('2026-10-30T23:30:00Z') === '30 Oct 2026' && R.formatDate('x') === '—',
+    'RC9 numbers and dates are written the same way for every reader');
+  check(R.FRESHNESS.live.text === 'Live data' && R.FRESHNESS.live.hint === 'Retrieved from GitHub or a live source'
+    && R.FRESHNESS.snapshot.text === 'Historical snapshot' && R.FRESHNESS.snapshot.hint === 'Verified at a particular date',
+    'RC10 the two freshness labels use the owner\'s wording');
+
+  const header = fs.readFileSync(path.join(ROOT, 'src/partials/header.html'), 'utf8');
+  const { PAGES } = await imp('src/scripts/data/site.js');
+  const page = fs.readFileSync(path.join(ROOT, 'src/records/index.html'), 'utf8');
+  const tocIds = [...page.matchAll(/data-toc="([\w-]+)"/g)].map((m) => m[1]);
+  check((header.match(/href="\{\{base\}\}records\/"/g) ?? []).length === 2 && PAGES.some((p) => p.slug === 'records/') && tocIds.every((id) => page.includes(`id="${id}"`)),
+    'RC11 the page is in the More menu, the phone menu and search, and every contents link has its section');
+  const client = ['src/scripts/lib/records.js', 'src/scripts/pages/records.js'].map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
+  check(!/Authorization|token\s*[:=]|GITHUB_TOKEN/i.test(client) && /credentials: 'omit'/.test(client) && !/setInterval|addEventListener\('load', checkLive/.test(client),
+    'RC12 the browser code sends no token or cookies and asks GitHub only when the student presses the button');
+}
+
 fs.rmSync(TMP, { recursive: true, force: true });
 console.log(failures ? `\n${failures} test(s) failed` : '\nAll tests passed');
 process.exit(failures ? 1 : 0);

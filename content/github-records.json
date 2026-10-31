@@ -1,0 +1,846 @@
+{
+  "schema": 1,
+  "about": "Snapshot for the GitHub World Records page (/records/). API sections are refreshed by scripts/github-records.mjs; the others are checked by hand against their source.",
+  "stars": {
+    "claim": "verified-record",
+    "retrieved_at": "2026-10-30T16:37:25.111Z",
+    "source": "https://github.com/search?q=stars%3A%3E100000&type=repositories&s=stars&o=desc",
+    "method": "GitHub search over all public repositories, sorted by stars (GET /search/repositories?q=stars:>100000&sort=stars).",
+    "items": [
+      {
+        "full_name": "codecrafters-io/build-your-own-x",
+        "stars": 557552,
+        "forks": 52174,
+        "open_issues": 685,
+        "language": "Markdown",
+        "description": "Master programming by recreating your favorite technologies from scratch.",
+        "created_at": "2018-05-09T12:03:18Z",
+        "pushed_at": "2026-07-14T19:25:58Z",
+        "archived": false
+      },
+      {
+        "full_name": "sindresorhus/awesome",
+        "stars": 527300,
+        "forks": 37899,
+        "open_issues": 105,
+        "language": null,
+        "description": "😎 Awesome lists about all kinds of interesting topics [NOTE: Pull requests are temporarily disabled until I have a chance to catch up with the existing ones]",
+        "created_at": "2014-07-11T13:42:37Z",
+        "pushed_at": "2026-09-02T02:10:47Z",
+        "archived": false
+      },
+      {
+        "full_name": "public-apis/public-apis",
+        "stars": 493477,
+        "forks": 55045,
+        "open_issues": 2482,
+        "language": "Python",
+        "description": "A collective list of free APIs",
+        "created_at": "2016-03-20T23:49:42Z",
+        "pushed_at": "2026-10-30T16:37:03Z",
+        "archived": false
+      },
+      {
+        "full_name": "freeCodeCamp/freeCodeCamp",
+        "stars": 458232,
+        "forks": 48739,
+        "open_issues": 161,
+        "language": "TypeScript",
+        "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn math, programming, and computer science for free.",
+        "created_at": "2014-12-24T17:49:19Z",
+        "pushed_at": "2026-10-30T15:47:47Z",
+        "archived": false
+      },
+      {
+        "full_name": "morluto/rea",
+        "stars": 411213,
+        "forks": 102920,
+        "open_issues": 1315,
+        "language": "TypeScript",
+        "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
+        "created_at": "2026-04-14T00:51:32Z",
+        "pushed_at": "2026-10-30T16:33:16Z",
+        "archived": false
+      },
+      {
+        "full_name": "EbookFoundation/free-programming-books",
+        "stars": 400539,
+        "forks": 67031,
+        "open_issues": 89,
+        "language": "Python",
+        "description": ":books: Freely available programming books",
+        "created_at": "2013-10-11T06:50:37Z",
+        "pushed_at": "2026-10-27T20:40:54Z",
+        "archived": false
+      },
+      {
+        "full_name": "openclaw/openclaw",
+        "stars": 393455,
+        "forks": 82698,
+        "open_issues": 7903,
+        "language": "TypeScript",
+        "description": "The AI that really does things. Any OS. Any Platform. The lobster way. 🦞 ",
+        "created_at": "2025-11-24T10:16:47Z",
+        "pushed_at": "2026-10-30T16:36:42Z",
+        "archived": false
+      },
+      {
+        "full_name": "donnemartin/system-design-primer",
+        "stars": 376219,
+        "forks": 59076,
+        "open_issues": 634,
+        "language": "Python",
+        "description": "Learn how to design large-scale systems. Prep for the system design interview.  Includes Anki flashcards.",
+        "created_at": "2017-02-26T16:15:28Z",
+        "pushed_at": "2026-09-15T01:10:09Z",
+        "archived": false
+      },
+      {
+        "full_name": "nilbuild/developer-roadmap",
+        "stars": 370805,
+        "forks": 45159,
+        "open_issues": 5,
+        "language": "TypeScript",
+        "description": "Interactive roadmaps, guides and other educational content to help developers grow in their careers.",
+        "created_at": "2017-03-15T13:45:52Z",
+        "pushed_at": "2026-10-30T10:44:36Z",
+        "archived": false
+      },
+      {
+        "full_name": "jwasham/coding-interview-university",
+        "stars": 363578,
+        "forks": 85130,
+        "open_issues": 130,
+        "language": null,
+        "description": "A complete computer science study plan to become a software engineer.",
+        "created_at": "2016-06-06T02:34:12Z",
+        "pushed_at": "2025-08-28T14:42:47Z",
+        "archived": false
+      }
+    ]
+  },
+  "forks": {
+    "claim": "verified-record",
+    "retrieved_at": "2026-10-30T16:37:32.256Z",
+    "source": "https://github.com/search?q=forks%3A%3E50000&type=repositories&s=forks&o=desc",
+    "method": "GitHub search over all public repositories, sorted by forks (GET /search/repositories?q=forks:>50000&sort=forks).",
+    "items": [
+      {
+        "full_name": "jtleek/datasharing",
+        "stars": 6785,
+        "forks": 241493,
+        "open_issues": 911,
+        "language": null,
+        "description": "The Leek group guide to data sharing ",
+        "created_at": "2013-11-07T13:25:07Z",
+        "pushed_at": "2024-08-07T08:29:32Z",
+        "archived": false
+      },
+      {
+        "full_name": "octocat/Spoon-Knife",
+        "stars": 14147,
+        "forks": 160717,
+        "open_issues": 21571,
+        "language": "HTML",
+        "description": "This repo is for demonstration purposes only.",
+        "created_at": "2011-01-27T19:30:43Z",
+        "pushed_at": "2024-08-21T15:25:42Z",
+        "archived": false
+      },
+      {
+        "full_name": "rdpeng/ProgrammingAssignment2",
+        "stars": 894,
+        "forks": 143186,
+        "open_issues": 4294,
+        "language": "R",
+        "description": "Repository for Programming Assignment 2 for R Programming on Coursera",
+        "created_at": "2014-01-14T22:07:41Z",
+        "pushed_at": "2024-08-14T21:14:33Z",
+        "archived": false
+      },
+      {
+        "full_name": "firstcontributions/first-contributions",
+        "stars": 56626,
+        "forks": 112005,
+        "open_issues": 589,
+        "language": null,
+        "description": "🚀✨ Help beginners to contribute to open source projects",
+        "created_at": "2016-09-20T14:35:09Z",
+        "pushed_at": "2026-10-30T16:34:03Z",
+        "archived": false
+      },
+      {
+        "full_name": "ultraworkers/claw-code",
+        "stars": 194986,
+        "forks": 107632,
+        "open_issues": 1,
+        "language": "Rust",
+        "description": "An agent-managed museum exhibit, built in Rust with Gajae-Code / LazyCodex — developed and maintained with no human intervention.",
+        "created_at": "2026-03-31T08:58:08Z",
+        "pushed_at": "2026-10-28T19:59:24Z",
+        "archived": false
+      },
+      {
+        "full_name": "morluto/rea",
+        "stars": 411215,
+        "forks": 102920,
+        "open_issues": 1315,
+        "language": "TypeScript",
+        "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
+        "created_at": "2026-04-14T00:51:32Z",
+        "pushed_at": "2026-10-30T16:33:16Z",
+        "archived": false
+      },
+      {
+        "full_name": "TheOdinProject/css-exercises",
+        "stars": 2732,
+        "forks": 94477,
+        "open_issues": 0,
+        "language": "HTML",
+        "description": null,
+        "created_at": "2021-08-17T20:33:19Z",
+        "pushed_at": "2026-10-18T23:47:55Z",
+        "archived": false
+      },
+      {
+        "full_name": "Pierian-Data/Complete-Python-3-Bootcamp",
+        "stars": 29829,
+        "forks": 87082,
+        "open_issues": 274,
+        "language": "Jupyter Notebook",
+        "description": "Course Files for Complete Python 3 Bootcamp Course on Udemy",
+        "created_at": "2018-02-12T19:30:10Z",
+        "pushed_at": "2025-06-24T04:54:16Z",
+        "archived": false
+      },
+      {
+        "full_name": "k1tbyte/Wand-Enhancer",
+        "stars": 33347,
+        "forks": 86237,
+        "open_issues": 17,
+        "language": "C#",
+        "description": "Advanced UX and interoperability extension for Wand (WeMod) app",
+        "created_at": "2024-11-17T20:02:10Z",
+        "pushed_at": "2026-10-18T11:00:40Z",
+        "archived": false
+      },
+      {
+        "full_name": "SmartThingsCommunity/SmartThingsPublic",
+        "stars": 2665,
+        "forks": 86060,
+        "open_issues": 2504,
+        "language": "Groovy",
+        "description": "SmartThings open-source DeviceType Handlers and SmartApps code",
+        "created_at": "2015-08-04T22:48:02Z",
+        "pushed_at": "2023-07-18T18:42:27Z",
+        "archived": false
+      }
+    ]
+  },
+  "pullRequests": {
+    "claim": "highest-verified-example",
+    "retrieved_at": "2026-10-30T16:42:01.620Z",
+    "source": "https://github.com/search?q=repo%3ANixOS%2Fnixpkgs+is%3Apr&type=pullrequests",
+    "method": "GitHub search counts (repo:NAME is:pr, then is:merged, is:closed is:unmerged and is:open) for 18 of the busiest public repositories. GitHub publishes no all-repository ranking of pull requests.",
+    "items": [
+      {
+        "repo": "NixOS/nixpkgs",
+        "prs": 515643,
+        "merged": 443091,
+        "closed_unmerged": 60084,
+        "open": 12468
+      },
+      {
+        "repo": "microsoft/winget-pkgs",
+        "prs": 449898,
+        "merged": 391587,
+        "closed_unmerged": 52640,
+        "open": 5670
+      },
+      {
+        "repo": "Homebrew/homebrew-core",
+        "prs": 315563,
+        "merged": 199841,
+        "closed_unmerged": 115654,
+        "open": 68
+      },
+      {
+        "repo": "Homebrew/homebrew-cask",
+        "prs": 290281,
+        "merged": 255909,
+        "closed_unmerged": 34328,
+        "open": 45
+      },
+      {
+        "repo": "odoo/odoo",
+        "prs": 278192,
+        "merged": 6179,
+        "closed_unmerged": 264627,
+        "open": 7389
+      },
+      {
+        "repo": "elastic/kibana",
+        "prs": 200185,
+        "merged": 174926,
+        "closed_unmerged": 22402,
+        "open": 2858
+      },
+      {
+        "repo": "pytorch/pytorch",
+        "prs": 139845
+      },
+      {
+        "repo": "llvm/llvm-project",
+        "prs": 133758
+      },
+      {
+        "repo": "home-assistant/core",
+        "prs": 112836
+      },
+      {
+        "repo": "rust-lang/rust",
+        "prs": 99507
+      }
+    ]
+  },
+  "person": {
+    "claim": "highest-verified-example",
+    "retrieved_at": "2026-10-30T16:46:17.387Z",
+    "source": "https://github.com/search?q=is%3Apr+author%3Achenrui333&type=pullrequests",
+    "method": "GitHub search counts of pull requests opened by one account (is:pr author:chenrui333, and with is:merged). GitHub publishes no leaderboard of people.",
+    "user": "chenrui333",
+    "prs": 58754,
+    "merged": 25193,
+    "main_repo": "Homebrew/homebrew-core",
+    "main_repo_prs": 37114,
+    "type": "User"
+  },
+  "threads": {
+    "claim": "highest-verified-example",
+    "retrieved_at": "2026-10-30T16:45:46.273Z",
+    "source": "https://github.com/search?q=repo%3Amicrosoft%2Fvscode+is%3Aissue&type=issues",
+    "method": "GitHub search counts of issues (repo:NAME is:issue) and pull requests (repo:NAME is:pr), counted separately so nothing is counted twice.",
+    "items": [
+      {
+        "repo": "NixOS/nixpkgs",
+        "issues": 59683,
+        "prs": 515644
+      },
+      {
+        "repo": "microsoft/winget-pkgs",
+        "issues": 10909,
+        "prs": 449900
+      },
+      {
+        "repo": "microsoft/vscode",
+        "issues": 257628,
+        "prs": 70762
+      },
+      {
+        "repo": "Homebrew/homebrew-core",
+        "issues": 6172,
+        "prs": 315563
+      },
+      {
+        "repo": "elastic/kibana",
+        "issues": 99607,
+        "prs": 200186
+      },
+      {
+        "repo": "odoo/odoo",
+        "issues": 19332,
+        "prs": 278195
+      },
+      {
+        "repo": "Homebrew/homebrew-cask",
+        "issues": 6969,
+        "prs": 290284
+      },
+      {
+        "repo": "llvm/llvm-project",
+        "issues": 100345,
+        "prs": 133762
+      },
+      {
+        "repo": "pytorch/pytorch",
+        "issues": 62082,
+        "prs": 139845
+      },
+      {
+        "repo": "flutter/flutter",
+        "issues": 116555,
+        "prs": 77408
+      }
+    ]
+  },
+  "discussions": {
+    "claim": "popular-example",
+    "verified_at": "2026-10-30",
+    "source": "https://github.com/search?q=is%3Aissue&type=issues&s=comments&o=desc",
+    "method": "Comment and reaction counts read from GitHub search on 30 Oct 2026. “Comments” are the conversation comments GitHub counts; code-review comments on lines of code are not included.",
+    "items": [
+      {
+        "repo": "reactjs/rfcs",
+        "number": 68,
+        "kind": "pr",
+        "title": "RFC: React Hooks",
+        "comments": 1394,
+        "reactions": 3246,
+        "state": "closed",
+        "year": 2018,
+        "by": "people",
+        "note": "The proposal that introduced Hooks to React, discussed in public before it shipped."
+      },
+      {
+        "repo": "audacity/audacity",
+        "number": 835,
+        "kind": "pr",
+        "title": "Basic telemetry for the Audacity",
+        "comments": 1091,
+        "reactions": 4362,
+        "state": "closed",
+        "year": 2021,
+        "by": "people",
+        "note": "A plan to collect usage data met strong objections from users; the project changed course."
+      },
+      {
+        "repo": "nodejs/node",
+        "number": 37,
+        "kind": "issue",
+        "title": "logo ideas",
+        "comments": 878,
+        "reactions": 1,
+        "state": "closed",
+        "year": 2014,
+        "by": "people",
+        "note": "Hundreds of logo suggestions in one of the first issues of the Node.js repository."
+      },
+      {
+        "repo": "oven-sh/bun",
+        "number": 30412,
+        "kind": "pr",
+        "title": "Rewrite Bun in Rust",
+        "comments": 709,
+        "reactions": 6193,
+        "state": "closed",
+        "year": 2026,
+        "by": "people",
+        "note": "The most-reacted pull request GitHub search returned on our check date."
+      },
+      {
+        "repo": "microsoft/vscode",
+        "number": 519,
+        "kind": "issue",
+        "title": "Allow to change the font size and font of the workbench",
+        "comments": 604,
+        "reactions": 4834,
+        "state": "open",
+        "year": 2015,
+        "by": "people",
+        "note": "A feature request still open after more than ten years, with thousands of 👍 reactions."
+      },
+      {
+        "repo": "flutter/flutter",
+        "number": 51752,
+        "kind": "issue",
+        "title": "Reusing state logic is either too verbose or too difficult",
+        "comments": 555,
+        "reactions": 314,
+        "state": "open",
+        "year": 2020,
+        "by": "people",
+        "note": "A long design debate about how Flutter apps should share logic."
+      },
+      {
+        "repo": "tensorflow/tensorflow",
+        "number": 22,
+        "kind": "issue",
+        "title": "OpenCL support",
+        "comments": 542,
+        "reactions": 910,
+        "state": "closed",
+        "year": 2015,
+        "by": "people",
+        "note": "Issue number 22: a request made in TensorFlow’s first week on GitHub."
+      },
+      {
+        "repo": "microsoft/TypeScript",
+        "number": 202,
+        "kind": "issue",
+        "title": "Support some non-structural (nominal) type matching",
+        "comments": 498,
+        "reactions": 1087,
+        "state": "open",
+        "year": 2014,
+        "by": "people",
+        "note": "A language-design question that has stayed open since 2014."
+      },
+      {
+        "repo": "golang/go",
+        "number": 49338,
+        "kind": "issue",
+        "title": "all: plan9-arm builder failing frequently with a variety of errors",
+        "comments": 2500,
+        "reactions": 1,
+        "state": "open",
+        "year": 2021,
+        "by": "automation",
+        "note": "Mostly test-failure reports posted by Go’s robot. It shows 2,500 comments, the highest count we saw anywhere."
+      },
+      {
+        "repo": "rust-lang/rust",
+        "number": 112049,
+        "kind": "pr",
+        "title": "[do not merge] CI experiments",
+        "comments": 2466,
+        "reactions": 0,
+        "state": "open",
+        "year": 2023,
+        "by": "automation",
+        "note": "A test pull request where most comments are build results from Rust’s CI bots."
+      }
+    ]
+  },
+  "commits": {
+    "claim": "highest-verified-example",
+    "retrieved_at": "2026-10-30T17:08:07.854Z",
+    "source": "https://docs.github.com/en/rest/commits/commits#list-commits",
+    "method": "Commits on each repository’s default branch, counted with the REST API (GET /repos/NAME/commits?per_page=1, then the number of the last page). 20 large repositories checked.",
+    "items": [
+      {
+        "repo": "chromium/chromium",
+        "commits": 1855777
+      },
+      {
+        "repo": "torvalds/linux",
+        "commits": 1503553
+      },
+      {
+        "repo": "NixOS/nixpkgs",
+        "commits": 1105405
+      },
+      {
+        "repo": "mozilla/gecko-dev",
+        "commits": 973332
+      },
+      {
+        "repo": "Homebrew/homebrew-core",
+        "commits": 924881
+      },
+      {
+        "repo": "llvm/llvm-project",
+        "commits": 605514
+      },
+      {
+        "repo": "microsoft/winget-pkgs",
+        "commits": 396104
+      },
+      {
+        "repo": "rust-lang/rust",
+        "commits": 345149
+      },
+      {
+        "repo": "gcc-mirror/gcc",
+        "commits": 234189
+      },
+      {
+        "repo": "tensorflow/tensorflow",
+        "commits": 202470
+      },
+      {
+        "repo": "microsoft/vscode",
+        "commits": 169857
+      },
+      {
+        "repo": "kubernetes/kubernetes",
+        "commits": 142853
+      },
+      {
+        "repo": "python/cpython",
+        "commits": 134065
+      },
+      {
+        "repo": "home-assistant/core",
+        "commits": 122525
+      },
+      {
+        "repo": "flutter/flutter",
+        "commits": 92307
+      },
+      {
+        "repo": "git/git",
+        "commits": 82623
+      },
+      {
+        "repo": "golang/go",
+        "commits": 68299
+      },
+      {
+        "repo": "nodejs/node",
+        "commits": 49307
+      },
+      {
+        "repo": "freeCodeCamp/freeCodeCamp",
+        "commits": 43334
+      },
+      {
+        "repo": "react/react",
+        "commits": 21749
+      }
+    ]
+  },
+  "communities": {
+    "claim": "official-figure",
+    "verified_at": "2026-10-28",
+    "source": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/",
+    "period": {
+      "from": "2025-10-01",
+      "to": "2026-09-30"
+    },
+    "method": "GitHub Octoverse 2026. “Most engaged” blends each repository’s rank for stars, forks and distinct pull-request and issue creators; “fastest-growing” ranks the year’s increase in distinct contributors. Forks are excluded.",
+    "most_engaged": {
+      "community": [
+        "openclaw/openclaw",
+        "vllm-project/vllm",
+        "ggml-org/llama.cpp",
+        "omacom/omarchy",
+        "farion1231/cc-switch",
+        "sgl-project/sglang",
+        "pytorch/pytorch",
+        "rust-lang/rust",
+        "home-assistant/core",
+        "python/cpython"
+      ],
+      "vendor": [
+        "NousResearch/hermes-agent",
+        "anomalyco/opencode",
+        "earendil-works/pi",
+        "stablyai/orca",
+        "pingdotgg/t3code",
+        "microsoft/vscode",
+        "Graphify-Labs/graphify",
+        "paperclipai/paperclip",
+        "BerriAI/litellm",
+        "can1357/oh-my-pi"
+      ]
+    },
+    "fastest_growing": {
+      "community": [
+        "farion1231/cc-switch",
+        "punkpeye/awesome-mcp-servers",
+        "omacom/omarchy",
+        "firstcontributions/first-contributions",
+        "ggml-org/llama.cpp",
+        "EclipseFdn/open-vsx.org",
+        "sgl-project/sglang",
+        "vllm-project/vllm",
+        "imputnet/helium",
+        "vllm-project/vllm-ascend"
+      ],
+      "vendor": [
+        "anthropics/claude-code",
+        "openai/codex",
+        "anomalyco/opencode",
+        "microsoft/vscode",
+        "github/copilot-cli",
+        "zed-industries/zed",
+        "google-gemini/gemini-cli",
+        "BerriAI/litellm",
+        "microsoft/winget-pkgs",
+        "Kilo-Org/kilocode"
+      ]
+    }
+  },
+  "numbers": {
+    "claim": "official-figure",
+    "verified_at": "2026-10-30",
+    "source": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/",
+    "published": "2026-10-28",
+    "period": {
+      "from": "2025-10-01",
+      "to": "2026-09-30"
+    },
+    "method": "Figures as GitHub reports them. “In one year” covers the Octoverse year (1 Oct 2025 – 30 Sep 2026; public and private repositories unless noted). “All-time totals” are counts on a stated date. The two kinds are never added or compared.",
+    "annual": [
+      {
+        "kind": "annual",
+        "value": "34.3 billion",
+        "label": "commits",
+        "detail": "Public and private repositories; more than three times the figure two years earlier."
+      },
+      {
+        "kind": "annual",
+        "value": "17.9 billion",
+        "label": "pushes",
+        "detail": "More than 2024 and 2025 combined. One push can carry many commits."
+      },
+      {
+        "kind": "annual",
+        "value": "1.3 billion",
+        "label": "merged pull requests",
+        "detail": "About 3.5 million a day."
+      },
+      {
+        "kind": "annual",
+        "value": "2.5 billion",
+        "label": "contributions to public and open-source repositories",
+        "detail": "Up from 1.12 billion the year before."
+      },
+      {
+        "kind": "annual",
+        "value": "124 million",
+        "label": "GitHub Actions jobs a day",
+        "detail": "1,440 jobs every second."
+      },
+      {
+        "kind": "annual",
+        "value": "30 million+",
+        "label": "Dependabot pull requests merged",
+        "detail": "Automatic dependency updates, about double the previous year."
+      },
+      {
+        "kind": "annual",
+        "value": "5.8 billion",
+        "label": "push-protection scans for leaked secrets",
+        "detail": "GitHub checks pushes for API keys and passwords before they land."
+      },
+      {
+        "kind": "annual",
+        "value": "40%+",
+        "label": "of new pull requests started by an AI agent",
+        "detail": "Share in September 2026, up from 17% in March 2026.",
+        "period": "September 2026"
+      }
+    ],
+    "totals": [
+      {
+        "kind": "totals",
+        "value": "225 million+",
+        "label": "developers on GitHub",
+        "as_of": "2026-09-30",
+        "detail": "Octoverse 2026 and github.com/about."
+      },
+      {
+        "kind": "totals",
+        "value": "32.0 million",
+        "label": "developers in India",
+        "as_of": "2026-09-30",
+        "detail": "Second only to the United States (38.3 million); India added more than 10 million in the year."
+      },
+      {
+        "kind": "totals",
+        "value": "800 million+",
+        "label": "repositories",
+        "as_of": "2026-10-30",
+        "source": "https://github.com/about",
+        "detail": "As stated on github.com/about."
+      },
+      {
+        "kind": "totals",
+        "value": "4 million+",
+        "label": "organizations",
+        "as_of": "2026-10-30",
+        "source": "https://github.com/about",
+        "detail": "As stated on github.com/about."
+      }
+    ],
+    "countries": [
+      [
+        "United States",
+        "38.3 M"
+      ],
+      [
+        "India",
+        "32.0 M"
+      ],
+      [
+        "China",
+        "12.4 M"
+      ],
+      [
+        "Brazil",
+        "10.2 M"
+      ],
+      [
+        "Japan",
+        "7.15 M"
+      ],
+      [
+        "United Kingdom",
+        "6.47 M"
+      ],
+      [
+        "Indonesia",
+        "6.34 M"
+      ],
+      [
+        "Germany",
+        "6.30 M"
+      ],
+      [
+        "Russia",
+        "5.07 M"
+      ],
+      [
+        "France",
+        "4.75 M"
+      ]
+    ]
+  },
+  "facts": [
+    {
+      "icon": "🐧",
+      "title": "Git was built for Linux",
+      "text": "Linus Torvalds wrote Git in 2005 to manage the Linux kernel. That same kernel now has more than 1.5 million commits.",
+      "source": "https://git-scm.com/book/en/v2/Getting-Started-A-Short-History-of-Git"
+    },
+    {
+      "icon": "🔁",
+      "title": "Git is made with Git",
+      "text": "The git/git repository holds Git’s own history: more than 82,000 commits since 2005.",
+      "source": "https://github.com/git/git"
+    },
+    {
+      "icon": "🥄",
+      "title": "A repository made for practice",
+      "text": "octocat/Spoon-Knife exists only so people can practise forking. More than 160,000 forks later, you can still fork it yourself.",
+      "source": "https://github.com/octocat/Spoon-Knife"
+    },
+    {
+      "icon": "🎓",
+      "title": "Course work tops the fork chart",
+      "text": "The two most-forked repositories are data-science course material (jtleek/datasharing and rdpeng/ProgrammingAssignment2): every learner forks a copy.",
+      "source": "https://github.com/jtleek/datasharing"
+    },
+    {
+      "icon": "🙋",
+      "title": "Your first pull request",
+      "text": "firstcontributions/first-contributions is one of the year’s fastest-growing repositories by contributors. It exists to help beginners send their first pull request.",
+      "source": "https://github.com/firstcontributions/first-contributions"
+    },
+    {
+      "icon": "🇮🇳",
+      "title": "India: 32 million developers",
+      "text": "India has the second-largest developer community on GitHub and added more than 10 million developers in one year.",
+      "source": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+    },
+    {
+      "icon": "⭐",
+      "title": "Not every star is real",
+      "text": "Researchers found about six million suspected fake stars on GitHub between 2019 and 2024. Judge a project by its code, activity and community too.",
+      "source": "https://arxiv.org/abs/2412.13459"
+    },
+    {
+      "icon": "🤖",
+      "title": "A merge that says “closed”",
+      "text": "odoo/odoo merges with its own bot, which adds the commits itself and then closes the pull request. GitHub therefore shows most of its 278,000 pull requests as “closed”, not “merged”.",
+      "source": "https://github.com/odoo/odoo/pull/294756"
+    },
+    {
+      "icon": "🚀",
+      "title": "The favourite emoji",
+      "text": "Across every industry Octoverse 2026 looked at, the rocket 🚀 was the emoji developers used most in their repositories.",
+      "source": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+    }
+  ]
+}

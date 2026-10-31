@@ -125,6 +125,7 @@ export const PAGES = [
   { slug: 'cheatsheet/', title: 'Cheat sheet', desc: 'Every command on one page', milestone: 5 },
   { slug: 'self-check/', title: 'Self-check', desc: 'Final 40-question practice test', milestone: 5 },
   { slug: 'bonus/', title: 'Bonus', desc: 'Beyond the syllabus', milestone: 5 },
+  { slug: 'records/', title: 'GitHub World Records', desc: 'Bonus: most stars, forks, pull requests, commits and the latest Octoverse numbers', milestone: 12 },
   { slug: 'glossary/', title: 'Glossary', desc: 'Every term, explained', milestone: 5 },
   { slug: 'about/', title: 'About', desc: 'Course and college details', milestone: 5 },
   { slug: 'teach/', title: 'Teach', desc: 'Lecture slides, session plans and the faculty handbook', milestone: 3 },
