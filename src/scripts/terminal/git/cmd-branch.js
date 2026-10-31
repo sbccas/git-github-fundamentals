@@ -148,8 +148,12 @@ export async function switchCmd({ sh, args, out }) {
 /* ======================= checkout ======================= */
 
 export async function checkout({ sh, args, out }) {
-  const { values, positional, paths } = parseArgs(args, { value: { b: 'branch', B: 'force-branch' }, bool: { f: 'force', q: 'quiet' }, longBool: ['detach'] });
+  const { flags, values, positional, paths } = parseArgs(args, { value: { b: 'branch', B: 'force-branch' }, bool: { f: 'force', q: 'quiet' }, longBool: ['detach', 'ours', 'theirs'] });
   const repo = await requireRepo(sh);
+  if (flags.ours || flags.theirs) {
+    const { takeSide } = await import('./cmd-basic.js');
+    return takeSide(sh, repo, flags.ours ? 'ours' : 'theirs', [...positional, ...paths], out);
+  }
   if (values.branch) return createAndSwitch(repo, values.branch, positional[0], out);
 
   const restorePaths = async (rev, specs) => {
@@ -456,11 +460,17 @@ export async function merge({ sh, args, out }) {
   if (!positional.length) {
     throw new GitError('fatal: No remote for the current branch.', 128);
   }
-  return mergeInto(repo, positional[0], out, {
-    noFF: flags['no-ff'],
-    ffOnly: flags['ff-only'],
-    message: values.message,
-    allowUnrelated: flags['allow-unrelated-histories'],
-    theirName: positional[0],
-  });
+  // Several branches: real Git makes one "octopus" merge; the playground merges them one at a time instead.
+  if (positional.length > 1) out.write(`Merging ${positional.length} branches one at a time.\n`);
+  for (const theirName of positional) {
+    const code = await mergeInto(repo, theirName, out, {
+      noFF: flags['no-ff'],
+      ffOnly: flags['ff-only'],
+      message: values.message,
+      allowUnrelated: flags['allow-unrelated-histories'],
+      theirName,
+    });
+    if (code) return code;
+  }
+  return 0;
 }

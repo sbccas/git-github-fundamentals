@@ -205,6 +205,9 @@ const DHRUVI = { name: 'Dhruvi Patel', email: 'dhruvi@example.com' };
 const MEET = { name: 'Meet Shah', email: 'meet@example.com' };
 const HETVI = { name: 'Hetvi Desai', email: 'hetvi@example.com' };
 const BASE_REPO = `${KRISH} && mkdir amroli-canteen && cd amroli-canteen && git init -q && echo "Samosa 15" > menu.txt && git add . && git commit -q -m "Add menu" && echo "Open: 9 AM" > timing.txt && git add . && git commit -q -m "Add opening time"`;
+// M-10 accepts "8 AM", "8 am", "8AM", "8:00 AM" and "8 a.m." (and the same forms of 10 AM).
+const EIGHT_AM = /\b8(?::00)?\s*a\.?m\b/i;
+const TEN_AM = /\b10(?::00)?\s*a\.?m\b/i;
 const onBranch = async (c, repoPath, name) => { const r = await c.repo(repoPath); return !!r && (await r.branch()) === name; };
 const cleanTree = async (r) => { const s = await r.status(); return !s.staged.length && !s.unstaged.length && !s.conflicts.length; };
 
@@ -244,7 +247,7 @@ MISSIONS.push(
     goals: [
       { text: 'Merge <code>feature-menu</code> into <code>main</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); return !!m && (await r.isAncestor(c.state.menuOid, m)); } },
       { text: 'Merge <code>feature-cart</code> into <code>main</code> (a merge commit)', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r) return false; const m = await r.refOid('refs/heads/main'); if (!m || !(await r.isAncestor(c.state.cartOid, m))) return false; return (await r.commit(m)).parent.length === 2 || (await r.treeMap(m)).has('cart.js'); } },
-      { text: 'Look at the result with <code>git log --oneline --graph</code>', check: (c) => c.ran(/^git log.*--graph/, /^git merge feature-cart/) },
+      { text: 'After both merges, look at the result with <code>git log --oneline --graph</code>', check: (c) => c.ran(/^git log.*--graph/, /^git merge\b.*\bfeature-cart\b/) },
       { text: 'Finish on <code>main</code> with a clean working tree', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r || (await r.branch()) !== 'main' || (await r.mergeState())) return false; const m = await r.refOid('refs/heads/main'); return (await r.isAncestor(c.state.cartOid, m)) && (await r.isAncestor(c.state.menuOid, m)) && (await cleanTree(r)); } },
     ],
     hints: [
@@ -272,8 +275,8 @@ MISSIONS.push(
       <p>Hetvi decides: <strong>the canteen opens at 8 AM</strong>. Merge Dhruvi's branch and resolve the conflict.</p>`,
     goals: [
       { text: 'Merge <code>change-timing</code> into <code>main</code> and see the conflict', check: (c) => c.ran(/^git merge change-timing/) },
-      { text: 'Fix <code>timing.txt</code>: only <code>Open: 8 AM</code>, no conflict markers', check: async (c) => { const t = (await c.read('amroli-canteen/timing.txt')) ?? ''; return /8 AM/.test(t) && !/10 AM/.test(t) && !/^(<{7}|={7}|>{7})/m.test(t); } },
-      { text: 'Mark it resolved and finish the merge with a commit', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r || (await r.mergeState())) return false; const m = await r.refOid('refs/heads/main'); const cm = await r.commit(m); if (cm.parent.length !== 2 || !cm.parent.includes(c.state.timingOid)) return false; const t = await r.treeMap(m); return /8 AM/.test(await r.blobText(t.get('timing.txt').oid)); } },
+      { text: 'Fix <code>timing.txt</code>: only <code>Open: 8 AM</code>, no conflict markers', check: async (c) => { const t = (await c.read('amroli-canteen/timing.txt')) ?? ''; return EIGHT_AM.test(t) && !TEN_AM.test(t) && !/^(<{7}|={7}|>{7})/m.test(t); } },
+      { text: 'Mark it resolved and finish the merge with a commit', check: async (c) => { const r = await c.repo('amroli-canteen'); if (!r || (await r.mergeState())) return false; const m = await r.refOid('refs/heads/main'); const cm = await r.commit(m); if (cm.parent.length !== 2 || !cm.parent.includes(c.state.timingOid)) return false; const t = await r.treeMap(m); return EIGHT_AM.test(await r.blobText(t.get('timing.txt').oid)); } },
     ],
     hints: [
       'Run <code>git merge change-timing</code>, then <code>git status</code> and <code>cat timing.txt</code> to see both versions between the markers.',
@@ -298,7 +301,7 @@ MISSIONS.push(
     brief: `<p>The repository is cluttered with old branches. <code>feature-menu</code> and <code>feature-cart</code> are already merged. <code>experiment</code> was a failed idea that Hetvi says nobody needs. <code>feature-cart</code> is also still on GitHub.</p>
       <p>Clean up, locally and on GitHub.</p>`,
     goals: [
-      { text: 'List all branches, including GitHub\'s (<code>git branch -a</code>)', check: (c) => c.ran(/^git branch (-a|--all)\s*$/) },
+      { text: 'List all branches, including GitHub\'s (<code>git branch -a</code>)', check: (c) => c.ran(/^git branch(?=.*\s(?:-[rv]*a[rv]*|--all)(?:\s|$))(?:\s+(?:--all|--remotes|--verbose|-[arv]+))+\s*$/) },
       { text: 'Delete the merged branches <code>feature-menu</code> and <code>feature-cart</code>', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/feature-menu')) && !(await r.refOid('refs/heads/feature-cart')); } },
       { text: 'Delete the unmerged branch <code>experiment</code> (Git will ask you to be sure)', check: async (c) => { const r = await c.repo('amroli-canteen'); return !!r && !(await r.refOid('refs/heads/experiment')); } },
       { text: 'Delete <code>feature-cart</code> on GitHub', check: async (c) => !(await c.github.refs('krish-patel', 'amroli-canteen')).branches['feature-cart'] },

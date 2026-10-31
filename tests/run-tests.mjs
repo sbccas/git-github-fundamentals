@@ -696,6 +696,46 @@ console.log('\nGitHub World Records');
     'RC12 the browser code sends no token or cookies and asks GitHub only when the student presses the button');
 }
 
+/* ---------------- 9. Other ways students solve missions 9–12 (31 Oct 2026) ---------------- */
+console.log('\nMission variants');
+{
+  const play = async (id, cmds, editor) => {
+    const m = MISSIONS.find((x) => x.id === id);
+    const sh = await newShell(`variant-${id}-${Math.random().toString(36).slice(2, 8)}`);
+    if (editor) sh.ui.openEditor = async (x) => editor(x);
+    const wb = { get shell() { return sh; }, sandboxId: `variant-${id}`, settings: { githubUser: 'student' }, runSilent: async (cmd) => (await run(sh, cmd)).out };
+    const ctx = engine.createContext(wb, m);
+    await m.setup(ctx);
+    sh.cwd = m.start ? `/home/student/${m.start}` : '/home/student';
+    for (const c of cmds) { await run(sh, c); sh.history.push(c); await engine.evaluate(m, ctx); }
+    const res = await engine.evaluate(m, ctx);
+    return res.every((g, i) => g.done || m.goals[i].optional);
+  };
+  const cases = [
+    ['M-09', 'both branches in one merge command', ['git merge feature-menu feature-cart', 'git log --oneline --graph']],
+    ['M-09', 'cart first, then menu', ['git merge feature-cart', 'git merge feature-menu', 'git log --oneline --graph']],
+    ['M-10', 'git commit -am finishes the merge (as in real Git)', ['git merge change-timing', 'echo "Open: 8 AM" > timing.txt', 'git commit -am "Resolve timing"']],
+    ['M-10', 'git checkout --theirs', ['git merge change-timing', 'git checkout --theirs timing.txt', 'git add timing.txt', 'git commit -m "Take 8 AM"']],
+    ['M-10', 'git restore --theirs', ['git merge change-timing', 'git restore --theirs timing.txt', 'git add timing.txt', 'git commit -m "Take 8 AM"']],
+    ['M-10', '"8 am", "8:00 AM" written differently', ['git merge change-timing', 'echo "Open: 8:00 am" > timing.txt', 'git add timing.txt', 'git commit -m "Resolve"']],
+    ['M-10', 'editor fix and git commit without -m', ['git merge change-timing', 'edit timing.txt', 'git add .', 'git commit'], (x) => (/timing/.test(x.path) ? 'Open: 8 AM\n' : x.content)],
+    ['M-11', 'git branch -av and git push origin :branch', ['git branch -av', 'git branch -d feature-menu feature-cart', 'git branch -D experiment', 'git push origin :feature-cart']],
+    ['M-12', 'git revert of the guilty commit', ['git log', 'git log --oneline -- menu.txt', 'git show HEAD~2', 'git revert HEAD~2']],
+    ['M-12', 'old menu brought back with checkout', ['git log', 'git log --oneline menu.txt', 'git show HEAD~2', 'git checkout HEAD~3 -- menu.txt', 'git commit -m "Restore samosa price"']],
+  ];
+  for (const [id, label, cmds, editor] of cases) (await play(id, cmds, editor)) ? ok(`${id} ${label}`) : fail(`${id} ${label}`);
+  const wrong = [
+    ['M-10', 'a file still showing 10 AM is not accepted', ['git merge change-timing', 'echo "Open: 10 am" > timing.txt', 'git commit -am "Resolve"']],
+    ['M-11', 'deleting only the local copy of origin/feature-cart does not delete it on GitHub', ['git branch -a', 'git branch -d feature-menu feature-cart', 'git branch -D experiment', 'git branch -dr origin/feature-cart']],
+  ];
+  for (const [id, label, cmds] of wrong) (await play(id, cmds)) ? fail(`${id} ${label}`) : ok(`${id} ${label}`);
+  const sh = await newShell('take-side');
+  await run(sh, 'git config --global user.name A && git config --global user.email a@example.com && mkdir t && cd t && git init -q && echo a > f && git add f && git commit -qm a');
+  const noMerge = await run(sh, 'git checkout --theirs f');
+  check2(noMerge.code !== 0 && /only be used while a merge has conflicts/.test(noMerge.out), '--ours/--theirs outside a merge gives a clear error');
+  function check2(cond, msg) { (cond ? ok : fail)(msg); }
+}
+
 fs.rmSync(TMP, { recursive: true, force: true });
 console.log(failures ? `\n${failures} test(s) failed` : '\nAll tests passed');
 process.exit(failures ? 1 : 0);

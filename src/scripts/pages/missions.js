@@ -103,7 +103,7 @@ async function runMission(m) {
     extraPanels: { mission: missionPanel },
     onAfterCommand: () => check(),
     onReset: () => restart(false),
-    welcome: () => `${bold(`${m.id} · ${m.title}`)}\n${dim('Read the mission on the right, then type commands here. Goals tick automatically.')}\n`,
+    welcome: () => `${bold(`${m.id} · ${m.title}`)}\n${dim(`Read the mission ${matchMedia('(max-width: 960px)').matches ? 'below the terminal' : 'on the right'}, then type commands here. Goals tick automatically.`)}\n`,
   });
   const ctx = () => engine.createContext(wb, m);
 

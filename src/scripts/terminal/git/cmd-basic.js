@@ -337,7 +337,16 @@ export async function commit({ sh, args, out }) {
     longBool: ['amend', 'allow-empty', 'no-edit'],
   });
   const repo = await requireRepo(sh);
-  const merge = await repo.mergeState();
+  let merge = await repo.mergeState();
+  // Like real Git, -a also stages conflicted files, which marks them resolved and lets the merge be committed.
+  if (flags.all && merge?.conflicts.length) {
+    for (const p of merge.conflicts) {
+      if (await sh.h.isFile(join(repo.dir, p))) await git.add({ ...repo.base, filepath: p });
+      else await git.remove({ ...repo.base, filepath: p });
+      await repo.resolveConflict(p);
+    }
+    merge = await repo.mergeState();
+  }
   if (merge?.conflicts.length) {
     throw new GitError("error: Committing is not possible because you have unmerged files.\nhint: Fix them up in the work tree, and then use 'git add/rm <file>'\nhint: as appropriate to mark resolution and make a commit.\nfatal: Exiting because of an unresolved conflict.");
   }
@@ -405,14 +414,44 @@ export async function commit({ sh, args, out }) {
 
 /* ======================= restore ======================= */
 
-export async function restore({ sh, args }) {
+/**
+ * `git checkout --ours/--theirs <file>` and `git restore --ours/--theirs <file>` during a merge conflict: put one
+ * side's version of each conflicted file in the working folder. Like real Git, the file stays unmerged until `git add`.
+ */
+export async function takeSide(sh, repo, side, specs, out) {
+  const merge = await repo.mergeState();
+  if (!merge?.conflicts.length) throw new GitError(`error: --${side} can only be used while a merge has conflicts`, 1);
+  if (!specs.length) throw new GitError('fatal: you must specify path(s) to restore');
+  const tree = await repo.treeMap(side === 'ours' ? await repo.headOid() : merge.oid);
+  let count = 0;
+  for (const spec of specs) {
+    const rp = repo.repoPath(spec);
+    const hits = merge.conflicts.filter((p) => rp === '' || p === rp || p.startsWith(`${rp}/`));
+    if (!hits.length) throw new GitError(`error: path '${spec}' does not have a conflict`, 1);
+    for (const p of hits) {
+      const oid = tree.get(p)?.oid;
+      if (!oid) throw new GitError(`error: path '${p}' does not have ${side === 'ours' ? 'our' : 'their'} version`, 1);
+      const { blob } = await git.readBlob({ ...repo.base, oid });
+      const full = join(repo.dir, p);
+      await sh.h.mkdirp(full.slice(0, full.lastIndexOf('/')));
+      await sh.h.pfs.writeFile(full, blob);
+      count++;
+    }
+  }
+  out?.write(`Updated ${count} path${count === 1 ? '' : 's'} from the index
+`);
+  return 0;
+}
+
+export async function restore({ sh, args, out }) {
   const { flags, values, positional, paths } = parseArgs(args, {
     bool: { S: 'staged', W: 'worktree' },
     value: { s: 'source' },
-    longBool: ['staged', 'worktree'],
+    longBool: ['staged', 'worktree', 'ours', 'theirs'],
   });
   const repo = await requireRepo(sh);
   const specs = [...positional, ...paths];
+  if (flags.ours || flags.theirs) return takeSide(sh, repo, flags.ours ? 'ours' : 'theirs', specs, null);
   if (!specs.length) throw new GitError('fatal: you must specify path(s) to restore');
   const staged = !!flags.staged;
   const worktree = !!flags.worktree || !staged;
