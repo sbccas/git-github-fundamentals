@@ -6,8 +6,8 @@
 | **Owner** | Sutex Bank College of Computer Applications & Science (SBCCAS), Amroli, Surat |
 | **Repo** | [`github.com/sbccas/git-github-fundamentals`](https://github.com/sbccas/git-github-fundamentals) → live at https://sbccas.github.io/git-github-fundamentals/ |
 | **Local path** | `D:\Future Projects\git-github-fundamentals` |
-| **Status** | v1.20 — approved; Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
-| **Last updated** | 2026-10-30 |
+| **Status** | v1.21 — approved; first batch (BCA 2026 – SY AI) completed 2 Nov 2026, resume from [PROJECT-STATUS.md](PROJECT-STATUS.md); Phase 1 live (Milestones 1–9 done; real-device and projector checks remain). Phase 2: Milestones 10–12 (sign-in, progress sync, faculty dashboard) built and tested; go-live approved by the owner 2026-10-27 ([Milestone 12 plan §6.1](plans/MILESTONE-12-DASHBOARD-PLAN.md)). Progress cross-check: [PROGRESS.md](PROGRESS.md) · plans: [`docs/plans/`](plans/) |
+| **Last updated** | 2026-11-02 |
 
 > **How to use this document.** This PRD is the single source of truth. We build only what is listed here.
 > Any new idea goes into **§15 Backlog** first and is built only after it is approved and moved into a phase.
@@ -371,6 +371,7 @@ git-github-fundamentals/
 | Date | Version | Change |
 |---|---|---|
 | 2026-10-22 | 1.0 | First draft from planning discussion |
+| 2026-11-02 | 1.21 | Course completed for the first batch. Missions 9–12 accept real-Git variants (31 Oct); keep-alive job for Supabase and the website (twice daily, monthly heartbeat, no marketplace actions); remote-session link removed from the menus and the exam link relabelled "Exam result"; [PROJECT-STATUS.md](PROJECT-STATUS.md) added as the resume point with open items |
 | 2026-10-30 | 1.20 | Milestone 12d: GitHub World Records bonus page (P-13) with "Live data" / "Historical snapshot" labels on every figure, as requested by the owner; no change to course content, quizzes, exam or scheduled activities |
 | 2026-10-30 | 1.19 | Milestone 12c: remote session 31 Oct (task card, GitHub project checklist, class wall, session report, student timer, task sheet page and PDF) and the server-marked final exam for 2 Nov (bank of 75 approved by the owner, kept out of the repository) |
 | 2026-10-29 | 1.18 | Milestone 12b live: S-13 participant counter, S-14 request to join, in-app (WhatsApp) browser note; faculty dr-hiralpatel added; Milestone 12c (remote session 31 Oct, server-marked exam 2 Nov) approved |

@@ -1,16 +1,23 @@
-# Keeps the Supabase project awake: free projects are paused after about a week without database activity
-# (https://supabase.com/docs/guides/platform/free-project-pausing). Every day this job makes one read-only request for
-# the public student counter, the same request every visitor's home page makes. It uses only the PUBLIC publishable
-# key that is already in the site (src/scripts/data/supabase.js), so no secrets are needed.
+# Keeps the course running while nobody visits it (owner request, 2 Nov 2026). Plain shell only (curl, grep, jq,
+# base64 on GitHub's Ubuntu runner): no marketplace actions, so nothing here needs a version update when GitHub
+# retires old action versions.
 #
-# GitHub switches off scheduled jobs in a public repository after 60 days without repository activity, so once a month
-# the job also commits a one-line heartbeat (.github/keep-alive.txt). "[skip ci]" stops that commit from rebuilding the
-# site. If the database ever stops answering, the run fails and GitHub emails the repository owner.
+# Twice a day:
+#  1. Supabase: one read-only request for the public student counter, the same request every visitor's home page
+#     makes. Free Supabase projects pause after about a week without database activity
+#     (https://supabase.com/docs/guides/platform/free-project-pausing). Only the PUBLIC publishable key is used; it is
+#     read from src/scripts/data/supabase.js so there is one place to change it.
+#  2. Website: the home, missions, exam and account pages must answer 200.
+#  3. Once a month: a one-line heartbeat commit (.github/keep-alive.txt) through the GitHub API, because GitHub
+#     switches off scheduled jobs in a public repository after 60 days without activity. "[skip ci]" and the
+#     GITHUB_TOKEN both keep it from rebuilding the site.
+# A failed run emails the account that last changed the schedule (Settings → Notifications → Actions).
 name: Keep Supabase awake
 
 on:
   schedule:
-    - cron: '17 3 * * *' # every day at 03:17 UTC (08:47 India time)
+    - cron: '17 3 * * *' # 08:47 India time (GitHub may start scheduled runs late)
+    - cron: '47 14 * * *' # 20:17 India time
   workflow_dispatch:
 
 permissions:
@@ -20,17 +27,22 @@ concurrency:
   group: keep-alive
   cancel-in-progress: false
 
-jobs:
-  ping:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
+env:
+  SITE: https://sbccas.github.io/git-github-fundamentals/
+  GH_API: https://api.github.com/repos/${{ github.repository }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
       - name: Ask the database for the public student counter
         run: |
-          url=$(grep -oE "https://[a-z0-9]+\.supabase\.co" src/scripts/data/supabase.js | head -1)
-          key=$(grep -oE "sb_publishable_[A-Za-z0-9_-]+" src/scripts/data/supabase.js | head -1)
+          config=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github.raw' \
+            "$GH_API/contents/src/scripts/data/supabase.js")
+          url=$(grep -oE "https://[a-z0-9]+\.supabase\.co" <<<"$config" | head -1)
+          key=$(grep -oE "sb_publishable_[A-Za-z0-9_-]+" <<<"$config" | head -1)
           if [ -z "$url" ] || [ -z "$key" ]; then echo "::error::Project URL or publishable key not found in src/scripts/data/supabase.js"; exit 1; fi
           for attempt in 1 2 3; do
             code=$(curl -sS -o reply.json -w '%{http_code}' -X POST "$url/rest/v1/rpc/course_stats" \
@@ -39,20 +51,31 @@ jobs:
             echo "Attempt $attempt: HTTP $code $(cat reply.json 2>/dev/null)"
             sleep 60
           done
-          echo "::error::The database did not answer. If it is paused, open the Supabase dashboard and press Resume project."
+          echo "::error::The database did not answer. If it is paused: Supabase dashboard → the project → Resume project."
           exit 1
+
+      - name: Check that the website answers
+        if: always()
+        run: |
+          failed=0
+          for page in "" missions/ exam/ account/; do
+            code=$(curl -sS -L -o /dev/null -w '%{http_code}' "$SITE$page") || code=000
+            echo "$SITE$page → $code"
+            [ "$code" = "200" ] || failed=1
+          done
+          if [ "$failed" = 1 ]; then echo "::error::A course page did not load. Check Settings → Pages and the latest 'Deploy to GitHub Pages' run."; exit 1; fi
 
       - name: Monthly heartbeat commit (keeps this schedule switched on)
         if: always()
         run: |
-          f=.github/keep-alive.txt
-          last=$(head -1 "$f" 2>/dev/null || true)
+          file=.github/keep-alive.txt
+          info=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" "$GH_API/contents/$file")
+          sha=$(jq -r .sha <<<"$info")
+          last=$(jq -r .content <<<"$info" | base64 -d | head -1)
           last_s=$(date -u -d "${last:-1970-01-01}" +%s 2>/dev/null || echo 0)
           days=$(( ( $(date -u +%s) - last_s ) / 86400 ))
-          if [ "$days" -lt 30 ]; then echo "Last heartbeat ${last} (${days} days ago); nothing to do."; exit 0; fi
-          date -u +%F > "$f"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$f"
-          git commit -m "chore: keep-alive heartbeat [skip ci]"
-          git push
+          if [ "$days" -lt 30 ]; then echo "Last heartbeat $last ($days days ago); nothing to do."; exit 0; fi
+          body=$(jq -n --arg c "$(date -u +%F | base64)" --arg s "$sha" \
+            '{message: "chore: keep-alive heartbeat [skip ci]", content: $c, sha: $s}')
+          curl -fsS -X PUT -H "Authorization: Bearer $GH_TOKEN" "$GH_API/contents/$file" -d "$body" > /dev/null
+          echo "Heartbeat committed: $(date -u +%F)"
